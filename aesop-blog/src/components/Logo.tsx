@@ -13,7 +13,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
 
   const sizeConfig = sizes[size];
 
-  // HIPPO LOGO v3.0 - Minimalist, clean, line-based friendly design
+  // HIPPO LOGO v3.0 - Minimalist, clean, line-based friendly design [CACHE-BUST-2025-10-27-v3]
   return (
     <div className={`flex items-center ${sizeConfig.gap} ${className}`}>
       {/* Minimalist Red-Hat Hippo with Scroll - Clean & Friendly */}
