@@ -25,7 +25,14 @@ export async function uploadImage(
         upsert: true,
       });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Upload error:', error);
+      // Provide more helpful error message
+      if (error.message.includes('not found')) {
+        throw new Error(`Storage bucket "${bucket}" does not exist. Please create it in Supabase Dashboard.`);
+      }
+      throw new Error(error.message || 'Failed to upload image');
+    }
 
     // Get the public URL
     const { data: { publicUrl } } = supabase.storage
@@ -33,9 +40,9 @@ export async function uploadImage(
       .getPublicUrl(data.path);
 
     return publicUrl;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error uploading image:', error);
-    throw new Error('Failed to upload image');
+    throw error;
   }
 }
 

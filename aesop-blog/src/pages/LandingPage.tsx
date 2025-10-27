@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { PenSquare, Users, Sparkles, Heart, MessageCircle, TrendingUp } from 'lucide-react';
+import Logo from '../components/Logo';
 
 export default function LandingPage() {
   const features = [
@@ -38,24 +39,29 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="gradient-bg text-white py-20 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-            Welcome to Aesop Blog
+      <section className="gradient-bg py-24 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-900/30 to-transparent"></div>
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          <div className="flex justify-center mb-8 animate-float">
+            <Logo size="lg" />
+          </div>
+          <h1 className="text-6xl md:text-8xl font-black mb-8 text-white drop-shadow-2xl">
+            Welcome to <span className="bg-gradient-to-r from-cyan-300 via-white to-neon-300 bg-clip-text text-transparent">Aesop Blog</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-white/90 max-w-3xl mx-auto">
+          <p className="text-2xl md:text-3xl mb-12 text-white font-medium max-w-3xl mx-auto drop-shadow-lg">
             An exceptional social blogging platform where writers, thinkers, and creators come together
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Link
               to="/auth"
-              className="btn btn-primary bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 shadow-lg"
+              className="btn group relative overflow-hidden bg-gradient-to-r from-cyan-500 to-neon-500 text-white hover:from-cyan-400 hover:to-neon-400 text-2xl font-bold px-16 py-8 shadow-2xl shadow-cyan-500/50 hover:shadow-cyan-400/60 transition-all transform hover:scale-105 rounded-2xl"
             >
-              Get Started
+              <span className="relative z-10">Get Started</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
             </Link>
             <a
               href="#features"
-              className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 text-lg px-8 py-4"
+              className="btn bg-cyber-900/50 backdrop-blur-sm text-white hover:bg-cyber-800/50 border-2 border-cyan-400/50 hover:border-cyan-300 text-xl font-semibold px-12 py-6 rounded-xl transition-all"
             >
               Learn More
             </a>
@@ -64,12 +70,12 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 bg-white">
+      <section id="features" className="py-20 px-4 bg-cyber-950">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-4 gradient-text">
-            What Makes Us Exceptional
+          <h2 className="text-5xl font-black text-center mb-4 text-white">
+            What Makes Us <span className="gradient-text">Exceptional</span>
           </h2>
-          <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+          <p className="text-center text-cyan-200 text-xl mb-12 max-w-2xl mx-auto">
             Aesop Blog combines the best of blogging, social networking, and collaborative writing
           </p>
 
@@ -80,11 +86,11 @@ export default function LandingPage() {
                 className="card p-6 animate-slide-up hover:scale-105 transition-transform"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
-                  <feature.icon className="w-6 h-6 text-white" />
+                <div className="w-14 h-14 gradient-bg rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-cyan-500/30">
+                  <feature.icon className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-900">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <h3 className="text-xl font-bold mb-2 text-white">{feature.title}</h3>
+                <p className="text-cyan-200">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -92,10 +98,12 @@ export default function LandingPage() {
       </section>
 
       {/* Communities Section */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section className="py-20 px-4 bg-gradient-to-b from-cyber-900 to-cyber-950">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-4 gradient-text">Find Your Community</h2>
-          <p className="text-gray-600 mb-12 max-w-2xl mx-auto">
+          <h2 className="text-5xl font-black mb-4 text-white">
+            Find Your <span className="gradient-text">Community</span>
+          </h2>
+          <p className="text-cyan-200 text-xl mb-12 max-w-2xl mx-auto">
             Join communities of students, scholars, professionals, coders, writers, artists, and more
           </p>
 
@@ -104,7 +112,7 @@ export default function LandingPage() {
               'Scientists 🔬', 'Entrepreneurs 🚀', 'Creatives ✨'].map((community) => (
               <span
                 key={community}
-                className="badge badge-primary px-4 py-2 text-base"
+                className="badge badge-primary px-5 py-3 text-lg font-semibold"
               >
                 {community}
               </span>
@@ -113,7 +121,7 @@ export default function LandingPage() {
 
           <Link
             to="/auth"
-            className="btn btn-primary text-lg px-8 py-4 inline-block"
+            className="btn btn-primary text-xl font-bold px-12 py-6 inline-block rounded-xl"
           >
             Join Your Community
           </Link>
@@ -121,17 +129,17 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="gradient-bg text-white py-20 px-4">
+      <section className="gradient-bg py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">
+          <h2 className="text-5xl md:text-6xl font-black mb-6 text-white">
             Ready to Start Writing?
           </h2>
-          <p className="text-xl mb-8 text-white/90">
+          <p className="text-2xl mb-10 text-white font-medium">
             Join thousands of writers sharing their stories, ideas, and passions
           </p>
           <Link
             to="/auth"
-            className="btn bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4 shadow-lg inline-block"
+            className="btn bg-white text-cyber-600 hover:bg-cyan-50 text-2xl font-bold px-16 py-8 shadow-2xl inline-block rounded-2xl hover:scale-105 transition-transform"
           >
             Create Your Account
           </Link>
@@ -139,18 +147,15 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
+      <footer className="bg-cyber-950 border-t border-cyber-800 py-12 px-4">
         <div className="max-w-6xl mx-auto text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">A</span>
-            </div>
-            <span className="text-2xl font-bold">Aesop Blog</span>
+          <div className="flex items-center justify-center mb-6">
+            <Logo size="md" />
           </div>
-          <p className="text-gray-400 mb-4">
+          <p className="text-cyan-300 mb-4 text-lg">
             Write, Share, Connect - An exceptional blogging experience
           </p>
-          <p className="text-gray-500 text-sm">
+          <p className="text-cyan-600 text-sm">
             © 2025 Aesop Blog. All rights reserved.
           </p>
         </div>

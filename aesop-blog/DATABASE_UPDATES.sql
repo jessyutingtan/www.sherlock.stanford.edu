@@ -1,51 +1,72 @@
--- Additional schema updates for new features
+-- Database Updates for Aesop Blog
+-- Run these SQL commands in your Supabase SQL Editor
 
--- Add notification preferences to profiles table
+-- Add notification preference columns to profiles table
 ALTER TABLE profiles
 ADD COLUMN IF NOT EXISTS notification_web BOOLEAN DEFAULT true,
 ADD COLUMN IF NOT EXISTS notification_email BOOLEAN DEFAULT false;
 
--- Create storage bucket for user uploads (run this in Supabase Dashboard -> Storage)
--- Storage buckets need to be created via Supabase Dashboard or API
--- Bucket name: 'avatars' - for profile photos
--- Bucket name: 'covers' - for post cover images
+-- ============================================
+-- STORAGE BUCKETS SETUP (CRITICAL!)
+-- ============================================
+-- You MUST create storage buckets in Supabase Dashboard for image uploads to work!
+--
+-- Steps:
+-- 1. Go to Supabase Dashboard > Storage
+-- 2. Click "New bucket"
+-- 3. Create bucket named "avatars" and make it PUBLIC
+-- 4. Create bucket named "covers" and make it PUBLIC
+-- 5. Then run the storage policies below
 
--- Storage policies for avatars bucket
--- These should be run after creating the 'avatars' bucket in Supabase Dashboard
+-- Storage policies (run AFTER creating the buckets above)
+-- For 'avatars' bucket:
 
--- Allow authenticated users to upload their own avatar
--- CREATE POLICY "Users can upload own avatar" ON storage.objects
---   FOR INSERT TO authenticated
---   WITH CHECK (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+-- Allow authenticated users to upload their own avatars
+CREATE POLICY "Users can upload their own avatar"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
 
--- Allow public access to view avatars
--- CREATE POLICY "Avatars are publicly accessible" ON storage.objects
---   FOR SELECT TO public
---   USING (bucket_id = 'avatars');
+-- Allow users to update their own avatars
+CREATE POLICY "Users can update their own avatar"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
 
--- Allow users to update their own avatar
--- CREATE POLICY "Users can update own avatar" ON storage.objects
---   FOR UPDATE TO authenticated
---   USING (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+-- Allow users to delete their own avatars
+CREATE POLICY "Users can delete their own avatar"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
 
--- Allow users to delete their own avatar
--- CREATE POLICY "Users can delete own avatar" ON storage.objects
---   FOR DELETE TO authenticated
---   USING (bucket_id = 'avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+-- Allow public read access
+CREATE POLICY "Public can view avatars"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'avatars');
 
--- Storage policies for covers bucket
--- CREATE POLICY "Users can upload post covers" ON storage.objects
---   FOR INSERT TO authenticated
---   WITH CHECK (bucket_id = 'covers');
+-- For 'covers' bucket:
 
--- CREATE POLICY "Covers are publicly accessible" ON storage.objects
---   FOR SELECT TO public
---   USING (bucket_id = 'covers');
+-- Allow authenticated users to upload their own covers
+CREATE POLICY "Users can upload their own covers"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'covers' AND auth.uid()::text = (storage.foldername(name))[1]);
 
--- CREATE POLICY "Users can update own covers" ON storage.objects
---   FOR UPDATE TO authenticated
---   USING (bucket_id = 'covers');
+-- Allow users to update their own covers
+CREATE POLICY "Users can update their own covers"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (bucket_id = 'covers' AND auth.uid()::text = (storage.foldername(name))[1]);
 
--- CREATE POLICY "Users can delete own covers" ON storage.objects
---   FOR DELETE TO authenticated
---   USING (bucket_id = 'covers');
+-- Allow users to delete their own covers
+CREATE POLICY "Users can delete their own covers"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'covers' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+-- Allow public read access
+CREATE POLICY "Public can view covers"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'covers');

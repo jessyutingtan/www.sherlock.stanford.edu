@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Mail, Lock, User, AlertCircle } from 'lucide-react';
+import Logo from '../components/Logo';
 
 export default function AuthPage() {
   const navigate = useNavigate();
@@ -72,18 +73,20 @@ export default function AuthPage() {
     <div className="min-h-screen flex items-center justify-center gradient-bg py-12 px-4">
       <div className="max-w-md w-full">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl mb-4 shadow-lg">
-            <span className="text-3xl font-bold gradient-text">A</span>
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center mb-6 animate-float">
+            <Logo size="lg" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Aesop Blog</h1>
-          <p className="text-white/80">
-            {isLogin ? 'Welcome back!' : 'Create your account'}
+          <h1 className="text-4xl font-bold text-white mb-3 drop-shadow-lg">
+            {isLogin ? 'Welcome Back!' : 'Join Aesop Blog'}
+          </h1>
+          <p className="text-cyan-200 text-lg">
+            {isLogin ? 'Sign in to continue your journey' : 'Create your account and start writing'}
           </p>
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="card p-8 backdrop-blur-md">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -95,11 +98,11 @@ export default function AuthPage() {
             {!isLogin && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-cyan-200 mb-2">
                     Username *
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400" />
                     <input
                       type="text"
                       required
@@ -112,11 +115,11 @@ export default function AuthPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-cyan-200 mb-2">
                     Full Name
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400" />
                     <input
                       type="text"
                       placeholder="John Doe"
@@ -130,11 +133,11 @@ export default function AuthPage() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-cyan-200 mb-2">
                 Email *
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400" />
                 <input
                   type="email"
                   required
@@ -147,11 +150,11 @@ export default function AuthPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-cyan-200 mb-2">
                 Password *
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400" />
                 <input
                   type="password"
                   required
@@ -163,7 +166,7 @@ export default function AuthPage() {
                 />
               </div>
               {!isLogin && (
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-sm text-cyan-300">
                   Must be at least 6 characters
                 </p>
               )}
@@ -184,7 +187,7 @@ export default function AuthPage() {
                 setIsLogin(!isLogin);
                 setError('');
               }}
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-cyan-300 hover:text-cyan-200 font-semibold transition-colors"
             >
               {isLogin
                 ? "Don't have an account? Sign up"
@@ -193,7 +196,7 @@ export default function AuthPage() {
           </div>
         </div>
 
-        <p className="mt-6 text-center text-white/60 text-sm">
+        <p className="mt-6 text-center text-cyan-200 text-sm">
           By continuing, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>

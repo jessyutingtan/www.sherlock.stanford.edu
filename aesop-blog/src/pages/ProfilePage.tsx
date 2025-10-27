@@ -243,7 +243,7 @@ export default function ProfilePage() {
               {isOwnProfile ? (
                 <>
                   <Link
-                    to="/write"
+                    to="/profile/edit"
                     className="btn bg-white text-blue-600 hover:bg-gray-100 flex items-center gap-2"
                   >
                     <Edit className="w-5 h-5" />
