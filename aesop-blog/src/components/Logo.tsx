@@ -15,64 +15,73 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
 
   return (
     <div className={`flex items-center ${sizeConfig.gap} ${className}`}>
-      {/* Ultra-Premium Sophisticated Fox - High-Tier Savvy Design */}
+      {/* Adorable Red-Hatted Hippo - Cute, Warming, Savvy & Special */}
       <div className={`${sizeConfig.container} aspect-square relative group`}>
         <svg
-          className="w-full h-full transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-3"
+          className="w-full h-full transition-all duration-700 ease-out group-hover:scale-110 group-hover:-rotate-2"
           viewBox="0 0 100 100"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Ultra-Sophisticated Fox Design - Premium High-Tier Savvy Aesthetics */}
+          {/* Adorable Hippo Design - Cute, Warming, Savvy, Special, Good Taste */}
           <defs>
-            {/* Elite Premium Gradient System */}
-            <linearGradient id="eliteGold" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#fcd34d" />
-              <stop offset="30%" stopColor="#fbbf24" />
-              <stop offset="60%" stopColor="#f59e0b" />
-              <stop offset="100%" stopColor="#d97706" />
-            </linearGradient>
-
-            <linearGradient id="eliteOrange" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#fed7aa" />
-              <stop offset="25%" stopColor="#fdba74" />
-              <stop offset="50%" stopColor="#fb923c" />
-              <stop offset="75%" stopColor="#f97316" />
-              <stop offset="100%" stopColor="#ea580c" />
-            </linearGradient>
-
-            <linearGradient id="eliteAccent" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#fffbeb" stopOpacity="0.98" />
-              <stop offset="50%" stopColor="#fef3c7" stopOpacity="0.92" />
-              <stop offset="100%" stopColor="#fde68a" stopOpacity="0.85" />
-            </linearGradient>
-
-            <linearGradient id="eliteRoseGold" x1="0%" y1="0%" x2="100%" y2="100%">
+            {/* Premium Hippo Body Gradients - Warm & Soft */}
+            <linearGradient id="hippoBody" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#fbbf24" />
-              <stop offset="33%" stopColor="#f59e0b" />
-              <stop offset="66%" stopColor="#f97316" />
-              <stop offset="100%" stopColor="#ea580c" />
+              <stop offset="25%" stopColor="#fca5a5" />
+              <stop offset="50%" stopColor="#f9a8d4" />
+              <stop offset="75%" stopColor="#fbcfe8" />
+              <stop offset="100%" stopColor="#fce7f3" />
             </linearGradient>
 
-            <radialGradient id="sophisticatedGlow" cx="50%" cy="42%">
-              <stop offset="0%" stopColor="#fcd34d" stopOpacity="0.35" />
-              <stop offset="40%" stopColor="#fbbf24" stopOpacity="0.22" />
-              <stop offset="70%" stopColor="#f97316" stopOpacity="0.12" />
-              <stop offset="100%" stopColor="#ea580c" stopOpacity="0" />
+            <linearGradient id="hippoBodyLight" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fef3c7" />
+              <stop offset="33%" stopColor="#fed7aa" />
+              <stop offset="66%" stopColor="#fecdd3" />
+              <stop offset="100%" stopColor="#fce7f3" />
+            </linearGradient>
+
+            {/* Vibrant Red Hat Gradients */}
+            <linearGradient id="redHat" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ef4444" />
+              <stop offset="33%" stopColor="#dc2626" />
+              <stop offset="66%" stopColor="#b91c1c" />
+              <stop offset="100%" stopColor="#991b1b" />
+            </linearGradient>
+
+            <linearGradient id="redHatHighlight" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#fca5a5" stopOpacity="0.9" />
+              <stop offset="50%" stopColor="#f87171" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#ef4444" stopOpacity="0.5" />
+            </linearGradient>
+
+            {/* Warm Coral/Pink Accents */}
+            <linearGradient id="warmAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fbcfe8" />
+              <stop offset="50%" stopColor="#f9a8d4" />
+              <stop offset="100%" stopColor="#f472b6" />
+            </linearGradient>
+
+            {/* Soft Ambient Glow */}
+            <radialGradient id="warmGlow" cx="50%" cy="45%">
+              <stop offset="0%" stopColor="#fef3c7" stopOpacity="0.3" />
+              <stop offset="40%" stopColor="#fecdd3" stopOpacity="0.2" />
+              <stop offset="70%" stopColor="#f9a8d4" stopOpacity="0.1" />
+              <stop offset="100%" stopColor="#f472b6" stopOpacity="0" />
             </radialGradient>
 
-            <radialGradient id="premiumHalo" cx="50%" cy="50%">
-              <stop offset="0%" stopColor="#fff7ed" stopOpacity="0.15" />
-              <stop offset="50%" stopColor="#fed7aa" stopOpacity="0.08" />
-              <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+            <radialGradient id="cuteHalo" cx="50%" cy="50%">
+              <stop offset="0%" stopColor="#fff7ed" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="#ffe4e6" stopOpacity="0.1" />
+              <stop offset="100%" stopColor="#fce7f3" stopOpacity="0" />
             </radialGradient>
 
-            {/* Enhanced shadow filters for premium depth */}
-            <filter id="eliteShadow" x="-60%" y="-60%" width="220%" height="220%">
+            {/* Premium Shadow Filters */}
+            <filter id="softShadow" x="-60%" y="-60%" width="220%" height="220%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
               <feOffset dx="0" dy="2" result="offsetblur"/>
               <feComponentTransfer>
-                <feFuncA type="linear" slope="0.4"/>
+                <feFuncA type="linear" slope="0.35"/>
               </feComponentTransfer>
               <feMerge>
                 <feMergeNode/>
@@ -80,13 +89,10 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
               </feMerge>
             </filter>
 
-            <filter id="glowEffect" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="1.2"/>
+            <filter id="hatGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="1.5"/>
               <feOffset dx="0" dy="0" result="offsetblur"/>
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5"/>
-              </feComponentTransfer>
-              <feFlood floodColor="#fbbf24" floodOpacity="0.6"/>
+              <feFlood floodColor="#dc2626" floodOpacity="0.5"/>
               <feComposite in2="offsetblur" operator="in"/>
               <feMerge>
                 <feMergeNode/>
@@ -95,143 +101,204 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
             </filter>
           </defs>
 
-          {/* Premium multi-layered ambient glow */}
+          {/* Ambient Glow Background */}
           <g transform="translate(50, 50)">
-            <ellipse cx="0" cy="-2" rx="48" ry="44" fill="url(#premiumHalo)"/>
-            <ellipse cx="0" cy="-5" rx="44" ry="40" fill="url(#sophisticatedGlow)"/>
+            <ellipse cx="0" cy="0" rx="48" ry="45" fill="url(#cuteHalo)"/>
+            <ellipse cx="0" cy="-2" rx="44" ry="42" fill="url(#warmGlow)"/>
 
-            {/* Ultra-refined fox silhouette with elite details */}
-            <g filter="url(#eliteShadow)">
-              {/* Sophisticated head shape with enhanced contours */}
-              <path
-                d="M 0 -34
-                   C -3.5 -34, -6.5 -32, -9 -28.5
-                   L -15 -37 C -17 -40, -19 -38, -18 -34.5
-                   L -13 -25.5
-                   C -16 -21, -17.5 -15.5, -17.5 -9
-                   C -17.5 2, -14 10, -8.5 15
-                   C -6 17.5, -3.5 18.5, -1.5 19
-                   L -1.5 21.5
-                   C -1.5 23.5, -0.75 24.5, 0 24.5
-                   C 0.75 24.5, 1.5 23.5, 1.5 21.5
-                   L 1.5 19
-                   C 3.5 18.5, 6 17.5, 8.5 15
-                   C 14 10, 17.5 2, 17.5 -9
-                   C 17.5 -15.5, 16 -21, 13 -25.5
-                   L 18 -34.5 C 19 -38, 17 -40, 15 -37
-                   L 9 -28.5
-                   C 6.5 -32, 3.5 -34, 0 -34 Z"
-                fill="url(#eliteOrange)"
-                stroke="url(#eliteGold)"
-                strokeWidth="0.6"
-                opacity="0.98"
+            {/* Adorable Hippo with Red Hat */}
+            <g filter="url(#softShadow)">
+
+              {/* Cute Rounded Body */}
+              <ellipse cx="0" cy="8" rx="22" ry="18" fill="url(#hippoBody)" opacity="0.95"/>
+
+              {/* Round Head */}
+              <circle cx="0" cy="-8" r="20" fill="url(#hippoBody)" opacity="0.95"/>
+
+              {/* Lighter Belly/Face Highlight */}
+              <ellipse cx="0" cy="8" rx="16" ry="13" fill="url(#hippoBodyLight)" opacity="0.4"/>
+              <ellipse cx="0" cy="-6" rx="14" ry="12" fill="url(#hippoBodyLight)" opacity="0.35"/>
+
+              {/* Adorable Small Ears */}
+              <ellipse
+                cx="-14"
+                cy="-15"
+                rx="5"
+                ry="6"
+                fill="url(#warmAccent)"
+                opacity="0.9"
+                transform="rotate(-20 -14 -15)"
+              />
+              <ellipse
+                cx="14"
+                cy="-15"
+                rx="5"
+                ry="6"
+                fill="url(#warmAccent)"
+                opacity="0.9"
+                transform="rotate(20 14 -15)"
               />
 
-              {/* Premium ears with gradient layering */}
-              <path
-                d="M -11 -30 L -16.5 -39 C -17.5 -41, -15.5 -41, -14.5 -39 L -10 -30 Z"
-                fill="url(#eliteGold)"
-                opacity="0.94"
+              {/* Inner ear pink detail */}
+              <ellipse
+                cx="-14"
+                cy="-15"
+                rx="2.5"
+                ry="3"
+                fill="#fbcfe8"
+                opacity="0.7"
+                transform="rotate(-20 -14 -15)"
               />
-              <path
-                d="M 11 -30 L 16.5 -39 C 17.5 -41, 15.5 -41, 14.5 -39 L 10 -30 Z"
-                fill="url(#eliteGold)"
-                opacity="0.94"
-              />
-
-              {/* Inner ear detail - elite sophistication */}
-              <path
-                d="M -12 -32 L -15 -38 L -11.5 -32 Z"
-                fill="url(#eliteAccent)"
-                opacity="0.65"
-              />
-              <path
-                d="M 12 -32 L 15 -38 L 11.5 -32 Z"
-                fill="url(#eliteAccent)"
-                opacity="0.65"
+              <ellipse
+                cx="14"
+                cy="-15"
+                rx="2.5"
+                ry="3"
+                fill="#fbcfe8"
+                opacity="0.7"
+                transform="rotate(20 14 -15)"
               />
 
-              {/* Savvy, intelligent eyes - expressive and warm */}
-              <ellipse cx="-7.5" cy="-7" rx="2.5" ry="3.5" fill="#18181b" opacity="0.92"/>
-              <ellipse cx="7.5" cy="-7" rx="2.5" ry="3.5" fill="#18181b" opacity="0.92"/>
+              {/* Stylish Red Hat (Beret-style) */}
+              <g filter="url(#hatGlow)">
+                {/* Hat crown */}
+                <ellipse
+                  cx="0"
+                  cy="-22"
+                  rx="18"
+                  ry="8"
+                  fill="url(#redHat)"
+                  opacity="0.95"
+                />
 
-              {/* Premium eye sparkles - triple layer for depth */}
-              <circle cx="-6.5" cy="-8.2" r="1.1" fill="#fffbeb" opacity="0.98"/>
-              <circle cx="8.5" cy="-8.2" r="1.1" fill="#fffbeb" opacity="0.98"/>
-              <circle cx="-7.3" cy="-6.2" r="0.6" fill="#fef3c7" opacity="0.75"/>
-              <circle cx="7.7" cy="-6.2" r="0.6" fill="#fef3c7" opacity="0.75"/>
-              <circle cx="-6.8" cy="-5" r="0.35" fill="#fde68a" opacity="0.55"/>
-              <circle cx="8.2" cy="-5" r="0.35" fill="#fde68a" opacity="0.55"/>
+                {/* Hat brim/rim */}
+                <ellipse
+                  cx="0"
+                  cy="-18"
+                  rx="20"
+                  ry="4"
+                  fill="url(#redHat)"
+                  opacity="0.98"
+                />
 
-              {/* Elite muzzle with enhanced shading */}
-              <ellipse cx="0" cy="2.5" rx="5" ry="5.8" fill="url(#eliteAccent)" opacity="0.7"/>
-              <ellipse cx="0" cy="3" rx="3.5" ry="4" fill="#fffbeb" opacity="0.3"/>
+                {/* Hat highlight (gives it dimension) */}
+                <ellipse
+                  cx="-5"
+                  cy="-24"
+                  rx="8"
+                  ry="4"
+                  fill="url(#redHatHighlight)"
+                  opacity="0.6"
+                />
 
-              {/* Premium sculptured nose */}
-              <path
-                d="M -1.8 1.5 C -1.8 0.3, -1 -0.5, 0 -0.5
-                   C 1 -0.5, 1.8 0.3, 1.8 1.5
-                   C 1.8 3, 1 3.8, 0 3.8
-                   C -1 3.8, -1.8 3, -1.8 1.5 Z"
-                fill="#27272a"
-                opacity="0.95"
-              />
-              <circle cx="-0.4" cy="0.8" r="0.6" fill="#fffbeb" opacity="0.5"/>
-
-              {/* Elegant whisker points - enhanced detail */}
-              <circle cx="-12" cy="-1.5" r="0.7" fill="#27272a" opacity="0.5"/>
-              <circle cx="-12" cy="1" r="0.7" fill="#27272a" opacity="0.45"/>
-              <circle cx="-12" cy="3.5" r="0.6" fill="#27272a" opacity="0.4"/>
-              <circle cx="12" cy="-1.5" r="0.7" fill="#27272a" opacity="0.5"/>
-              <circle cx="12" cy="1" r="0.7" fill="#27272a" opacity="0.45"/>
-              <circle cx="12" cy="3.5" r="0.6" fill="#27272a" opacity="0.4"/>
-
-              {/* Luxurious flowing tail - multi-layered premium */}
-              <g filter="url(#glowEffect)">
-                <path
-                  d="M 15 11
-                     Q 24 9, 30 3
-                     Q 35 -4, 34 -10
-                     C 34 -12, 32 -11.5, 31.5 -9
-                     Q 29 -4, 25.5 2
-                     Q 20 9, 15 11
-                     Z"
-                  fill="url(#eliteRoseGold)"
-                  opacity="0.92"
+                {/* Cute little pom-pom on top */}
+                <circle
+                  cx="0"
+                  cy="-28"
+                  r="2.5"
+                  fill="#ef4444"
+                  opacity="0.95"
+                />
+                <circle
+                  cx="0"
+                  cy="-28"
+                  r="1.5"
+                  fill="#fca5a5"
+                  opacity="0.7"
                 />
               </g>
 
-              {/* Tail highlight layers - premium detailing */}
-              <path
-                d="M 17 9.5 Q 25 7, 29 1 Q 32 -4, 31.5 -8.5"
-                stroke="url(#eliteAccent)"
-                strokeWidth="1.6"
-                fill="none"
-                opacity="0.65"
-                strokeLinecap="round"
-              />
+              {/* Big Friendly Eyes - Warm & Savvy */}
+              <g>
+                {/* Left eye */}
+                <ellipse cx="-7" cy="-8" rx="3.5" ry="4.5" fill="#1c1917" opacity="0.9"/>
+                {/* Eye white highlight */}
+                <ellipse cx="-7" cy="-9" rx="2.5" ry="3" fill="#ffffff" opacity="0.15"/>
+                {/* Double sparkle for cuteness */}
+                <circle cx="-5.5" cy="-9.5" r="1.3" fill="#ffffff" opacity="0.95"/>
+                <circle cx="-6.5" cy="-7" r="0.7" fill="#fef3c7" opacity="0.8"/>
 
+                {/* Right eye */}
+                <ellipse cx="7" cy="-8" rx="3.5" ry="4.5" fill="#1c1917" opacity="0.9"/>
+                {/* Eye white highlight */}
+                <ellipse cx="7" cy="-9" rx="2.5" ry="3" fill="#ffffff" opacity="0.15"/>
+                {/* Double sparkle for cuteness */}
+                <circle cx="8.5" cy="-9.5" r="1.3" fill="#ffffff" opacity="0.95"/>
+                <circle cx="7.5" cy="-7" r="0.7" fill="#fef3c7" opacity="0.8"/>
+              </g>
+
+              {/* Gentle Smile - Warming Expression */}
               <path
-                d="M 19 8.5 Q 24 6.5, 27.5 2"
-                stroke="url(#eliteGold)"
+                d="M -5 -1 Q 0 1, 5 -1"
+                stroke="#1c1917"
                 strokeWidth="1.2"
                 fill="none"
-                opacity="0.45"
                 strokeLinecap="round"
+                opacity="0.7"
               />
 
-              <path
-                d="M 21 7.5 Q 24 6, 26 3"
-                stroke="#fffbeb"
-                strokeWidth="0.6"
-                fill="none"
-                opacity="0.25"
-                strokeLinecap="round"
+              {/* Cute Hippo Snout/Muzzle */}
+              <ellipse cx="0" cy="2" rx="8" ry="7" fill="url(#warmAccent)" opacity="0.5"/>
+              <ellipse cx="0" cy="3" rx="6" ry="5" fill="#fef3c7" opacity="0.3"/>
+
+              {/* Adorable Nostrils */}
+              <ellipse cx="-3" cy="3" rx="1.5" ry="1.8" fill="#1c1917" opacity="0.6"/>
+              <ellipse cx="3" cy="3" rx="1.5" ry="1.8" fill="#1c1917" opacity="0.6"/>
+              {/* Nostril highlights */}
+              <ellipse cx="-2.5" cy="2.5" rx="0.6" ry="0.7" fill="#ffffff" opacity="0.3"/>
+              <ellipse cx="3.5" cy="2.5" rx="0.6" ry="0.7" fill="#ffffff" opacity="0.3"/>
+
+              {/* Chubby Cheeks - Extra Cuteness */}
+              <circle cx="-11" cy="-2" r="4" fill="#f9a8d4" opacity="0.3"/>
+              <circle cx="11" cy="-2" r="4" fill="#f9a8d4" opacity="0.3"/>
+
+              {/* Cute Little Arms */}
+              <ellipse
+                cx="-18"
+                cy="12"
+                rx="4"
+                ry="6"
+                fill="url(#warmAccent)"
+                opacity="0.8"
+                transform="rotate(-25 -18 12)"
+              />
+              <ellipse
+                cx="18"
+                cy="12"
+                rx="4"
+                ry="6"
+                fill="url(#warmAccent)"
+                opacity="0.8"
+                transform="rotate(25 18 12)"
               />
 
-              {/* Enhanced chest/body with gradient */}
-              <ellipse cx="0" cy="20" rx="10" ry="7" fill="url(#eliteOrange)" opacity="0.28"/>
-              <ellipse cx="0" cy="21" rx="7" ry="4.5" fill="url(#eliteAccent)" opacity="0.15"/>
+              {/* Adorable Little Feet/Legs */}
+              <ellipse cx="-8" cy="23" rx="5" ry="4" fill="url(#warmAccent)" opacity="0.85"/>
+              <ellipse cx="8" cy="23" rx="5" ry="4" fill="url(#warmAccent)" opacity="0.85"/>
+
+              {/* Toe details */}
+              <circle cx="-10" cy="24" r="1.2" fill="#fbcfe8" opacity="0.6"/>
+              <circle cx="-8" cy="24.5" r="1.2" fill="#fbcfe8" opacity="0.6"/>
+              <circle cx="-6" cy="24" r="1.2" fill="#fbcfe8" opacity="0.6"/>
+              <circle cx="6" cy="24" r="1.2" fill="#fbcfe8" opacity="0.6"/>
+              <circle cx="8" cy="24.5" r="1.2" fill="#fbcfe8" opacity="0.6"/>
+              <circle cx="10" cy="24" r="1.2" fill="#fbcfe8" opacity="0.6"/>
+
+              {/* Special Touch: Tiny Heart Detail (showing warmth & good taste) */}
+              <g opacity="0.5">
+                <path
+                  d="M 0 -3
+                     L -0.8 -4
+                     C -1.2 -4.4, -1.2 -5, -0.8 -5.4
+                     C -0.4 -5.8, 0 -5.6, 0 -5
+                     C 0 -5.6, 0.4 -5.8, 0.8 -5.4
+                     C 1.2 -5, 1.2 -4.4, 0.8 -4
+                     Z"
+                  fill="#f472b6"
+                  opacity="0.6"
+                />
+              </g>
+
             </g>
           </g>
         </svg>
@@ -248,10 +315,10 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="none"
           >
-            {/* Premium intertwining curves */}
+            {/* Premium intertwining curves with warm colors */}
             <path
               d="M 42 58 Q 68 46, 94 56 Q 122 66, 148 56"
-              stroke="url(#aeElite)"
+              stroke="url(#aeWarm)"
               strokeWidth="5"
               fill="none"
               strokeLinecap="round"
@@ -259,7 +326,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
             />
             <path
               d="M 48 52 Q 73 62, 98 52 Q 125 42, 152 52"
-              stroke="url(#aeElite2)"
+              stroke="url(#aeWarm2)"
               strokeWidth="4"
               fill="none"
               strokeLinecap="round"
@@ -274,34 +341,34 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
               opacity="0.45"
             />
             <defs>
-              <linearGradient id="aeElite" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#fcd34d" />
-                <stop offset="25%" stopColor="#fbbf24" />
-                <stop offset="50%" stopColor="#f97316" />
-                <stop offset="75%" stopColor="#fbbf24" />
-                <stop offset="100%" stopColor="#fcd34d" />
+              <linearGradient id="aeWarm" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#fbbf24" />
+                <stop offset="25%" stopColor="#f472b6" />
+                <stop offset="50%" stopColor="#ef4444" />
+                <stop offset="75%" stopColor="#f472b6" />
+                <stop offset="100%" stopColor="#fbbf24" />
               </linearGradient>
-              <linearGradient id="aeElite2" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#f97316" />
+              <linearGradient id="aeWarm2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#ef4444" />
                 <stop offset="33%" stopColor="#fbbf24" />
-                <stop offset="66%" stopColor="#f97316" />
+                <stop offset="66%" stopColor="#ef4444" />
                 <stop offset="100%" stopColor="#fbbf24" />
               </linearGradient>
               <linearGradient id="aeShimmer" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#fffbeb" />
-                <stop offset="50%" stopColor="#fde68a" />
+                <stop offset="50%" stopColor="#fce7f3" />
                 <stop offset="100%" stopColor="#fffbeb" />
               </linearGradient>
             </defs>
           </svg>
           <span
-            className="relative z-10 bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 bg-clip-text text-transparent drop-shadow-sm"
+            className="relative z-10 bg-gradient-to-r from-amber-400 via-pink-400 to-red-400 bg-clip-text text-transparent drop-shadow-sm"
             style={{fontWeight: 900}}
           >
             AESOP
           </span>
         </div>
-        <span className={`tracking-widest text-orange-500 font-black ${sizeConfig.subtext} drop-shadow-sm`}>
+        <span className={`tracking-widest text-pink-500 font-black ${sizeConfig.subtext} drop-shadow-sm`}>
           BLOG
         </span>
       </div>
