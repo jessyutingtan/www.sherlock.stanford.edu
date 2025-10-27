@@ -117,12 +117,12 @@ export default function CollaborativeSpacesPage() {
                 )}
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+              <div className="flex items-center gap-2 text-sm text-white mb-4">
                 <Users className="w-4 h-4" />
                 <span>{space.collaborator_count} collaborators</span>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between pt-4 border-t border-blue-700">
                 <div className="flex items-center gap-2">
                   {space.creator?.avatar_url ? (
                     <img
@@ -135,7 +135,7 @@ export default function CollaborativeSpacesPage() {
                       {space.creator?.username[0].toUpperCase()}
                     </div>
                   )}
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-white">
                     {space.creator?.username}
                   </span>
                 </div>

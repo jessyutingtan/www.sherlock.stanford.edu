@@ -191,10 +191,10 @@ export default function DebatesPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Post A */}
                 <div
-                  className={`p-6 rounded-xl border-2 transition-all ${
+                  className={`p-6 rounded-xl border-2 transition-all bg-gradient-to-br from-orange-200 via-orange-300 to-orange-400 shadow-lg shadow-orange-400/50 ${
                     debate.user_vote === debate.post_a_id
-                      ? 'border-blue-600 bg-blue-50'
-                      : 'border-gray-200 hover:border-blue-300'
+                      ? 'border-orange-600'
+                      : 'border-orange-300 hover:border-orange-500'
                   }`}
                 >
                   <Link
@@ -244,10 +244,10 @@ export default function DebatesPage() {
 
                 {/* Post B */}
                 <div
-                  className={`p-6 rounded-xl border-2 transition-all ${
+                  className={`p-6 rounded-xl border-2 transition-all bg-gradient-to-br from-yellow-200 via-yellow-300 to-yellow-400 shadow-lg shadow-yellow-400/50 ${
                     debate.user_vote === debate.post_b_id
-                      ? 'border-cyan-600 bg-cyan-50'
-                      : 'border-gray-200 hover:border-cyan-300'
+                      ? 'border-yellow-600'
+                      : 'border-yellow-300 hover:border-yellow-500'
                   }`}
                 >
                   <Link
@@ -297,7 +297,7 @@ export default function DebatesPage() {
               </div>
 
               {/* Total votes */}
-              <div className="mt-6 text-center text-sm text-gray-600">
+              <div className="mt-6 text-center text-sm text-white font-medium">
                 Total votes: {(debate.votes_a ?? 0) + (debate.votes_b ?? 0)}
               </div>
             </div>

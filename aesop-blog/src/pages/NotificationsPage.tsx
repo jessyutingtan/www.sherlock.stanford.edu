@@ -122,7 +122,7 @@ export default function NotificationsPage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-4xl font-bold gradient-text mb-2">Notifications</h1>
-            <p className="text-gray-600">Stay updated with your activity</p>
+            <p className="text-white">Stay updated with your activity</p>
           </div>
           {notifications.some((n) => !n.is_read) && (
             <button
@@ -163,16 +163,16 @@ export default function NotificationsPage() {
               <div className="flex-1">
                 <div className="flex items-start gap-2 mb-1">
                   <div className="mt-1">{getNotificationIcon(notification.type)}</div>
-                  <p className="text-gray-900 font-medium">
+                  <p className="text-white font-medium">
                     {getNotificationText(notification)}
                   </p>
                 </div>
                 {notification.post && (
-                  <p className="text-sm text-gray-600 line-clamp-1">
+                  <p className="text-sm text-white line-clamp-1">
                     "{notification.post.title}"
                   </p>
                 )}
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-white mt-1">
                   {formatRelativeTime(notification.created_at)}
                 </p>
               </div>
@@ -187,9 +187,9 @@ export default function NotificationsPage() {
 
         {notifications.length === 0 && (
           <div className="text-center py-12 card">
-            <Bell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No notifications yet</h3>
-            <p className="text-gray-600">
+            <Bell className="w-16 h-16 text-white/50 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">No notifications yet</h3>
+            <p className="text-white">
               When people interact with your posts, you'll see it here
             </p>
           </div>

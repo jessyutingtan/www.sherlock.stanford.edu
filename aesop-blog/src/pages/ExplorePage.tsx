@@ -257,10 +257,10 @@ export default function ExplorePage() {
                       </div>
                     )}
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">
+                      <p className="font-semibold text-white">
                         {writer.full_name || writer.username}
                       </p>
-                      <p className="text-sm text-gray-500">@{writer.username}</p>
+                      <p className="text-sm text-orange-500">@{writer.username}</p>
                     </div>
                   </Link>
                 ))}
@@ -290,10 +290,10 @@ export default function ExplorePage() {
                     to={`/post/${post.id}`}
                     className="card p-4 hover:shadow-md transition-shadow block"
                   >
-                    <h4 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                    <h4 className="font-semibold text-white mb-2 line-clamp-2">
                       {post.title}
                     </h4>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center gap-2 text-sm text-white">
                       <span className="font-medium text-orange-500">
                         {post.author?.full_name || post.author?.username}
                       </span>
@@ -323,10 +323,10 @@ export default function ExplorePage() {
                     key={thought.id}
                     className="card p-4 hover:shadow-md transition-shadow"
                   >
-                    <p className="text-gray-900 mb-2 line-clamp-3">
+                    <p className="text-white mb-2 line-clamp-3">
                       {thought.content}
                     </p>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center gap-2 text-sm text-white">
                       <span className="font-medium text-orange-500">
                         {thought.author?.full_name || thought.author?.username}
                       </span>

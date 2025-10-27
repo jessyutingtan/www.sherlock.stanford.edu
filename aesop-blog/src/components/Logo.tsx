@@ -15,7 +15,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
 
   return (
     <div className={`flex items-center ${sizeConfig.gap} ${className}`}>
-      {/* Adorable Fox Logo */}
+      {/* Professional Fox Silhouette */}
       <div className={`${sizeConfig.container} aspect-square relative`}>
         <svg
           className="w-full h-full"
@@ -23,125 +23,105 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Subtle warm glow */}
-          <circle cx="50" cy="50" r="35" fill="url(#warmGlow)" opacity="0.15" />
+          {/* Professional Fox Silhouette - Clean and Iconic */}
+          <g opacity="0.95">
+            {/* Fox silhouette in one unified shape */}
+            <path
+              d="M 50 20
+                 L 35 10 L 38 25
+                 L 30 30
+                 Q 25 35, 25 45
+                 Q 25 55, 30 60
+                 L 35 80 L 40 85
+                 L 45 82 L 48 70
+                 L 50 85
+                 L 52 70 L 55 82
+                 L 60 85 L 65 80
+                 L 70 60
+                 Q 75 55, 75 45
+                 Q 75 35, 70 30
+                 L 62 25 L 65 10
+                 Z"
+              fill="url(#foxSilhouette)"
+              stroke="url(#foxOutline)"
+              strokeWidth="0.5"
+            />
 
-          {/* Left Ear */}
-          <path
-            d="M 35 25 L 30 15 L 40 20 Z"
-            fill="url(#foxOrange)"
-          />
-          {/* Inner left ear */}
-          <path
-            d="M 35 25 L 33 18 L 37 22 Z"
-            fill="url(#foxCream)"
-          />
+            {/* Tail - elegant curve */}
+            <path
+              d="M 65 75 Q 80 70, 85 60 Q 88 55, 85 50 Q 83 48, 80 50 Q 75 55, 70 65 L 65 75"
+              fill="url(#foxSilhouette)"
+              opacity="0.9"
+            />
 
-          {/* Right Ear */}
-          <path
-            d="M 65 25 L 70 15 L 60 20 Z"
-            fill="url(#foxOrange)"
-          />
-          {/* Inner right ear */}
-          <path
-            d="M 65 25 L 67 18 L 63 22 Z"
-            fill="url(#foxCream)"
-          />
+            {/* Accent highlights for dimension */}
+            <ellipse cx="42" cy="42" rx="3" ry="4" fill="#fef3c7" opacity="0.8" />
+            <ellipse cx="58" cy="42" rx="3" ry="4" fill="#fef3c7" opacity="0.8" />
 
-          {/* Fox Head - rounded */}
-          <circle cx="50" cy="45" r="18" fill="url(#foxOrange)" />
+            {/* Subtle nose */}
+            <circle cx="50" cy="50" r="2" fill="#dc2626" opacity="0.9" />
+          </g>
 
-          {/* White cheek patches */}
-          <circle cx="40" cy="48" r="6" fill="url(#foxCream)" opacity="0.9" />
-          <circle cx="60" cy="48" r="6" fill="url(#foxCream)" opacity="0.9" />
-
-          {/* Snout area */}
-          <ellipse cx="50" cy="52" rx="8" ry="6" fill="url(#foxCream)" />
-
-          {/* Cute nose */}
-          <ellipse cx="50" cy="53" rx="3" ry="2.5" fill="#dc2626" />
-
-          {/* Eyes - big and adorable */}
-          <ellipse cx="43" cy="42" rx="2.5" ry="3" fill="#1e293b" />
-          <circle cx="43.5" cy="41" r="1" fill="#fef3c7" />
-
-          <ellipse cx="57" cy="42" rx="2.5" ry="3" fill="#1e293b" />
-          <circle cx="57.5" cy="41" r="1" fill="#fef3c7" />
-
-          {/* Smile */}
-          <path
-            d="M 46 56 Q 50 58 54 56"
-            stroke="#dc2626"
-            strokeWidth="1"
-            fill="none"
-            strokeLinecap="round"
-          />
-
-          {/* Fox Body */}
-          <ellipse cx="50" cy="70" rx="14" ry="12" fill="url(#foxOrange)" />
-
-          {/* Body white patch */}
-          <ellipse cx="50" cy="72" rx="8" ry="7" fill="url(#foxCream)" opacity="0.8" />
-
-          {/* Fluffy tail */}
-          <path
-            d="M 60 70 Q 70 68 75 65 Q 78 63 77 60 Q 75 58 70 60 Q 65 63 62 67 Z"
-            fill="url(#foxOrange)"
-          />
-          {/* Tail tip - white */}
-          <circle cx="75" cy="62" r="4" fill="#fef3c7" opacity="0.9" />
-
-          {/* Paws */}
-          <ellipse cx="42" cy="80" rx="3" ry="4" fill="url(#foxOrange)" />
-          <ellipse cx="58" cy="80" rx="3" ry="4" fill="url(#foxOrange)" />
-
-          {/* Gradients - Warm colors only, NO blue */}
+          {/* Gradients for professional look */}
           <defs>
-            <radialGradient id="warmGlow">
-              <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
-            </radialGradient>
-
-            <linearGradient id="foxOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="foxSilhouette" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#fb923c" />
               <stop offset="50%" stopColor="#f97316" />
               <stop offset="100%" stopColor="#ea580c" />
             </linearGradient>
 
-            <linearGradient id="foxCream" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#fef3c7" />
-              <stop offset="100%" stopColor="#fde68a" />
+            <linearGradient id="foxOutline" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ea580c" />
+              <stop offset="100%" stopColor="#c2410c" />
             </linearGradient>
           </defs>
         </svg>
       </div>
 
-      {/* Text - AESOP with elegantly linked AE */}
+      {/* Text - AESOP with elegantly intertwined AE */}
       <div className="flex items-baseline gap-3">
-        <div className={`font-black tracking-tight bg-gradient-to-r from-amber-400 via-orange-400 to-red-400 bg-clip-text text-transparent ${sizeConfig.text} relative`}>
-          {/* A and E with elegant connection */}
+        <div className={`font-black tracking-tight ${sizeConfig.text} relative`}>
+          {/* Elegantly intertwined AE connection */}
           <svg
-            className="absolute inset-0 w-full h-full"
-            viewBox="0 0 200 80"
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 300 100"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            style={{ zIndex: 0 }}
+            preserveAspectRatio="none"
           >
-            {/* Connection line between A and E */}
+            {/* Elegant intertwining design between A and E */}
             <path
-              d="M 35 45 L 65 45"
-              stroke="url(#aeGradient)"
+              d="M 45 55 Q 70 45, 95 55 Q 120 65, 145 55"
+              stroke="url(#aeConnection)"
+              strokeWidth="4"
+              fill="none"
+              strokeLinecap="round"
+              opacity="0.7"
+            />
+            <path
+              d="M 50 50 Q 75 60, 100 50 Q 125 40, 150 50"
+              stroke="url(#aeConnection2)"
               strokeWidth="3"
-              opacity="0.6"
+              fill="none"
+              strokeLinecap="round"
+              opacity="0.5"
             />
             <defs>
-              <linearGradient id="aeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <linearGradient id="aeConnection" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#fbbf24" />
+                <stop offset="50%" stopColor="#f97316" />
+                <stop offset="100%" stopColor="#fbbf24" />
+              </linearGradient>
+              <linearGradient id="aeConnection2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#f97316" />
+                <stop offset="50%" stopColor="#fbbf24" />
                 <stop offset="100%" stopColor="#f97316" />
               </linearGradient>
             </defs>
           </svg>
-          <span style={{ position: 'relative', zIndex: 1 }}>AESOP</span>
+          <span className="relative z-10 bg-gradient-to-r from-amber-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
+            AESOP
+          </span>
         </div>
         <span className={`tracking-widest text-orange-400 font-bold ${sizeConfig.subtext}`}>
           BLOG
