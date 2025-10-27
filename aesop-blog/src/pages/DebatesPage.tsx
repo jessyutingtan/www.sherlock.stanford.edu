@@ -201,10 +201,10 @@ export default function DebatesPage() {
                     to={`/post/${debate.post_a?.id}`}
                     className="block mb-4 hover:opacity-80 transition-opacity"
                   >
-                    <h4 className="text-2xl font-black text-black mb-3 leading-tight" style={{textShadow: '0 1px 2px rgba(0,0,0,0.1)'}}>
+                    <h4 className="text-2xl font-black mb-3 leading-tight" style={{color: '#000000', textShadow: '0 1px 2px rgba(0,0,0,0.1)', fontWeight: 900}}>
                       {debate.post_a?.title}
                     </h4>
-                    <p className="text-base text-black font-bold" style={{textShadow: '0 1px 1px rgba(0,0,0,0.1)'}}>
+                    <p className="text-base font-bold" style={{color: '#000000', textShadow: '0 1px 1px rgba(0,0,0,0.1)', fontWeight: 700}}>
                       by @{debate.post_a?.author?.username}
                     </p>
                   </Link>
@@ -254,10 +254,10 @@ export default function DebatesPage() {
                     to={`/post/${debate.post_b?.id}`}
                     className="block mb-4 hover:opacity-80 transition-opacity"
                   >
-                    <h4 className="text-2xl font-black text-black mb-3 leading-tight" style={{textShadow: '0 1px 2px rgba(0,0,0,0.1)'}}>
+                    <h4 className="text-2xl font-black mb-3 leading-tight" style={{color: '#000000', textShadow: '0 1px 2px rgba(0,0,0,0.1)', fontWeight: 900}}>
                       {debate.post_b?.title}
                     </h4>
-                    <p className="text-base text-black font-bold" style={{textShadow: '0 1px 1px rgba(0,0,0,0.1)'}}>
+                    <p className="text-base font-bold" style={{color: '#000000', textShadow: '0 1px 1px rgba(0,0,0,0.1)', fontWeight: 700}}>
                       by @{debate.post_b?.author?.username}
                     </p>
                   </Link>
