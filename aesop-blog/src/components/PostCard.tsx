@@ -129,7 +129,7 @@ export default function PostCard({ post, onUpdate }: PostCardProps) {
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-between pt-4 border-t border-blue-700">
           <div className="flex items-center gap-4 text-sm text-gray-500">
             {post.reading_time && (
               <span className="flex items-center gap-1">
