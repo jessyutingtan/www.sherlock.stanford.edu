@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { Mail, Lock, User, AlertCircle } from 'lucide-react';
 import Logo from '../components/Logo';
 
+// Force CDN cache refresh - build timestamp: 2025-10-27
 export default function AuthPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);

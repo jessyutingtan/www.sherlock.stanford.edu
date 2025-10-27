@@ -199,3 +199,5 @@ For issues or questions, please open an issue on GitHub.
 ---
 
 Built with ❤️ using React, TypeScript, and Supabase
+
+<!-- Build: 2025-10-27-v2 -->
