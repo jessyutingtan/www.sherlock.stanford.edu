@@ -201,10 +201,10 @@ export default function DebatesPage() {
                     to={`/post/${debate.post_a?.id}`}
                     className="block mb-4 hover:opacity-80 transition-opacity"
                   >
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">
+                    <h4 className="text-lg font-bold text-black mb-2">
                       {debate.post_a?.title}
                     </h4>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-blue-600 font-medium">
                       by @{debate.post_a?.author?.username}
                     </p>
                   </Link>
@@ -212,7 +212,7 @@ export default function DebatesPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-5 h-5 text-blue-600" />
-                      <span className="font-bold text-gray-900">{debate.votes_a} votes</span>
+                      <span className="font-bold text-red-600">{debate.votes_a} votes</span>
                     </div>
                     {debate.status !== 'concluded' && !debate.user_vote && (
                       <button
@@ -254,10 +254,10 @@ export default function DebatesPage() {
                     to={`/post/${debate.post_b?.id}`}
                     className="block mb-4 hover:opacity-80 transition-opacity"
                   >
-                    <h4 className="text-lg font-bold text-gray-900 mb-2">
+                    <h4 className="text-lg font-bold text-black mb-2">
                       {debate.post_b?.title}
                     </h4>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-blue-600 font-medium">
                       by @{debate.post_b?.author?.username}
                     </p>
                   </Link>
@@ -265,7 +265,7 @@ export default function DebatesPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-5 h-5 text-cyan-600" />
-                      <span className="font-bold text-gray-900">{debate.votes_b} votes</span>
+                      <span className="font-bold text-red-600">{debate.votes_b} votes</span>
                     </div>
                     {debate.status !== 'concluded' && !debate.user_vote && (
                       <button

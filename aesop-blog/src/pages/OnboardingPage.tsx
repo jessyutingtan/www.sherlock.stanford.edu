@@ -115,14 +115,14 @@ export default function OnboardingPage() {
                     onClick={() => toggleCommunity(community.value)}
                     className={`p-4 rounded-xl border-2 transition-all ${
                       selectedCommunities.includes(community.value)
-                        ? 'border-cyber-500 bg-cyber-800/50 shadow-lg shadow-cyber-500/30'
+                        ? 'bg-orange-500 border-yellow-400 shadow-lg shadow-orange-500/30'
                         : 'border-cyber-700/50 hover:border-cyber-600 bg-cyber-900/30'
                     }`}
                   >
                     <div className="mb-2 flex justify-center">
-                      <DynamicIcon name={community.icon} size={32} className="text-cyber-300" />
+                      <DynamicIcon name={community.icon} size={32} className={selectedCommunities.includes(community.value) ? 'text-white' : 'text-cyber-300'} />
                     </div>
-                    <div className="font-medium text-cyber-100">{community.label}</div>
+                    <div className={`font-medium ${selectedCommunities.includes(community.value) ? 'text-white' : 'text-cyber-100'}`}>{community.label}</div>
                   </button>
                 ))}
               </div>
@@ -151,14 +151,14 @@ export default function OnboardingPage() {
                     onClick={() => toggleTopic(topic.value)}
                     className={`p-4 rounded-xl border-2 transition-all ${
                       selectedTopics.includes(topic.value)
-                        ? 'border-neon-500 bg-neon-900/30 shadow-lg shadow-neon-500/30'
+                        ? 'bg-orange-500 border-yellow-400 shadow-lg shadow-orange-500/30'
                         : 'border-cyber-700/50 hover:border-neon-600 bg-cyber-900/30'
                     }`}
                   >
                     <div className="mb-2 flex justify-center">
-                      <DynamicIcon name={topic.icon} size={32} className="text-neon-300" />
+                      <DynamicIcon name={topic.icon} size={32} className={selectedTopics.includes(topic.value) ? 'text-white' : 'text-neon-300'} />
                     </div>
-                    <div className="font-medium text-cyber-100">{topic.label}</div>
+                    <div className={`font-medium ${selectedTopics.includes(topic.value) ? 'text-white' : 'text-cyber-100'}`}>{topic.label}</div>
                   </button>
                 ))}
               </div>

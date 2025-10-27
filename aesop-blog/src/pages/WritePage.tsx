@@ -418,7 +418,7 @@ export default function WritePage() {
                   onClick={() => toggleCommunity(community.value)}
                   className={`badge flex items-center gap-2 ${
                     selectedCommunities.includes(community.value)
-                      ? 'badge-primary'
+                      ? 'bg-orange-500 text-white border-2 border-yellow-400'
                       : 'bg-cyber-800/30 text-white border-cyber-700/30'
                   }`}
                 >
@@ -441,7 +441,7 @@ export default function WritePage() {
                   onClick={() => toggleTopic(topic.value)}
                   className={`badge flex items-center gap-2 ${
                     selectedTopics.includes(topic.value)
-                      ? 'badge-cyan'
+                      ? 'bg-orange-500 text-white border-2 border-yellow-400'
                       : 'bg-cyber-800/30 text-white border-cyber-700/30'
                   }`}
                 >

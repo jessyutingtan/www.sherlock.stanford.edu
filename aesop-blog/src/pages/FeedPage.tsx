@@ -314,7 +314,7 @@ export default function FeedPage() {
             </button>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="btn btn-secondary flex items-center gap-2 ml-auto"
+              className="flex items-center gap-2 ml-auto px-4 py-2 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 transition-all"
             >
               <Filter className="w-5 h-5" />
               Filters
@@ -344,7 +344,7 @@ export default function FeedPage() {
                       onClick={() => toggleCommunityFilter(community.value)}
                       className={`badge flex items-center gap-2 ${
                         selectedCommunities.includes(community.value)
-                          ? 'badge-primary'
+                          ? 'bg-orange-500 text-white border-2 border-yellow-400'
                           : 'bg-cyber-800/30 text-white border-cyber-700/30'
                       }`}
                     >
@@ -375,7 +375,7 @@ export default function FeedPage() {
                       onClick={() => toggleTopicFilter(topic.value)}
                       className={`badge flex items-center gap-2 ${
                         selectedTopics.includes(topic.value)
-                          ? 'badge-cyan'
+                          ? 'bg-orange-500 text-white border-2 border-yellow-400'
                           : 'bg-cyber-800/30 text-white border-cyber-700/30'
                       }`}
                     >
