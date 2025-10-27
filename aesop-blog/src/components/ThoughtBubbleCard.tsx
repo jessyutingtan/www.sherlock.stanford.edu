@@ -39,8 +39,8 @@ export default function ThoughtBubbleCard({ bubble, onUpdate }: ThoughtBubbleCar
   return (
     <div className={`relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br ${mood?.gradient} text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]`}>
       {/* Mood indicator */}
-      <div className="absolute top-4 right-4 text-3xl opacity-20">
-        {mood?.icon}
+      <div className="absolute top-4 right-4 opacity-20">
+        {mood && <DynamicIcon name={mood.icon} size={48} />}
       </div>
 
       {/* Author */}
