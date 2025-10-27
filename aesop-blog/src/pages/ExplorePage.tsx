@@ -294,7 +294,7 @@ export default function ExplorePage() {
                       {post.title}
                     </h4>
                     <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <span className="font-medium text-cyan-600">
+                      <span className="font-medium text-orange-500">
                         {post.author?.full_name || post.author?.username}
                       </span>
                       <span>•</span>
@@ -327,7 +327,7 @@ export default function ExplorePage() {
                       {thought.content}
                     </p>
                     <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <span className="font-medium text-purple-600">
+                      <span className="font-medium text-orange-500">
                         {thought.author?.full_name || thought.author?.username}
                       </span>
                       <span>•</span>
