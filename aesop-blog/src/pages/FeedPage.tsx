@@ -332,7 +332,7 @@ export default function FeedPage() {
                     className={`badge flex items-center gap-2 ${
                       selectedCommunities.length === 0
                         ? 'badge-primary'
-                        : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
+                        : 'bg-cyber-800/30 text-white border-cyber-700/30'
                     }`}
                   >
                     <Grid className="w-4 h-4" />
@@ -345,7 +345,7 @@ export default function FeedPage() {
                       className={`badge flex items-center gap-2 ${
                         selectedCommunities.includes(community.value)
                           ? 'badge-primary'
-                          : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
+                          : 'bg-cyber-800/30 text-white border-cyber-700/30'
                       }`}
                     >
                       <DynamicIcon name={community.icon} size={16} />
@@ -363,7 +363,7 @@ export default function FeedPage() {
                     className={`badge flex items-center gap-2 ${
                       selectedTopics.length === 0
                         ? 'badge-cyan'
-                        : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
+                        : 'bg-cyber-800/30 text-white border-cyber-700/30'
                     }`}
                   >
                     <Grid className="w-4 h-4" />
@@ -376,7 +376,7 @@ export default function FeedPage() {
                       className={`badge flex items-center gap-2 ${
                         selectedTopics.includes(topic.value)
                           ? 'badge-cyan'
-                          : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
+                          : 'bg-cyber-800/30 text-white border-cyber-700/30'
                       }`}
                     >
                       <DynamicIcon name={topic.icon} size={16} />

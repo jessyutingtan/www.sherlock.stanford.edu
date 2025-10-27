@@ -55,7 +55,7 @@ export default function CreateThoughtBubble({ onCreated }: CreateThoughtBubblePr
                 className={`flex flex-col items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all flex-shrink-0 ${
                   selectedMood === mood.value
                     ? `border-transparent bg-gradient-to-br ${mood.gradient} text-white shadow-lg`
-                    : 'border-cyber-700/50 hover:border-cyber-600 bg-cyber-900/30 text-cyber-300'
+                    : 'border-cyber-700/50 hover:border-cyber-600 bg-cyber-900/30 text-white'
                 }`}
               >
                 <DynamicIcon name={mood.icon} size={24} />

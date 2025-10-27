@@ -5,12 +5,14 @@ import { useAuthStore } from '../stores/authStore';
 import { Debate } from '../types/database';
 import { Swords, Plus, TrendingUp, CheckCircle } from 'lucide-react';
 import { formatRelativeTime } from '../utils/date';
+import CreateDebateModal from '../components/CreateDebateModal';
 
 export default function DebatesPage() {
   const { user } = useAuthStore();
   const [debates, setDebates] = useState<Debate[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'active' | 'voting' | 'concluded'>('active');
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
     fetchDebates();
@@ -131,7 +133,10 @@ export default function DebatesPage() {
             </h1>
             <p className="text-gray-600">Vote on the best arguments and ideas</p>
           </div>
-          <button className="btn btn-primary flex items-center gap-2">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="btn btn-primary flex items-center gap-2"
+          >
             <Plus className="w-5 h-5" />
             Create Debate
           </button>
@@ -308,13 +313,26 @@ export default function DebatesPage() {
             <p className="text-gray-600 mb-6">
               Create a debate to pit two great posts against each other
             </p>
-            <button className="btn btn-primary inline-flex items-center gap-2">
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="btn btn-primary inline-flex items-center gap-2"
+            >
               <Plus className="w-5 h-5" />
               Create Debate
             </button>
           </div>
         )}
       </div>
+
+      {/* Create Debate Modal */}
+      <CreateDebateModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreated={() => {
+          setShowCreateModal(false);
+          fetchDebates();
+        }}
+      />
     </div>
   );
 }

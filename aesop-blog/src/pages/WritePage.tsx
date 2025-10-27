@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
@@ -15,6 +15,7 @@ export default function WritePage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const coverInputRef = useRef<HTMLInputElement>(null);
+  const quillRef = useRef<ReactQuill>(null);
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -101,6 +102,40 @@ export default function WritePage() {
     }
   };
 
+  // Image upload handler for Quill editor
+  const imageHandler = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file || !user) return;
+
+      try {
+        validateImageFile(file, 5); // Max 5MB for inline images
+
+        // Show uploading state
+        const quill = quillRef.current?.getEditor();
+        if (!quill) return;
+
+        const range = quill.getSelection(true);
+        quill.insertText(range.index, 'Uploading image...');
+
+        // Upload image
+        const publicUrl = await uploadImage(file, 'covers', user.id);
+
+        // Remove uploading text and insert image
+        quill.deleteText(range.index, 'Uploading image...'.length);
+        quill.insertEmbed(range.index, 'image', publicUrl);
+        quill.setSelection(range.index + 1, 0);
+      } catch (error: any) {
+        alert(error.message || 'Failed to upload image');
+      }
+    };
+  };
+
   const saveDraft = async () => {
     if (!user || !title.trim()) return;
 
@@ -178,16 +213,24 @@ export default function WritePage() {
     }
   };
 
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['blockquote', 'code-block'],
-      ['link'],
-      ['clean'],
-    ],
-  };
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['blockquote', 'code-block'],
+          ['link', 'image'],
+          ['clean'],
+        ],
+        handlers: {
+          image: imageHandler,
+        },
+      },
+    }),
+    []
+  );
 
   return (
     <div className="min-h-screen py-8">
@@ -296,6 +339,7 @@ export default function WritePage() {
               Content
             </label>
             <ReactQuill
+              ref={quillRef}
               theme="snow"
               value={content}
               onChange={setContent}
@@ -337,7 +381,7 @@ export default function WritePage() {
 
           {/* Communities */}
           <div className="card p-6">
-            <label className="block text-sm font-medium text-cyber-200 mb-3">
+            <label className="block text-sm font-semibold text-white mb-3">
               Communities (select at least 1)
             </label>
             <div className="flex flex-wrap gap-2">
@@ -348,7 +392,7 @@ export default function WritePage() {
                   className={`badge flex items-center gap-2 ${
                     selectedCommunities.includes(community.value)
                       ? 'badge-primary'
-                      : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
+                      : 'bg-cyber-800/30 text-white border-cyber-700/30'
                   }`}
                 >
                   <DynamicIcon name={community.icon} size={16} />
@@ -360,7 +404,7 @@ export default function WritePage() {
 
           {/* Topics */}
           <div className="card p-6">
-            <label className="block text-sm font-medium text-cyber-200 mb-3">
+            <label className="block text-sm font-semibold text-white mb-3">
               Topics (select at least 1)
             </label>
             <div className="flex flex-wrap gap-2">
@@ -371,7 +415,7 @@ export default function WritePage() {
                   className={`badge flex items-center gap-2 ${
                     selectedTopics.includes(topic.value)
                       ? 'badge-cyan'
-                      : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
+                      : 'bg-cyber-800/30 text-white border-cyber-700/30'
                   }`}
                 >
                   <DynamicIcon name={topic.icon} size={16} />
