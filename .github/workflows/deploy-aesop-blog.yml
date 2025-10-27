@@ -1,0 +1,46 @@
+name: Deploy Aesop Blog to GitHub Pages
+
+on:
+  push:
+    branches:
+      - claude/build-social-blog-platform-011CUWnJgKAMmmVYTBz8zVBV
+    paths:
+      - 'aesop-blog/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'aesop-blog/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: ./aesop-blog
+        run: npm ci
+
+      - name: Build application
+        working-directory: ./aesop-blog
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./aesop-blog/dist
+          publish_branch: gh-pages
+          destination_dir: aesop-blog
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy Aesop Blog: ${{ github.event.head_commit.message }}'
