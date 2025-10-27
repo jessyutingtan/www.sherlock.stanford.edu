@@ -8,3 +8,7 @@
 
 # cache
 /.cache
+
+# Build archives
+*.tar.gz
+*.zip
