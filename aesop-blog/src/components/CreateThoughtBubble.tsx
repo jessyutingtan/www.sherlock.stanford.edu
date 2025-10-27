@@ -3,6 +3,7 @@ import { MOODS, MoodType } from '../types/database';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { Send } from 'lucide-react';
+import DynamicIcon from './DynamicIcon';
 
 interface CreateThoughtBubbleProps {
   onCreated: () => void;
@@ -42,7 +43,7 @@ export default function CreateThoughtBubble({ onCreated }: CreateThoughtBubblePr
     <div className="card p-6">
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-cyan-200 mb-2">
             How are you feeling?
           </label>
           <div className="flex gap-2 overflow-x-auto pb-2">
@@ -51,13 +52,13 @@ export default function CreateThoughtBubble({ onCreated }: CreateThoughtBubblePr
                 key={mood.value}
                 type="button"
                 onClick={() => setSelectedMood(mood.value)}
-                className={`flex flex-col items-center gap-1 px-4 py-3 rounded-xl border-2 transition-all flex-shrink-0 ${
+                className={`flex flex-col items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all flex-shrink-0 ${
                   selectedMood === mood.value
-                    ? `border-transparent bg-gradient-to-br ${mood.gradient} text-white`
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? `border-transparent bg-gradient-to-br ${mood.gradient} text-white shadow-lg`
+                    : 'border-cyber-700/50 hover:border-cyber-600 bg-cyber-900/30 text-cyber-300'
                 }`}
               >
-                <span className="text-2xl">{mood.icon}</span>
+                <DynamicIcon name={mood.icon} size={24} />
                 <span className="text-xs font-medium">{mood.label}</span>
               </button>
             ))}
@@ -71,7 +72,7 @@ export default function CreateThoughtBubble({ onCreated }: CreateThoughtBubblePr
             placeholder="Share your thoughts... (max 280 characters)"
             maxLength={280}
             rows={3}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+            className="w-full px-4 py-3 bg-white text-gray-900 border border-cyber-700/50 rounded-lg focus:ring-2 focus:ring-cyber-500 focus:border-cyber-500 outline-none resize-none placeholder-gray-500"
           />
           <div className="flex items-center justify-between mt-2">
             <span className="text-sm text-gray-500">

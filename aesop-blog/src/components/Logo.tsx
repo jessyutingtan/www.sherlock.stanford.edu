@@ -1,221 +1,117 @@
 interface LogoProps {
   className?: string;
-  size?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'simple';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-export default function Logo({ className = '', size = 'md', variant = 'default' }: LogoProps) {
+export default function Logo({ className = '', size = 'md' }: LogoProps) {
   const sizes = {
-    sm: { container: 'h-10', text: 'text-xl', subtext: 'text-[8px]' },
-    md: { container: 'h-14', text: 'text-2xl', subtext: 'text-[10px]' },
-    lg: { container: 'h-20', text: 'text-4xl', subtext: 'text-xs' },
+    sm: { container: 'h-12', text: 'text-2xl', subtext: 'text-xs', gap: 'gap-3' },
+    md: { container: 'h-16', text: 'text-3xl', subtext: 'text-sm', gap: 'gap-4' },
+    lg: { container: 'h-24', text: 'text-5xl', subtext: 'text-lg', gap: 'gap-5' },
+    xl: { container: 'h-32', text: 'text-7xl', subtext: 'text-2xl', gap: 'gap-6' },
   };
 
   const sizeConfig = sizes[size];
 
-  if (variant === 'simple') {
-    return (
-      <div className={`flex items-center gap-2 ${className}`}>
-        <div className={`${sizeConfig.container} aspect-square relative`}>
-          <svg
-            className="w-full h-full"
-            viewBox="0 0 64 64"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {/* Outer rotating ring */}
-            <circle
-              cx="32"
-              cy="32"
-              r="28"
-              className="stroke-cyan-400"
-              strokeWidth="1.5"
-              fill="none"
-              strokeDasharray="4 4"
-              opacity="0.6"
-            >
-              <animateTransform
-                attributeName="transform"
-                type="rotate"
-                from="0 32 32"
-                to="360 32 32"
-                dur="20s"
-                repeatCount="indefinite"
-              />
-            </circle>
-
-            {/* Middle pulsing ring */}
-            <circle
-              cx="32"
-              cy="32"
-              r="20"
-              className="stroke-neon-400"
-              strokeWidth="2"
-              fill="none"
-            >
-              <animate
-                attributeName="r"
-                values="20;22;20"
-                dur="3s"
-                repeatCount="indefinite"
-              />
-              <animate
-                attributeName="opacity"
-                values="0.4;0.8;0.4"
-                dur="3s"
-                repeatCount="indefinite"
-              />
-            </circle>
-
-            {/* Inner glowing core */}
-            <circle
-              cx="32"
-              cy="32"
-              r="16"
-              className="fill-gradient-to-br from-cyber-500 to-neon-500"
-              filter="url(#glow)"
-            />
-
-            {/* Letter A with circuit design */}
-            <path
-              d="M32 20L38 36H36L34.5 32H29.5L28 36H26L32 20Z M30.5 30H33.5L32 26L30.5 30Z"
-              className="fill-white"
-              strokeWidth="0.5"
-              stroke="white"
-            />
-
-            {/* Digital elements */}
-            <circle cx="32" cy="24" r="1.5" className="fill-cyan-300 animate-pulse" />
-            <line x1="32" y1="15" x2="32" y2="18" className="stroke-cyan-400" strokeWidth="1.5" />
-            <line x1="32" y1="46" x2="32" y2="49" className="stroke-neon-400" strokeWidth="1.5" />
-            <line x1="15" y1="32" x2="18" y2="32" className="stroke-cyan-400" strokeWidth="1.5" />
-            <line x1="46" y1="32" x2="49" y2="32" className="stroke-neon-400" strokeWidth="1.5" />
-
-            {/* Corner accents */}
-            <path d="M 8 8 L 12 8 L 12 12" className="stroke-cyan-400" strokeWidth="2" fill="none" />
-            <path d="M 56 8 L 52 8 L 52 12" className="stroke-neon-400" strokeWidth="2" fill="none" />
-            <path d="M 8 56 L 12 56 L 12 52" className="stroke-neon-400" strokeWidth="2" fill="none" />
-            <path d="M 56 56 L 52 56 L 52 52" className="stroke-cyan-400" strokeWidth="2" fill="none" />
-
-            {/* Gradient and filter definitions */}
-            <defs>
-              <linearGradient id="logo-gradient-simple" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" className="stop-color-cyan-500" />
-                <stop offset="100%" className="stop-color-neon-500" />
-              </linearGradient>
-              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-            </defs>
-          </svg>
-        </div>
-        <div className="flex flex-col leading-none">
-          <span className={`font-black tracking-tight bg-gradient-to-r from-cyan-400 via-neon-400 to-cyan-500 bg-clip-text text-transparent ${sizeConfig.text}`}>
-            AESOP
-          </span>
-          <span className={`tracking-[0.3em] text-cyan-300 font-bold ${sizeConfig.subtext}`}>
-            BLOG
-          </span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
+    <div className={`flex items-center ${sizeConfig.gap} ${className}`}>
+      {/* Geometric A+E Logo */}
       <div className={`${sizeConfig.container} aspect-square relative`}>
         <svg
           className="w-full h-full"
-          viewBox="0 0 64 64"
+          viewBox="0 0 80 80"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Outer rotating ring */}
-          <circle
-            cx="32"
-            cy="32"
-            r="28"
-            className="stroke-cyan-400"
-            strokeWidth="1.5"
-            fill="none"
-            strokeDasharray="4 4"
-            opacity="0.6"
-          >
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              from="0 32 32"
-              to="360 32 32"
-              dur="20s"
-              repeatCount="indefinite"
-            />
-          </circle>
+          {/* Background frame with corners */}
+          <path d="M 0 10 L 0 0 L 10 0" stroke="url(#gradient1)" strokeWidth="2" fill="none" />
+          <path d="M 70 0 L 80 0 L 80 10" stroke="url(#gradient1)" strokeWidth="2" fill="none" />
+          <path d="M 80 70 L 80 80 L 70 80" stroke="url(#gradient2)" strokeWidth="2" fill="none" />
+          <path d="M 10 80 L 0 80 L 0 70" stroke="url(#gradient2)" strokeWidth="2" fill="none" />
 
-          {/* Middle pulsing ring */}
-          <circle
-            cx="32"
-            cy="32"
-            r="20"
-            className="stroke-neon-400"
-            strokeWidth="2"
-            fill="none"
-          >
-            <animate
-              attributeName="r"
-              values="20;22;20"
-              dur="3s"
-              repeatCount="indefinite"
-            />
-            <animate
-              attributeName="opacity"
-              values="0.4;0.8;0.4"
-              dur="3s"
-              repeatCount="indefinite"
-            />
-          </circle>
-
-          {/* Inner glowing core */}
-          <circle
-            cx="32"
-            cy="32"
-            r="16"
-            fill="url(#logo-gradient)"
-            filter="url(#glow)"
-          />
-
-          {/* Letter A with circuit design */}
+          {/* Integrated A and E structure */}
+          {/* A - Left side with sharp geometric design */}
           <path
-            d="M32 20L38 36H36L34.5 32H29.5L28 36H26L32 20Z M30.5 30H33.5L32 26L30.5 30Z"
-            className="fill-white"
-            strokeWidth="0.5"
-            stroke="white"
+            d="M 20 60 L 28 25 L 36 60 M 24 48 L 32 48"
+            stroke="url(#gradient1)"
+            strokeWidth="4"
+            strokeLinecap="square"
+            fill="none"
           />
 
-          {/* Digital elements */}
-          <circle cx="32" cy="24" r="1.5" className="fill-cyan-300 animate-pulse" />
-          <line x1="32" y1="15" x2="32" y2="18" className="stroke-cyan-400" strokeWidth="1.5" />
-          <line x1="32" y1="46" x2="32" y2="49" className="stroke-neon-400" strokeWidth="1.5" />
-          <line x1="15" y1="32" x2="18" y2="32" className="stroke-cyan-400" strokeWidth="1.5" />
-          <line x1="46" y1="32" x2="49" y2="32" className="stroke-neon-400" strokeWidth="1.5" />
+          {/* Connecting element - shared vertical bar between A and E */}
+          <rect
+            x="34"
+            y="25"
+            width="4"
+            height="35"
+            fill="url(#gradient3)"
+            className="animate-pulse-slow"
+          />
 
-          {/* Corner accents */}
-          <path d="M 8 8 L 12 8 L 12 12" className="stroke-cyan-400" strokeWidth="2" fill="none" />
-          <path d="M 56 8 L 52 8 L 52 12" className="stroke-neon-400" strokeWidth="2" fill="none" />
-          <path d="M 8 56 L 12 56 L 12 52" className="stroke-neon-400" strokeWidth="2" fill="none" />
-          <path d="M 56 56 L 52 56 L 52 52" className="stroke-cyan-400" strokeWidth="2" fill="none" />
+          {/* E - Right side with horizontal bars */}
+          <path
+            d="M 38 25 L 58 25 M 38 42.5 L 54 42.5 M 38 60 L 58 60"
+            stroke="url(#gradient2)"
+            strokeWidth="4"
+            strokeLinecap="square"
+            fill="none"
+          />
 
-          {/* Gradient and filter definitions */}
+          {/* Accent lines - circuit-like connections */}
+          <line x1="28" y1="25" x2="28" y2="18" stroke="#06b6d4" strokeWidth="1.5" opacity="0.6">
+            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite" />
+          </line>
+          <line x1="50" y1="25" x2="50" y2="18" stroke="#14b8a6" strokeWidth="1.5" opacity="0.6">
+            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" begin="0.5s" repeatCount="indefinite" />
+          </line>
+          <line x1="28" y1="60" x2="28" y2="67" stroke="#14b8a6" strokeWidth="1.5" opacity="0.6">
+            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" begin="1s" repeatCount="indefinite" />
+          </line>
+          <line x1="50" y1="60" x2="50" y2="67" stroke="#06b6d4" strokeWidth="1.5" opacity="0.6">
+            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" begin="1.5s" repeatCount="indefinite" />
+          </line>
+
+          {/* Digital nodes */}
+          <circle cx="28" cy="18" r="2" fill="#06b6d4" className="animate-pulse" />
+          <circle cx="50" cy="18" r="2" fill="#14b8a6" className="animate-pulse" />
+          <circle cx="28" cy="67" r="2" fill="#14b8a6" className="animate-pulse" />
+          <circle cx="50" cy="67" r="2" fill="#06b6d4" className="animate-pulse" />
+
+          {/* Corner accent dots */}
+          <circle cx="5" cy="5" r="1.5" fill="#06b6d4" opacity="0.8" />
+          <circle cx="75" cy="5" r="1.5" fill="#14b8a6" opacity="0.8" />
+          <circle cx="75" cy="75" r="1.5" fill="#06b6d4" opacity="0.8" />
+          <circle cx="5" cy="75" r="1.5" fill="#14b8a6" opacity="0.8" />
+
+          {/* Animated scanning line */}
+          <line x1="15" y1="0" x2="15" y2="80" stroke="url(#scanGradient)" strokeWidth="1" opacity="0.4">
+            <animate attributeName="x1" values="15;65;15" dur="4s" repeatCount="indefinite" />
+            <animate attributeName="x2" values="15;65;15" dur="4s" repeatCount="indefinite" />
+          </line>
+
+          {/* Gradients */}
           <defs>
-            <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#06b6d4" />
+              <stop offset="100%" stopColor="#0ea5e9" />
+            </linearGradient>
+            <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#14b8a6" />
+              <stop offset="100%" stopColor="#2dd4bf" />
+            </linearGradient>
+            <linearGradient id="gradient3" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#06b6d4" />
+              <stop offset="50%" stopColor="#0891b2" />
               <stop offset="100%" stopColor="#14b8a6" />
             </linearGradient>
+            <linearGradient id="scanGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#06b6d4" stopOpacity="0" />
+              <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#06b6d4" stopOpacity="0" />
+            </linearGradient>
             <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
               <feMerge>
                 <feMergeNode in="coloredBlur"/>
                 <feMergeNode in="SourceGraphic"/>
@@ -225,11 +121,12 @@ export default function Logo({ className = '', size = 'md', variant = 'default' 
         </svg>
       </div>
 
-      <div className="flex flex-col leading-none">
-        <span className={`font-black tracking-tight bg-gradient-to-r from-cyan-400 via-neon-400 to-cyan-500 bg-clip-text text-transparent ${sizeConfig.text}`}>
+      {/* Text - AESOP and BLOG in same row */}
+      <div className="flex items-baseline gap-3">
+        <span className={`font-black tracking-tight bg-gradient-to-r from-cyan-400 via-cyan-300 to-neon-400 bg-clip-text text-transparent ${sizeConfig.text}`}>
           AESOP
         </span>
-        <span className={`tracking-[0.3em] text-cyan-300 font-bold ${sizeConfig.subtext}`}>
+        <span className={`tracking-widest text-cyan-400 font-bold ${sizeConfig.subtext}`}>
           BLOG
         </span>
       </div>

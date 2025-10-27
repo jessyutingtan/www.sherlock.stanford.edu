@@ -6,7 +6,8 @@ import { Post, ThoughtBubble, COMMUNITIES, TOPICS } from '../types/database';
 import PostCard from '../components/PostCard';
 import ThoughtBubbleCard from '../components/ThoughtBubbleCard';
 import CreateThoughtBubble from '../components/CreateThoughtBubble';
-import { Sparkles, TrendingUp, Users as UsersIcon, Filter } from 'lucide-react';
+import DynamicIcon from '../components/DynamicIcon';
+import { Sparkles, TrendingUp, Users as UsersIcon, Filter, Grid } from 'lucide-react';
 
 type FeedFilter = 'latest' | 'trending' | 'following';
 type ContentType = 'articles' | 'thoughts';
@@ -322,40 +323,64 @@ export default function FeedPage() {
 
           {/* Community and Topic Filters */}
           {showFilters && contentType === 'articles' && (
-            <div className="bg-white rounded-xl p-6 mb-6 animate-slide-down">
+            <div className="card p-6 mb-6 animate-slide-down">
               <div className="mb-6">
-                <h3 className="font-semibold text-gray-900 mb-3">Communities</h3>
+                <h3 className="font-semibold text-cyber-100 mb-3">Communities</h3>
                 <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setSelectedCommunities([])}
+                    className={`badge flex items-center gap-2 ${
+                      selectedCommunities.length === 0
+                        ? 'badge-primary'
+                        : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
+                    }`}
+                  >
+                    <Grid className="w-4 h-4" />
+                    All
+                  </button>
                   {COMMUNITIES.map((community) => (
                     <button
                       key={community.value}
                       onClick={() => toggleCommunityFilter(community.value)}
-                      className={`badge ${
+                      className={`badge flex items-center gap-2 ${
                         selectedCommunities.includes(community.value)
                           ? 'badge-primary'
-                          : 'bg-gray-100 text-gray-600'
+                          : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
                       }`}
                     >
-                      {community.icon} {community.label}
+                      <DynamicIcon name={community.icon} size={16} />
+                      {community.label}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Topics</h3>
+                <h3 className="font-semibold text-cyber-100 mb-3">Topics</h3>
                 <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setSelectedTopics([])}
+                    className={`badge flex items-center gap-2 ${
+                      selectedTopics.length === 0
+                        ? 'badge-cyan'
+                        : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
+                    }`}
+                  >
+                    <Grid className="w-4 h-4" />
+                    All
+                  </button>
                   {TOPICS.map((topic) => (
                     <button
                       key={topic.value}
                       onClick={() => toggleTopicFilter(topic.value)}
-                      className={`badge ${
+                      className={`badge flex items-center gap-2 ${
                         selectedTopics.includes(topic.value)
                           ? 'badge-cyan'
-                          : 'bg-gray-100 text-gray-600'
+                          : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
                       }`}
                     >
-                      {topic.icon} {topic.label}
+                      <DynamicIcon name={topic.icon} size={16} />
+                      {topic.label}
                     </button>
                   ))}
                 </div>
@@ -367,7 +392,7 @@ export default function FeedPage() {
                     setSelectedCommunities([]);
                     setSelectedTopics([]);
                   }}
-                  className="mt-4 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  className="mt-4 text-sm text-cyan-400 hover:text-cyan-300 font-medium"
                 >
                   Clear all filters
                 </button>

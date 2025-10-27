@@ -43,7 +43,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-900/30 to-transparent"></div>
         <div className="max-w-6xl mx-auto text-center relative z-10">
           <div className="flex justify-center mb-8 animate-float">
-            <Logo size="lg" />
+            <Logo size="xl" />
           </div>
           <h1 className="text-6xl md:text-8xl font-black mb-8 text-white drop-shadow-2xl">
             Welcome to <span className="bg-gradient-to-r from-cyan-300 via-white to-neon-300 bg-clip-text text-transparent">Aesop Blog</span>
