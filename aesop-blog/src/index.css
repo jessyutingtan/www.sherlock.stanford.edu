@@ -72,6 +72,32 @@
     color: rgb(17 24 39) !important; /* gray-900 */
   }
 
+  /* DEBATES PAGE - Force BLACK text on colored backgrounds */
+  .debate-title-black {
+    color: #000000 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    font-weight: 900 !important;
+  }
+
+  .debate-author-black {
+    color: #000000 !important;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    font-weight: 700 !important;
+  }
+
+  .debate-text-block h1,
+  .debate-text-block h2,
+  .debate-text-block h3,
+  .debate-text-block h4,
+  .debate-text-block h5,
+  .debate-text-block h6 {
+    color: #000000 !important;
+  }
+
+  .debate-text-block p {
+    color: #000000 !important;
+  }
+
   /* Hover states with light backgrounds */
   .card *:hover.hover\:bg-gray-50,
   .card *:hover.hover\:bg-gray-100 {
