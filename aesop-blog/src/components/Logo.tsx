@@ -5,10 +5,10 @@ interface LogoProps {
 
 export default function Logo({ className = '', size = 'md' }: LogoProps) {
   const sizes = {
-    sm: { container: 'h-12', text: 'text-2xl', subtext: 'text-xs', gap: 'gap-3' },
-    md: { container: 'h-16', text: 'text-3xl', subtext: 'text-sm', gap: 'gap-4' },
-    lg: { container: 'h-24', text: 'text-5xl', subtext: 'text-lg', gap: 'gap-5' },
-    xl: { container: 'h-32', text: 'text-7xl', subtext: 'text-2xl', gap: 'gap-6' },
+    sm: { container: 'h-16', text: 'text-3xl', subtext: 'text-sm', gap: 'gap-3' },
+    md: { container: 'h-24', text: 'text-5xl', subtext: 'text-lg', gap: 'gap-4' },
+    lg: { container: 'h-32', text: 'text-6xl', subtext: 'text-2xl', gap: 'gap-5' },
+    xl: { container: 'h-48', text: 'text-8xl', subtext: 'text-4xl', gap: 'gap-6' },
   };
 
   const sizeConfig = sizes[size];

@@ -27,11 +27,21 @@ export async function uploadImage(
 
     if (error) {
       console.error('Upload error:', error);
-      // Provide more helpful error message
+
+      // Provide more helpful error messages
       if (error.message.includes('not found')) {
-        throw new Error(`Storage bucket "${bucket}" does not exist. Please create it in Supabase Dashboard.`);
+        throw new Error(`Storage bucket "${bucket}" does not exist. Please create it in Supabase Dashboard (Storage > New Bucket).`);
       }
-      throw new Error(error.message || 'Failed to upload image');
+
+      if (error.message.includes('row-level security') || error.message.includes('RLS') || error.message.includes('policy')) {
+        throw new Error(`Permission denied: Please run the SQL policies in QUICK_FIX_STORAGE.sql file (in Supabase SQL Editor) to enable image uploads.`);
+      }
+
+      if (error.message.includes('JWT') || error.message.includes('authentication')) {
+        throw new Error('Authentication error: Please log out and log back in, then try again.');
+      }
+
+      throw new Error(error.message || 'Failed to upload image. Check browser console for details.');
     }
 
     // Get the public URL
