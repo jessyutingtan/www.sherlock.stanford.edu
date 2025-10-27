@@ -12,6 +12,7 @@ import ExplorePage from './pages/ExplorePage';
 import WritePage from './pages/WritePage';
 import PostPage from './pages/PostPage';
 import ProfilePage from './pages/ProfilePage';
+import EditProfilePage from './pages/EditProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
 import BookmarksPage from './pages/BookmarksPage';
 import CollaborativeSpacesPage from './pages/CollaborativeSpacesPage';
@@ -96,6 +97,10 @@ function App() {
           <Route
             path="/profile/:username"
             element={user ? <ProfilePage /> : <Navigate to="/auth" />}
+          />
+          <Route
+            path="/profile/edit"
+            element={user ? <EditProfilePage /> : <Navigate to="/auth" />}
           />
           <Route
             path="/notifications"

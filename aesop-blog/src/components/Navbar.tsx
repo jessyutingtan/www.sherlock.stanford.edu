@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Compass, PenSquare, Bell, User, Bookmark, Users, Swords } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
+import Logo from './Logo';
 
 export default function Navbar() {
   const location = useLocation();
@@ -19,17 +20,12 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <nav className="sticky top-0 z-50 bg-gradient-to-r from-cyber-950 via-cyber-900 to-neon-950 border-b border-cyber-700 shadow-lg backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/feed" className="flex items-center gap-2">
-            <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">A</span>
-            </div>
-            <span className="text-xl font-bold gradient-text hidden sm:inline">
-              Aesop Blog
-            </span>
+          <Link to="/feed" className="hover:opacity-80 transition-opacity">
+            <Logo size="sm" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -40,8 +36,8 @@ export default function Navbar() {
                 to={path}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
                   isActive(path)
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-gradient-to-r from-cyber-600 to-neon-600 text-white shadow-lg shadow-cyber-500/50'
+                    : 'text-cyber-200 hover:bg-cyber-800/50 hover:text-white'
                 }`}
               >
                 <Icon className="w-5 h-5" />
@@ -53,27 +49,27 @@ export default function Navbar() {
           {/* Profile */}
           <Link
             to={`/profile/${user?.username}`}
-            className="flex items-center gap-2 hover:bg-gray-100 rounded-lg px-3 py-2 transition-colors"
+            className="flex items-center gap-2 hover:bg-cyber-800/50 rounded-lg px-3 py-2 transition-colors"
           >
             {user?.avatar_url ? (
               <img
                 src={user.avatar_url}
                 alt={user.full_name || user.username}
-                className="w-8 h-8 rounded-full object-cover"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-cyber-500"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full gradient-bg flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyber-600 to-neon-600 flex items-center justify-center ring-2 ring-cyber-500">
                 <User className="w-5 h-5 text-white" />
               </div>
             )}
-            <span className="hidden sm:inline font-medium text-gray-900">
+            <span className="hidden sm:inline font-medium text-cyber-100">
               {user?.username}
             </span>
           </Link>
         </div>
 
         {/* Mobile Navigation */}
-        <div className="md:hidden border-t border-gray-200 -mx-4 px-4 py-2">
+        <div className="md:hidden border-t border-cyber-800 -mx-4 px-4 py-2">
           <div className="flex items-center justify-around">
             {navItems.slice(0, 5).map(({ path, icon: Icon }) => (
               <Link
@@ -81,8 +77,8 @@ export default function Navbar() {
                 to={path}
                 className={`p-2 rounded-lg transition-all ${
                   isActive(path)
-                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-gradient-to-r from-cyber-600 to-neon-600 text-white shadow-lg shadow-cyber-500/50'
+                    : 'text-cyber-300 hover:bg-cyber-800/50 hover:text-white'
                 }`}
               >
                 <Icon className="w-6 h-6" />

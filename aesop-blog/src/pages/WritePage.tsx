@@ -1,17 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { COMMUNITIES, TOPICS, CommunityType, TopicType } from '../types/database';
 import { calculateReadingTime } from '../utils/readingTime';
-import { Image, Tag, Save, Eye } from 'lucide-react';
+import { uploadImage, validateImageFile } from '../utils/imageUpload';
+import { Image, Tag, Save, Eye, Upload, X } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import DynamicIcon from '../components/DynamicIcon';
 
 export default function WritePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuthStore();
+  const coverInputRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -23,6 +26,7 @@ export default function WritePage() {
   const [selectedTopics, setSelectedTopics] = useState<TopicType[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -78,6 +82,23 @@ export default function WritePage() {
     setSelectedTopics((prev) =>
       prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
     );
+  };
+
+  const handleCoverImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    try {
+      validateImageFile(file, 10); // Max 10MB for cover images
+      setUploadingCover(true);
+
+      const publicUrl = await uploadImage(file, 'covers', user.id);
+      setCoverImage(publicUrl);
+    } catch (error: any) {
+      alert(error.message || 'Failed to upload cover image');
+    } finally {
+      setUploadingCover(false);
+    }
   };
 
   const saveDraft = async () => {
@@ -169,7 +190,7 @@ export default function WritePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -199,23 +220,48 @@ export default function WritePage() {
         <div className="space-y-6">
           {/* Cover Image */}
           <div className="card p-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-cyber-200 mb-2">
               <Image className="w-5 h-5 inline mr-2" />
-              Cover Image URL
+              Cover Image
             </label>
+
             <input
-              type="url"
-              value={coverImage}
-              onChange={(e) => setCoverImage(e.target.value)}
-              placeholder="https://example.com/image.jpg"
-              className="input"
+              ref={coverInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleCoverImageUpload}
+              className="hidden"
             />
-            {coverImage && (
-              <img
-                src={coverImage}
-                alt="Cover preview"
-                className="mt-4 w-full h-64 object-cover rounded-lg"
-              />
+
+            {coverImage ? (
+              <div className="relative">
+                <img
+                  src={coverImage}
+                  alt="Cover preview"
+                  className="w-full h-64 object-cover rounded-lg"
+                />
+                <button
+                  onClick={() => setCoverImage('')}
+                  className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors shadow-lg"
+                  title="Remove cover image"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => coverInputRef.current?.click()}
+                disabled={uploadingCover}
+                className="w-full h-64 border-2 border-dashed border-cyber-700/50 rounded-lg flex flex-col items-center justify-center gap-3 hover:border-cyber-500 hover:bg-cyber-800/30 transition-colors"
+              >
+                <Upload className="w-12 h-12 text-cyber-400" />
+                <span className="text-cyber-200">
+                  {uploadingCover ? 'Uploading...' : 'Click to upload cover image'}
+                </span>
+                <span className="text-sm text-cyber-400">
+                  JPEG, PNG, WebP, or GIF (max 10MB)
+                </span>
+              </button>
             )}
           </div>
 
@@ -226,13 +272,13 @@ export default function WritePage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Your amazing title..."
-              className="w-full text-4xl font-bold outline-none border-none p-0"
+              className="w-full text-4xl font-bold outline-none border-none p-0 bg-transparent text-cyber-50 placeholder-cyber-600"
             />
           </div>
 
           {/* Excerpt */}
           <div className="card p-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-cyber-200 mb-2">
               Excerpt (optional)
             </label>
             <textarea
@@ -246,7 +292,7 @@ export default function WritePage() {
 
           {/* Content */}
           <div className="card p-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-cyber-200 mb-2">
               Content
             </label>
             <ReactQuill
@@ -260,7 +306,7 @@ export default function WritePage() {
 
           {/* Tags */}
           <div className="card p-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-cyber-200 mb-2">
               <Tag className="w-5 h-5 inline mr-2" />
               Tags
             </label>
@@ -291,7 +337,7 @@ export default function WritePage() {
 
           {/* Communities */}
           <div className="card p-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-medium text-cyber-200 mb-3">
               Communities (select at least 1)
             </label>
             <div className="flex flex-wrap gap-2">
@@ -299,13 +345,14 @@ export default function WritePage() {
                 <button
                   key={community.value}
                   onClick={() => toggleCommunity(community.value)}
-                  className={`badge ${
+                  className={`badge flex items-center gap-2 ${
                     selectedCommunities.includes(community.value)
                       ? 'badge-primary'
-                      : 'bg-gray-100 text-gray-600'
+                      : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
                   }`}
                 >
-                  {community.icon} {community.label}
+                  <DynamicIcon name={community.icon} size={16} />
+                  {community.label}
                 </button>
               ))}
             </div>
@@ -313,7 +360,7 @@ export default function WritePage() {
 
           {/* Topics */}
           <div className="card p-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-medium text-cyber-200 mb-3">
               Topics (select at least 1)
             </label>
             <div className="flex flex-wrap gap-2">
@@ -321,11 +368,14 @@ export default function WritePage() {
                 <button
                   key={topic.value}
                   onClick={() => toggleTopic(topic.value)}
-                  className={`badge ${
-                    selectedTopics.includes(topic.value) ? 'badge-cyan' : 'bg-gray-100 text-gray-600'
+                  className={`badge flex items-center gap-2 ${
+                    selectedTopics.includes(topic.value)
+                      ? 'badge-cyan'
+                      : 'bg-cyber-800/30 text-cyber-400 border-cyber-700/30'
                   }`}
                 >
-                  {topic.icon} {topic.label}
+                  <DynamicIcon name={topic.icon} size={16} />
+                  {topic.label}
                 </button>
               ))}
             </div>

@@ -4,6 +4,8 @@ import { COMMUNITIES, TOPICS, CommunityType, TopicType } from '../types/database
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { Check } from 'lucide-react';
+import DynamicIcon from '../components/DynamicIcon';
+import Logo from '../components/Logo';
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
@@ -57,11 +59,11 @@ export default function OnboardingPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl mb-4 shadow-lg">
-            <span className="text-3xl font-bold gradient-text">A</span>
+          <div className="inline-flex items-center justify-center mb-4">
+            <Logo size="lg" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Welcome to Aesop Blog!</h1>
-          <p className="text-white/80 text-lg">
+          <h1 className="text-4xl font-bold text-cyber-50 mb-2">Welcome to Aesop Blog!</h1>
+          <p className="text-cyber-200 text-lg">
             Let's personalize your experience
           </p>
         </div>
@@ -70,35 +72,39 @@ export default function OnboardingPage() {
         <div className="flex items-center justify-center gap-4 mb-12">
           <div className="flex items-center">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                step >= 1 ? 'bg-white text-blue-600' : 'bg-white/30 text-white'
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
+                step >= 1
+                  ? 'bg-gradient-to-r from-cyber-500 to-neon-500 text-white shadow-lg shadow-cyber-500/50'
+                  : 'bg-cyber-800/30 text-cyber-400 border border-cyber-700/50'
               }`}
             >
               {step > 1 ? <Check className="w-6 h-6" /> : '1'}
             </div>
-            <span className="ml-3 text-white font-medium">Communities</span>
+            <span className="ml-3 text-cyber-100 font-medium">Communities</span>
           </div>
-          <div className="w-12 h-1 bg-white/30"></div>
+          <div className="w-12 h-1 bg-cyber-800/30"></div>
           <div className="flex items-center">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                step >= 2 ? 'bg-white text-blue-600' : 'bg-white/30 text-white'
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
+                step >= 2
+                  ? 'bg-gradient-to-r from-cyber-500 to-neon-500 text-white shadow-lg shadow-cyber-500/50'
+                  : 'bg-cyber-800/30 text-cyber-400 border border-cyber-700/50'
               }`}
             >
               2
             </div>
-            <span className="ml-3 text-white font-medium">Topics</span>
+            <span className="ml-3 text-cyber-100 font-medium">Topics</span>
           </div>
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="card p-8">
           {step === 1 ? (
             <>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-cyber-50 mb-2">
                 Choose Your Communities
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-cyber-300 mb-6">
                 Select the communities you belong to (choose at least 3)
               </p>
 
@@ -109,12 +115,14 @@ export default function OnboardingPage() {
                     onClick={() => toggleCommunity(community.value)}
                     className={`p-4 rounded-xl border-2 transition-all ${
                       selectedCommunities.includes(community.value)
-                        ? 'border-blue-600 bg-blue-50'
-                        : 'border-gray-200 hover:border-blue-300'
+                        ? 'border-cyber-500 bg-cyber-800/50 shadow-lg shadow-cyber-500/30'
+                        : 'border-cyber-700/50 hover:border-cyber-600 bg-cyber-900/30'
                     }`}
                   >
-                    <div className="text-3xl mb-2">{community.icon}</div>
-                    <div className="font-medium text-gray-900">{community.label}</div>
+                    <div className="mb-2 flex justify-center">
+                      <DynamicIcon name={community.icon} size={32} className="text-cyber-300" />
+                    </div>
+                    <div className="font-medium text-cyber-100">{community.label}</div>
                   </button>
                 ))}
               </div>
@@ -129,10 +137,10 @@ export default function OnboardingPage() {
             </>
           ) : (
             <>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-cyber-50 mb-2">
                 Choose Your Topics
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-cyber-300 mb-6">
                 Select topics you're interested in (choose at least 3)
               </p>
 
@@ -143,12 +151,14 @@ export default function OnboardingPage() {
                     onClick={() => toggleTopic(topic.value)}
                     className={`p-4 rounded-xl border-2 transition-all ${
                       selectedTopics.includes(topic.value)
-                        ? 'border-cyan-600 bg-cyan-50'
-                        : 'border-gray-200 hover:border-cyan-300'
+                        ? 'border-neon-500 bg-neon-900/30 shadow-lg shadow-neon-500/30'
+                        : 'border-cyber-700/50 hover:border-neon-600 bg-cyber-900/30'
                     }`}
                   >
-                    <div className="text-3xl mb-2">{topic.icon}</div>
-                    <div className="font-medium text-gray-900">{topic.label}</div>
+                    <div className="mb-2 flex justify-center">
+                      <DynamicIcon name={topic.icon} size={32} className="text-neon-300" />
+                    </div>
+                    <div className="font-medium text-cyber-100">{topic.label}</div>
                   </button>
                 ))}
               </div>

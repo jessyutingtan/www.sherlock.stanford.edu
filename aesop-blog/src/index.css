@@ -4,41 +4,41 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-gradient-to-br from-cyber-950 via-cyber-900 to-neon-950 text-cyber-50 min-h-screen;
   }
 }
 
 @layer components {
   .gradient-bg {
-    @apply bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600;
+    @apply bg-gradient-to-br from-cyber-600 via-neon-500 to-cyber-700;
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-cyber-500 via-neon-400 to-cyber-600 bg-clip-text text-transparent;
   }
 
   .card {
-    @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300;
+    @apply bg-cyber-900/50 backdrop-blur-sm rounded-lg shadow-lg shadow-cyber-900/50 border border-cyber-800/50 hover:shadow-xl hover:shadow-cyber-700/50 transition-all duration-300 hover:border-cyber-700/50;
   }
 
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-md;
   }
 
   .btn-primary {
-    @apply bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:from-blue-700 hover:to-cyan-700;
+    @apply bg-gradient-to-r from-cyber-600 to-neon-600 text-white hover:from-cyber-500 hover:to-neon-500 shadow-lg shadow-cyber-500/50 hover:shadow-cyber-400/50;
   }
 
   .btn-secondary {
-    @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+    @apply bg-cyber-800/50 text-cyber-200 hover:bg-cyber-700/50 hover:text-cyber-100 border border-cyber-700/50;
   }
 
   .btn-ghost {
-    @apply hover:bg-gray-100;
+    @apply hover:bg-cyber-800/30 text-cyber-300 hover:text-cyber-100;
   }
 
   .input {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all;
+    @apply w-full px-4 py-2 bg-cyber-900/30 border border-cyber-700/50 rounded-lg focus:ring-2 focus:ring-cyber-500 focus:border-cyber-500 outline-none transition-all text-cyber-100 placeholder-cyber-400;
   }
 
   .badge {
@@ -46,11 +46,11 @@
   }
 
   .badge-primary {
-    @apply bg-blue-100 text-blue-800;
+    @apply bg-cyber-800/50 text-cyber-200 border border-cyber-600/30;
   }
 
   .badge-cyan {
-    @apply bg-cyan-100 text-cyan-800;
+    @apply bg-neon-900/50 text-neon-200 border border-neon-600/30;
   }
 }
 
@@ -60,16 +60,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #042f2e;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: linear-gradient(to bottom, #0ea5e9, #14b8a6);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: linear-gradient(to bottom, #0284c7, #0d9488);
 }
 
 /* Quill editor custom styles */
