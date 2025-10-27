@@ -40,7 +40,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./aesop-blog/dist
           publish_branch: gh-pages
-          destination_dir: aesop-blog
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
           commit_message: 'Deploy Aesop Blog: ${{ github.event.head_commit.message }}'
