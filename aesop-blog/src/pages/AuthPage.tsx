@@ -44,26 +44,22 @@ export default function AuthPage() {
           throw new Error('Username already taken');
         }
 
-        const { data: authData, error: signUpError } = await supabase.auth.signUp({
+        // Sign up with metadata - the database trigger will create the profile automatically
+        const { error: signUpError } = await supabase.auth.signUp({
           email: formData.email,
           password: formData.password,
+          options: {
+            data: {
+              username: formData.username,
+              full_name: formData.fullName || null,
+            },
+          },
         });
 
         if (signUpError) throw signUpError;
 
-        if (authData.user) {
-          // Create profile
-          const { error: profileError } = await supabase.from('profiles').insert({
-            id: authData.user.id,
-            email: formData.email,
-            username: formData.username,
-            full_name: formData.fullName || null,
-          });
-
-          if (profileError) throw profileError;
-
-          navigate('/onboarding');
-        }
+        // Profile is automatically created by the database trigger
+        navigate('/onboarding');
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred');
