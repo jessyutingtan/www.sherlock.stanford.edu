@@ -19,62 +19,108 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
       <div className={`${sizeConfig.container} aspect-square relative`}>
         <svg
           className="w-full h-full"
-          viewBox="0 0 100 100"
+          viewBox="0 0 120 120"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Professional Fox Silhouette - Clean and Iconic */}
-          <g opacity="0.95">
-            {/* Fox silhouette in one unified shape */}
+          {/* Elegant, Artistic Fox Design */}
+          <defs>
+            {/* Sophisticated gradient palette */}
+            <linearGradient id="foxMainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fbbf24" />
+              <stop offset="30%" stopColor="#f97316" />
+              <stop offset="70%" stopColor="#ea580c" />
+              <stop offset="100%" stopColor="#dc2626" />
+            </linearGradient>
+
+            <linearGradient id="foxAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fef3c7" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#fed7aa" stopOpacity="0.7" />
+            </linearGradient>
+
+            <radialGradient id="foxGlow" cx="50%" cy="50%">
+              <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#f97316" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+
+          {/* Elegant fox shape with refined curves */}
+          <g transform="translate(60, 60)">
+            {/* Artistic glow effect */}
+            <circle r="45" fill="url(#foxGlow)" opacity="0.6" />
+
+            {/* Main fox head - elegant proportions */}
             <path
-              d="M 50 20
-                 L 35 10 L 38 25
-                 L 30 30
-                 Q 25 35, 25 45
-                 Q 25 55, 30 60
-                 L 35 80 L 40 85
-                 L 45 82 L 48 70
-                 L 50 85
-                 L 52 70 L 55 82
-                 L 60 85 L 65 80
-                 L 70 60
-                 Q 75 55, 75 45
-                 Q 75 35, 70 30
-                 L 62 25 L 65 10
-                 Z"
-              fill="url(#foxSilhouette)"
-              stroke="url(#foxOutline)"
-              strokeWidth="0.5"
+              d="M -15 -25 Q -20 -40, -12 -45 L -8 -30 Q -5 -35, 0 -35 Q 5 -35, 8 -30 L 12 -45 Q 20 -40, 15 -25
+                 Q 18 -20, 18 -10 Q 18 5, 15 10
+                 Q 12 15, 8 18 L 8 22 Q 5 25, 0 25 Q -5 25, -8 22
+                 L -8 18 Q -12 15, -15 10
+                 Q -18 5, -18 -10 Q -18 -20, -15 -25 Z"
+              fill="url(#foxMainGradient)"
+              stroke="#ea580c"
+              strokeWidth="0.8"
+              opacity="0.95"
             />
 
-            {/* Tail - elegant curve */}
+            {/* Elegant ears with detail */}
             <path
-              d="M 65 75 Q 80 70, 85 60 Q 88 55, 85 50 Q 83 48, 80 50 Q 75 55, 70 65 L 65 75"
-              fill="url(#foxSilhouette)"
+              d="M -10 -32 Q -15 -42, -10 -43 Q -8 -40, -8 -32 Z"
+              fill="url(#foxMainGradient)"
+              opacity="0.9"
+            />
+            <path
+              d="M 10 -32 Q 15 -42, 10 -43 Q 8 -40, 8 -32 Z"
+              fill="url(#foxMainGradient)"
               opacity="0.9"
             />
 
-            {/* Accent highlights for dimension */}
-            <ellipse cx="42" cy="42" rx="3" ry="4" fill="#fef3c7" opacity="0.8" />
-            <ellipse cx="58" cy="42" rx="3" ry="4" fill="#fef3c7" opacity="0.8" />
+            {/* Inner ear highlights - artistic touch */}
+            <ellipse cx="-9" cy="-36" rx="2" ry="3" fill="url(#foxAccent)" opacity="0.6" />
+            <ellipse cx="9" cy="-36" rx="2" ry="3" fill="url(#foxAccent)" opacity="0.6" />
 
-            {/* Subtle nose */}
-            <circle cx="50" cy="50" r="2" fill="#dc2626" opacity="0.9" />
+            {/* Expressive eyes - warm and inviting */}
+            <ellipse cx="-8" cy="-8" rx="2.5" ry="3.5" fill="#422006" opacity="0.8" />
+            <ellipse cx="8" cy="-8" rx="2.5" ry="3.5" fill="#422006" opacity="0.8" />
+
+            {/* Eye sparkles - adds life */}
+            <circle cx="-7" cy="-9" r="1" fill="#fef3c7" opacity="0.9" />
+            <circle cx="9" cy="-9" r="1" fill="#fef3c7" opacity="0.9" />
+
+            {/* Elegant snout */}
+            <path
+              d="M -5 0 Q -3 5, 0 6 Q 3 5, 5 0 L 3 -2 Q 0 -1, -3 -2 Z"
+              fill="url(#foxAccent)"
+              opacity="0.7"
+            />
+
+            {/* Sophisticated nose */}
+            <ellipse cx="0" cy="2" rx="2" ry="2.5" fill="#422006" opacity="0.8" />
+            <circle cx="0" cy="1" r="0.8" fill="#fef3c7" opacity="0.5" />
+
+            {/* Elegant whisker dots */}
+            <circle cx="-12" cy="-3" r="0.8" fill="#422006" opacity="0.5" />
+            <circle cx="12" cy="-3" r="0.8" fill="#422006" opacity="0.5" />
+
+            {/* Graceful tail - flowing curves */}
+            <path
+              d="M 15 15 Q 25 12, 30 5 Q 35 -2, 33 -8 Q 32 -10, 30 -8 Q 28 -3, 25 3 Q 20 10, 15 12 Z"
+              fill="url(#foxMainGradient)"
+              opacity="0.85"
+            />
+
+            {/* Tail highlight - adds dimension */}
+            <path
+              d="M 18 10 Q 24 8, 28 2 Q 30 -2, 29 -5"
+              stroke="url(#foxAccent)"
+              strokeWidth="1.5"
+              fill="none"
+              opacity="0.4"
+              strokeLinecap="round"
+            />
+
+            {/* Subtle body suggestion - artistic */}
+            <ellipse cx="0" cy="20" rx="10" ry="8" fill="url(#foxMainGradient)" opacity="0.3" />
           </g>
-
-          {/* Gradients for professional look */}
-          <defs>
-            <linearGradient id="foxSilhouette" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#fb923c" />
-              <stop offset="50%" stopColor="#f97316" />
-              <stop offset="100%" stopColor="#ea580c" />
-            </linearGradient>
-
-            <linearGradient id="foxOutline" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ea580c" />
-              <stop offset="100%" stopColor="#c2410c" />
-            </linearGradient>
-          </defs>
         </svg>
       </div>
 

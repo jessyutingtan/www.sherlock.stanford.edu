@@ -204,7 +204,7 @@ export default function DebatesPage() {
                     <h4 className="text-lg font-bold text-black mb-2">
                       {debate.post_a?.title}
                     </h4>
-                    <p className="text-sm text-blue-600 font-medium">
+                    <p className="text-sm text-black font-medium">
                       by @{debate.post_a?.author?.username}
                     </p>
                   </Link>
@@ -257,7 +257,7 @@ export default function DebatesPage() {
                     <h4 className="text-lg font-bold text-black mb-2">
                       {debate.post_b?.title}
                     </h4>
-                    <p className="text-sm text-blue-600 font-medium">
+                    <p className="text-sm text-black font-medium">
                       by @{debate.post_b?.author?.username}
                     </p>
                   </Link>

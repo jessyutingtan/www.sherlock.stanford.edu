@@ -52,14 +52,13 @@ export default function CreateThoughtBubble({ onCreated }: CreateThoughtBubblePr
                 key={mood.value}
                 type="button"
                 onClick={() => setSelectedMood(mood.value)}
-                className={`flex flex-col items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all flex-shrink-0 ${
+                className={`flex items-center justify-center px-4 py-3 rounded-xl border-2 transition-all flex-shrink-0 ${
                   selectedMood === mood.value
                     ? `border-transparent bg-gradient-to-br ${mood.gradient} text-white shadow-lg`
                     : 'border-cyber-700/50 hover:border-cyber-600 bg-cyber-900/30 text-white'
                 }`}
               >
-                <DynamicIcon name={mood.icon} size={24} />
-                <span className="text-xs font-medium">{mood.label}</span>
+                <DynamicIcon name={mood.icon} size={32} />
               </button>
             ))}
           </div>
