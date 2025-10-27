@@ -136,6 +136,32 @@ export default function WritePage() {
     };
   };
 
+  // Link insertion handler for Quill editor
+  const linkHandler = () => {
+    const quill = quillRef.current?.getEditor();
+    if (!quill) return;
+
+    const range = quill.getSelection(true);
+    const selectedText = quill.getText(range.index, range.length);
+
+    // Prompt for URL
+    const url = prompt('Enter the URL:', 'https://');
+    if (!url) return;
+
+    // If user has selected text, apply link to selection
+    if (range.length > 0) {
+      quill.formatText(range.index, range.length, 'link', url);
+    } else {
+      // If no text selected, prompt for link text
+      const linkText = prompt('Enter link text:', selectedText || 'Click here');
+      if (!linkText) return;
+
+      // Insert link with text
+      quill.insertText(range.index, linkText, 'link', url);
+      quill.setSelection(range.index + linkText.length, 0);
+    }
+  };
+
   const saveDraft = async () => {
     if (!user || !title.trim()) return;
 
@@ -226,6 +252,7 @@ export default function WritePage() {
         ],
         handlers: {
           image: imageHandler,
+          link: linkHandler,
         },
       },
     }),

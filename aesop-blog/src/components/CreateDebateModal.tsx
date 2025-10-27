@@ -21,6 +21,30 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
   const [selectedPostA, setSelectedPostA] = useState<Post | null>(null);
   const [selectedPostB, setSelectedPostB] = useState<Post | null>(null);
   const [loading, setLoading] = useState(false);
+  const [recentPosts, setRecentPosts] = useState<Post[]>([]);
+
+  // Load recent posts when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      loadRecentPosts();
+    }
+  }, [isOpen]);
+
+  const loadRecentPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*, author:profiles(username)')
+        .eq('is_published', true)
+        .order('published_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setRecentPosts(data || []);
+    } catch (error) {
+      console.error('Error loading recent posts:', error);
+    }
+  };
 
   useEffect(() => {
     if (searchA) {
@@ -108,6 +132,13 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Info Banner */}
+          <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+            <p className="text-sm text-blue-200">
+              <strong>Create a debate</strong> by selecting two blog posts to compare. Readers can vote on which post makes a better argument!
+            </p>
+          </div>
+
           {/* Title */}
           <div>
             <label className="block text-sm font-semibold text-white mb-2">
@@ -142,6 +173,9 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
             <label className="block text-sm font-semibold text-white mb-2">
               First Post *
             </label>
+            <p className="text-xs text-gray-400 mb-3">
+              Select the first blog post for this debate. Type to search or choose from recent posts below.
+            </p>
             {selectedPostA ? (
               <div className="card p-4 flex items-center justify-between">
                 <div>
@@ -168,9 +202,14 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
                     className="input pl-10"
                   />
                 </div>
-                {postsA.length > 0 && (
-                  <div className="mt-2 card divide-y divide-cyber-800">
-                    {postsA.map((post) => (
+                {(postsA.length > 0 ? postsA : recentPosts).length > 0 && (
+                  <div className="mt-2 card divide-y divide-cyber-800 max-h-60 overflow-y-auto">
+                    {!searchA && recentPosts.length > 0 && (
+                      <div className="px-3 py-2 bg-cyber-800/30">
+                        <p className="text-xs text-gray-400">Recent Posts</p>
+                      </div>
+                    )}
+                    {(postsA.length > 0 ? postsA : recentPosts).map((post) => (
                       <button
                         key={post.id}
                         type="button"
@@ -195,6 +234,9 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
             <label className="block text-sm font-semibold text-white mb-2">
               Second Post *
             </label>
+            <p className="text-xs text-gray-400 mb-3">
+              Select the second blog post to debate against the first. Type to search or choose from recent posts below.
+            </p>
             {selectedPostB ? (
               <div className="card p-4 flex items-center justify-between">
                 <div>
@@ -221,9 +263,14 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
                     className="input pl-10"
                   />
                 </div>
-                {postsB.length > 0 && (
-                  <div className="mt-2 card divide-y divide-cyber-800">
-                    {postsB.map((post) => (
+                {(postsB.length > 0 ? postsB : recentPosts.filter(p => p.id !== selectedPostA?.id)).length > 0 && (
+                  <div className="mt-2 card divide-y divide-cyber-800 max-h-60 overflow-y-auto">
+                    {!searchB && recentPosts.length > 0 && (
+                      <div className="px-3 py-2 bg-cyber-800/30">
+                        <p className="text-xs text-gray-400">Recent Posts</p>
+                      </div>
+                    )}
+                    {(postsB.length > 0 ? postsB : recentPosts.filter(p => p.id !== selectedPostA?.id)).map((post) => (
                       <button
                         key={post.id}
                         type="button"

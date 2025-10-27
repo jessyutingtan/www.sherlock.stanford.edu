@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { Profile } from '../types/database';
-import { TOPICS } from '../types/database';
-import { Search, TrendingUp, Users } from 'lucide-react';
+import { Profile, Post, ThoughtBubble } from '../types/database';
+import { Search, TrendingUp, Users, FileText, MessageCircle, Clock } from 'lucide-react';
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -11,10 +10,13 @@ export default function ExplorePage() {
   const [topWriters, setTopWriters] = useState<Profile[]>([]);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searching, setSearching] = useState(false);
+  const [recentPosts, setRecentPosts] = useState<Post[]>([]);
+  const [recentThoughts, setRecentThoughts] = useState<ThoughtBubble[]>([]);
 
   useEffect(() => {
     fetchTrendingTags();
     fetchTopWriters();
+    fetchRecentContent();
   }, []);
 
   const fetchTrendingTags = async () => {
@@ -72,6 +74,54 @@ export default function ExplorePage() {
     } catch (error) {
       console.error('Error fetching top writers:', error);
     }
+  };
+
+  const fetchRecentContent = async () => {
+    try {
+      // Fetch recent posts
+      const { data: posts, error: postsError } = await supabase
+        .from('posts')
+        .select('*, author:profiles!posts_author_id_fkey(*)')
+        .eq('is_published', true)
+        .order('published_at', { ascending: false })
+        .limit(10);
+
+      if (postsError) throw postsError;
+      setRecentPosts(posts || []);
+
+      // Fetch recent thought bubbles
+      const { data: thoughts, error: thoughtsError } = await supabase
+        .from('thought_bubbles')
+        .select('*, author:profiles!thought_bubbles_author_id_fkey(*)')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (thoughtsError) throw thoughtsError;
+      setRecentThoughts(thoughts || []);
+    } catch (error) {
+      console.error('Error fetching recent content:', error);
+    }
+  };
+
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
+    }) + ' at ' + date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
   };
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -222,22 +272,77 @@ export default function ExplorePage() {
           </div>
         </div>
 
-        {/* Popular Topics */}
+        {/* Recently Published Content */}
         <div className="mt-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Popular Topics</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {TOPICS.slice(0, 12).map((topic) => (
-              <Link
-                key={topic.value}
-                to={`/feed?topic=${topic.value}`}
-                className="card p-6 text-center hover:shadow-lg transition-shadow group"
-              >
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
-                  {topic.icon}
-                </div>
-                <p className="font-semibold text-gray-900">{topic.label}</p>
-              </Link>
-            ))}
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Recently Published</h2>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Recent Blog Posts */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Latest Articles
+              </h3>
+              <div className="space-y-3">
+                {recentPosts.map((post) => (
+                  <Link
+                    key={post.id}
+                    to={`/post/${post.id}`}
+                    className="card p-4 hover:shadow-md transition-shadow block"
+                  >
+                    <h4 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                      {post.title}
+                    </h4>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <span className="font-medium text-cyan-600">
+                        {post.author?.full_name || post.author?.username}
+                      </span>
+                      <span>•</span>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        <span>{formatDateTime(post.published_at || post.created_at)}</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+                {recentPosts.length === 0 && (
+                  <p className="text-gray-500 text-center py-8">No recent posts</p>
+                )}
+              </div>
+            </div>
+
+            {/* Recent Thought Bubbles */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                <MessageCircle className="w-5 h-5" />
+                Latest Thought Bubbles
+              </h3>
+              <div className="space-y-3">
+                {recentThoughts.map((thought) => (
+                  <div
+                    key={thought.id}
+                    className="card p-4 hover:shadow-md transition-shadow"
+                  >
+                    <p className="text-gray-900 mb-2 line-clamp-3">
+                      {thought.content}
+                    </p>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <span className="font-medium text-purple-600">
+                        {thought.author?.full_name || thought.author?.username}
+                      </span>
+                      <span>•</span>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        <span>{formatDateTime(thought.created_at)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {recentThoughts.length === 0 && (
+                  <p className="text-gray-500 text-center py-8">No recent thought bubbles</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
