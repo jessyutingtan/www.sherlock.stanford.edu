@@ -257,8 +257,8 @@ export default function FeedPage() {
             onClick={() => setContentType('articles')}
             className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all ${
               contentType === 'articles'
-                ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg'
-                : 'bg-white text-gray-600 hover:bg-gray-50'
+                ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg border-4 border-yellow-400'
+                : 'bg-white text-gray-600 hover:bg-gray-50 border-2 border-gray-300'
             }`}
           >
             Articles
@@ -267,8 +267,8 @@ export default function FeedPage() {
             onClick={() => setContentType('thoughts')}
             className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all ${
               contentType === 'thoughts'
-                ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg'
-                : 'bg-white text-gray-600 hover:bg-gray-50'
+                ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg border-4 border-yellow-400'
+                : 'bg-white text-gray-600 hover:bg-gray-50 border-2 border-gray-300'
             }`}
           >
             Thought Bubbles

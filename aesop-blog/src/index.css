@@ -18,7 +18,7 @@
   }
 
   .card {
-    @apply bg-cyber-900/50 backdrop-blur-sm rounded-lg shadow-lg shadow-cyber-900/50 border border-cyber-800/50 hover:shadow-xl hover:shadow-cyber-700/50 transition-all duration-300 hover:border-cyber-700/50;
+    @apply bg-blue-900 backdrop-blur-sm rounded-lg shadow-lg shadow-blue-900/50 border border-blue-700/50 hover:shadow-xl hover:shadow-blue-700/50 transition-all duration-300 hover:border-blue-600/50 text-white;
   }
 
   .btn {
