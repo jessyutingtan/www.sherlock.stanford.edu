@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - claude/build-social-blog-platform-011CUWnJgKAMmmVYTBz8zVBV
-    paths:
-      - 'aesop-blog/**'
   workflow_dispatch:
 
 permissions:
