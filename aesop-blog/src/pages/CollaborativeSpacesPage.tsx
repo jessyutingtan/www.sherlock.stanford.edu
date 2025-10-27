@@ -3,7 +3,6 @@ import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { CollaborativeSpace } from '../types/database';
 import { Users, Plus, Lock, Globe } from 'lucide-react';
-import { formatRelativeTime } from '../utils/date';
 
 export default function CollaborativeSpacesPage() {
   const { user } = useAuthStore();

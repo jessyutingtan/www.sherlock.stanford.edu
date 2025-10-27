@@ -38,8 +38,6 @@ export default function CreateThoughtBubble({ onCreated }: CreateThoughtBubblePr
     }
   };
 
-  const selectedMoodData = MOODS.find((m) => m.value === selectedMood);
-
   return (
     <div className="card p-6">
       <form onSubmit={handleSubmit}>

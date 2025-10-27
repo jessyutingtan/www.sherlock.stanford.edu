@@ -228,8 +228,8 @@ export default function DebatesPage() {
                       className="h-full bg-gradient-to-r from-blue-600 to-cyan-600 transition-all"
                       style={{
                         width: `${
-                          debate.votes_a + debate.votes_b > 0
-                            ? (debate.votes_a / (debate.votes_a + debate.votes_b)) * 100
+                          (debate.votes_a ?? 0) + (debate.votes_b ?? 0) > 0
+                            ? ((debate.votes_a ?? 0) / ((debate.votes_a ?? 0) + (debate.votes_b ?? 0))) * 100
                             : 50
                         }%`,
                       }}
@@ -281,8 +281,8 @@ export default function DebatesPage() {
                       className="h-full bg-gradient-to-r from-cyan-600 to-blue-600 transition-all"
                       style={{
                         width: `${
-                          debate.votes_a + debate.votes_b > 0
-                            ? (debate.votes_b / (debate.votes_a + debate.votes_b)) * 100
+                          (debate.votes_a ?? 0) + (debate.votes_b ?? 0) > 0
+                            ? ((debate.votes_b ?? 0) / ((debate.votes_a ?? 0) + (debate.votes_b ?? 0))) * 100
                             : 50
                         }%`,
                       }}
@@ -293,7 +293,7 @@ export default function DebatesPage() {
 
               {/* Total votes */}
               <div className="mt-6 text-center text-sm text-gray-600">
-                Total votes: {debate.votes_a + debate.votes_b}
+                Total votes: {(debate.votes_a ?? 0) + (debate.votes_b ?? 0)}
               </div>
             </div>
           ))}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
-import { Bookmark as BookmarkType, Post } from '../types/database';
+import { Post } from '../types/database';
 import PostCard from '../components/PostCard';
 import { Bookmark } from 'lucide-react';
 

@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { Profile, Post } from '../types/database';
 import PostCard from '../components/PostCard';
-import { MapPin, Link as LinkIcon, Calendar, Users, Edit, LogOut } from 'lucide-react';
+import { Link as LinkIcon, Calendar, Users, Edit, LogOut } from 'lucide-react';
 import { formatDate } from '../utils/date';
 
 export default function ProfilePage() {
