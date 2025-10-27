@@ -6,6 +6,7 @@ import { formatRelativeTime } from '../utils/date';
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
+import DynamicIcon from './DynamicIcon';
 
 interface ThoughtBubbleCardProps {
   bubble: ThoughtBubble;
@@ -76,7 +77,7 @@ export default function ThoughtBubbleCard({ bubble, onUpdate }: ThoughtBubbleCar
       {/* Footer */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 px-3 py-1.5 bg-white/20 rounded-full backdrop-blur-sm">
-          <span className="text-2xl">{mood?.icon}</span>
+          {mood && <DynamicIcon name={mood.icon} size={32} />}
         </div>
 
         <button
