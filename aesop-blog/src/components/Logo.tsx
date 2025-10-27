@@ -13,6 +13,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
 
   const sizeConfig = sizes[size];
 
+  // HIPPO LOGO v2.0 - Adorable red-hatted hippo with premium design
   return (
     <div className={`flex items-center ${sizeConfig.gap} ${className}`}>
       {/* Adorable Red-Hatted Hippo - Cute, Warming, Savvy & Special */}
