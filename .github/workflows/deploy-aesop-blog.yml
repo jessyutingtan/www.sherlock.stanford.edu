@@ -6,6 +6,10 @@ on:
   push:
     branches:
       - claude/build-social-blog-platform-011CUWnJgKAMmmVYTBz8zVBV
+      - claude/aesop-blog-ux-fixes-011CUYpChasxHB7U5p5z6Kyq
+    paths:
+      - 'aesop-blog/**'
+      - '.github/workflows/deploy-aesop-blog.yml'
   workflow_dispatch:
 
 permissions:
