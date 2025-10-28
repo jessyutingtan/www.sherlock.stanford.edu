@@ -186,8 +186,8 @@ export default function DebatesPage() {
 
     try {
       console.log('Concluding debate:', debateId);
+      console.log('Current user ID:', user?.id);
       console.log('Current filter:', filter);
-      console.log('Current debates count:', debates.length);
 
       // Update the debate status in the database
       const { data, error } = await supabase
@@ -197,22 +197,33 @@ export default function DebatesPage() {
         .select();
 
       if (error) {
-        console.error('Error concluding debate:', error);
-        throw error;
+        console.error('Database error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        alert(`Failed to conclude debate: ${error.message}\n\nThis might be a permissions issue. Please check the console for details.`);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.error('No data returned from update - debate may not exist or RLS policy blocking update');
+        alert('Failed to conclude debate: No data returned. This is likely a permissions issue.');
+        return;
       }
 
       console.log('Database updated successfully:', data);
 
       // Immediately remove from local state for instant feedback
       const updatedDebates = debates.filter((d) => d.id !== debateId);
-      console.log('Setting debates to:', updatedDebates.length);
+      console.log('Removing debate from local state. New count:', updatedDebates.length);
       setDebates(updatedDebates);
 
-      // The useEffect will automatically call applyFilters when debates changes
       alert('Debate concluded successfully');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error concluding debate:', error);
-      alert('Failed to conclude debate');
+      alert(`Failed to conclude debate: ${error?.message || 'Unknown error'}`);
     }
   };
 
