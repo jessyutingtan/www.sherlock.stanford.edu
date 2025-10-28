@@ -151,6 +151,11 @@ export default function ExplorePage() {
     }
   };
 
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -162,22 +167,33 @@ export default function ExplorePage() {
 
         {/* Search */}
         <form onSubmit={handleSearch} className="mb-12">
-          <div className="relative max-w-2xl">
+          <div className="relative w-full">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for posts, topics, or tags..."
-              className="w-full pl-14 pr-4 py-4 text-lg border-2 border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              className="w-full pl-14 pr-48 py-4 text-lg text-gray-900 bg-white border-2 border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all cursor-text placeholder:text-gray-400"
             />
-            <button
-              type="submit"
-              disabled={searching}
-              className="absolute right-2 top-1/2 -translate-y-1/2 btn btn-primary"
-            >
-              {searching ? 'Searching...' : 'Search'}
-            </button>
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="btn btn-secondary text-sm"
+                >
+                  Clear Search
+                </button>
+              )}
+              <button
+                type="submit"
+                disabled={searching}
+                className="btn btn-primary"
+              >
+                {searching ? 'Searching...' : 'Search'}
+              </button>
+            </div>
           </div>
         </form>
 

@@ -15,14 +15,46 @@ export default function DashboardPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [bubbles, setBubbles] = useState<ThoughtBubble[]>([]);
   const [loading, setLoading] = useState(true);
+  const [publishedPostsCount, setPublishedPostsCount] = useState(0);
+  const [publishedBubblesCount, setPublishedBubblesCount] = useState(0);
 
   useEffect(() => {
     if (!user) {
       navigate('/auth');
       return;
     }
+    fetchCounts();
     fetchContent();
   }, [user, activeTab]);
+
+  const fetchCounts = async () => {
+    if (!user) return;
+
+    try {
+      // Count published posts
+      const { count: postsCount, error: postsError } = await supabase
+        .from('posts')
+        .select('*', { count: 'exact', head: true })
+        .eq('author_id', user.id)
+        .eq('is_published', true);
+
+      if (!postsError) {
+        setPublishedPostsCount(postsCount || 0);
+      }
+
+      // Count all thought bubbles (they're all considered published)
+      const { count: bubblesCount, error: bubblesError } = await supabase
+        .from('thought_bubbles')
+        .select('*', { count: 'exact', head: true })
+        .eq('author_id', user.id);
+
+      if (!bubblesError) {
+        setPublishedBubblesCount(bubblesCount || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching counts:', error);
+    }
+  };
 
   const fetchContent = async () => {
     if (!user) return;
@@ -105,6 +137,10 @@ export default function DashboardPage() {
     }
 
     try {
+      // Check if the post being deleted is published
+      const deletedPost = posts.find(p => p.id === postId);
+      const wasPublished = deletedPost?.is_published;
+
       const { error } = await supabase
         .from('posts')
         .delete()
@@ -113,6 +149,11 @@ export default function DashboardPage() {
       if (error) throw error;
 
       setPosts(posts.filter(p => p.id !== postId));
+
+      // Update count if it was a published post
+      if (wasPublished) {
+        setPublishedPostsCount(prev => Math.max(0, prev - 1));
+      }
     } catch (error) {
       console.error('Error deleting post:', error);
       alert('Failed to delete post');
@@ -133,6 +174,7 @@ export default function DashboardPage() {
       if (error) throw error;
 
       setBubbles(bubbles.filter(b => b.id !== bubbleId));
+      setPublishedBubblesCount(prev => Math.max(0, prev - 1));
     } catch (error) {
       console.error('Error deleting bubble:', error);
       alert('Failed to delete thought bubble');
@@ -172,7 +214,7 @@ export default function DashboardPage() {
               }`}
             >
               <FileText className="w-5 h-5" />
-              Blog Posts ({posts.length})
+              Blog Posts ({publishedPostsCount})
             </button>
             <button
               onClick={() => setActiveTab('bubbles')}
@@ -183,7 +225,7 @@ export default function DashboardPage() {
               }`}
             >
               <MessageCircle className="w-5 h-5" />
-              Thought Bubbles ({bubbles.length})
+              Thought Bubbles ({publishedBubblesCount})
             </button>
           </div>
         </div>
