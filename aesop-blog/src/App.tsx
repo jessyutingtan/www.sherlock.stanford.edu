@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
 import { supabase } from './lib/supabase';
 
@@ -50,7 +50,7 @@ function App() {
   }
 
   return (
-    <BrowserRouter basename="/www.sherlock.stanford.edu">
+    <HashRouter>
       <div className="min-h-screen bg-gray-50">
         {user && <Navbar />}
         <Routes>
@@ -128,7 +128,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
