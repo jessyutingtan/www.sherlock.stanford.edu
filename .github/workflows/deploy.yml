@@ -1,37 +1,39 @@
-name: deploy
+name: Deploy to GitHub Pages
+
 on:
-  workflow_dispatch:
   push:
     branches:
-      - main
-    paths:
-      - 'mkdocs.yml'
-      - 'requirements.txt'
-      - 'includes/**'
-      - 'overrides/**'
-      - 'src/**'
-
+      - claude/aesop-blog-ux-fixes-011CUYpChasxHB7U5p5z6Kyq
+  workflow_dispatch:
 
 jobs:
-
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    if: github.event.repository.fork == false
-
-    env:
-      GOOGLE_ANALYTICS_KEY: ${{ secrets.GOOGLE_ANALYTICS_KEY }}
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    permissions:
+      contents: write
 
     steps:
-      - uses: actions/checkout@v2
-      - run: echo "MKM_VER=$(cat .mkdocs-material.version)" >> $GITHUB_ENV
-      - run: |
-          pip install git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git@${MKM_VER}
-          pip install -r requirements.txt
-          mkdocs gh-deploy --force
-      - uses: iRoachie/slack-github-actions@v2.3.0
-        if: ${{ always() }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          status: ${{ job.status }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: aesop-blog/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./aesop-blog
+        run: npm ci
+
+      - name: Build
+        working-directory: ./aesop-blog
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{secrets.GITHUB_TOKEN}}
+          publish_dir: ./aesop-blog/dist
+          publish_branch: gh-pages
