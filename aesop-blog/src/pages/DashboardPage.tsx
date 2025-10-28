@@ -140,7 +140,7 @@ export default function DashboardPage() {
   };
 
   const handleEditPost = (postId: string) => {
-    navigate(`/write?edit=${postId}`);
+    navigate(`/write/${postId}`);
   };
 
   if (loading) {

@@ -83,6 +83,10 @@ export interface CollaborativeSpace {
   content: string;
   is_public: boolean;
   max_collaborators: number;
+  communities: CommunityType[];
+  topics: TopicType[];
+  keywords: string[];
+  status: 'active' | 'concluded';
   created_at: string;
   updated_at: string;
   // Joined data
@@ -106,6 +110,9 @@ export interface Debate {
   post_a_id: string;
   post_b_id: string;
   creator_id: string;
+  communities: CommunityType[];
+  topics: TopicType[];
+  keywords: string[];
   status: DebateStatus;
   voting_ends_at: string | null;
   created_at: string;
