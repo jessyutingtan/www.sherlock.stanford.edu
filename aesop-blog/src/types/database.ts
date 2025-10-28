@@ -186,15 +186,30 @@ export interface Share {
 export interface Notification {
   id: string;
   user_id: string;
-  type: 'like' | 'comment' | 'follow' | 'mention' | 'debate_invite' | 'space_invite';
+  type: 'like' | 'comment' | 'follow' | 'mention' | 'debate_invite' | 'space_invite' | 'space_join_request';
   actor_id: string;
   post_id: string | null;
   comment_id: string | null;
+  space_id: string | null;
   is_read: boolean;
   created_at: string;
   // Joined data
   actor?: Profile;
   post?: Post;
+  space?: CollaborativeSpace;
+}
+
+export interface SpaceJoinRequest {
+  id: string;
+  space_id: string;
+  user_id: string;
+  status: 'pending' | 'approved' | 'rejected';
+  message: string | null;
+  created_at: string;
+  updated_at: string;
+  // Joined data
+  user?: Profile;
+  space?: CollaborativeSpace;
 }
 
 // Constants for UI

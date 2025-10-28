@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import { CollaborativeSpace } from '../types/database';
-import { Users, Globe, Lock, ArrowLeft, Save } from 'lucide-react';
+import { Users, Globe, Lock, ArrowLeft, Save, UserPlus, X } from 'lucide-react';
 import { formatDate } from '../utils/date';
 
 export default function SpacePage() {
@@ -15,6 +15,9 @@ export default function SpacePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isCollaborator, setIsCollaborator] = useState(false);
+  const [joinRequestStatus, setJoinRequestStatus] = useState<'none' | 'pending' | 'approved' | 'rejected'>('none');
+  const [showJoinModal, setShowJoinModal] = useState(false);
+  const [joinMessage, setJoinMessage] = useState('');
 
   useEffect(() => {
     if (id) {
@@ -43,11 +46,25 @@ export default function SpacePage() {
 
       // Check if user is creator or collaborator
       if (user) {
-        const isCreator = data.creator_id === user.id;
+        const creator = data.creator_id === user.id;
         const isCollab = data.collaborators?.some(
           (c: any) => c.user?.id === user.id
         );
-        setIsCollaborator(isCreator || isCollab);
+        setIsCollaborator(creator || isCollab);
+
+        // Check if user has a join request
+        if (!creator && !isCollab) {
+          const { data: request } = await supabase
+            .from('space_join_requests')
+            .select('status')
+            .eq('space_id', id)
+            .eq('user_id', user.id)
+            .single();
+
+          if (request) {
+            setJoinRequestStatus(request.status as any);
+          }
+        }
       }
     } catch (error) {
       console.error('Error fetching space:', error);
@@ -55,6 +72,40 @@ export default function SpacePage() {
       navigate('/spaces');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSendJoinRequest = async () => {
+    if (!user || !space) return;
+
+    try {
+      const { error } = await supabase
+        .from('space_join_requests')
+        .insert({
+          space_id: space.id,
+          user_id: user.id,
+          message: joinMessage.trim() || null,
+          status: 'pending',
+        });
+
+      if (error) throw error;
+
+      // Create notification for space creator
+      await supabase.from('notifications').insert({
+        user_id: space.creator_id,
+        type: 'space_join_request',
+        actor_id: user.id,
+        space_id: space.id,
+        is_read: false,
+      });
+
+      setJoinRequestStatus('pending');
+      setShowJoinModal(false);
+      setJoinMessage('');
+      alert('Join request sent successfully!');
+    } catch (error) {
+      console.error('Error sending join request:', error);
+      alert('Failed to send join request. You may have already requested.');
     }
   };
 
@@ -132,16 +183,42 @@ export default function SpacePage() {
               </div>
             </div>
 
-            {isCollaborator && space.status === 'active' && (
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="btn btn-primary flex items-center gap-2"
-              >
-                <Save className="w-5 h-5" />
-                {saving ? 'Saving...' : 'Save Changes'}
-              </button>
-            )}
+            <div className="flex items-center gap-3">
+              {isCollaborator && space.status === 'active' && (
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="btn btn-primary flex items-center gap-2"
+                >
+                  <Save className="w-5 h-5" />
+                  {saving ? 'Saving...' : 'Save Changes'}
+                </button>
+              )}
+
+              {!isCollaborator && space.status === 'active' && space.is_public && (
+                <>
+                  {joinRequestStatus === 'none' && (
+                    <button
+                      onClick={() => setShowJoinModal(true)}
+                      className="btn bg-green-600 text-white hover:bg-green-700 flex items-center gap-2"
+                    >
+                      <UserPlus className="w-5 h-5" />
+                      Join Space
+                    </button>
+                  )}
+                  {joinRequestStatus === 'pending' && (
+                    <span className="badge bg-yellow-100 text-yellow-800 px-4 py-2">
+                      Request Pending
+                    </span>
+                  )}
+                  {joinRequestStatus === 'rejected' && (
+                    <span className="badge bg-red-100 text-red-800 px-4 py-2">
+                      Request Rejected
+                    </span>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -195,6 +272,59 @@ export default function SpacePage() {
           </div>
         )}
       </div>
+
+      {/* Join Request Modal */}
+      {showJoinModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Request to Join Space</h2>
+              <button
+                onClick={() => setShowJoinModal(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-gray-600 mb-4">
+              Send a request to <span className="font-semibold">@{space?.creator?.username}</span> to join this collaborative space.
+            </p>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Message (Optional)
+              </label>
+              <textarea
+                value={joinMessage}
+                onChange={(e) => setJoinMessage(e.target.value)}
+                placeholder="Why would you like to join this space?"
+                rows={4}
+                className="input resize-none"
+                maxLength={500}
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                {joinMessage.length}/500 characters
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowJoinModal(false)}
+                className="flex-1 btn btn-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSendJoinRequest}
+                className="flex-1 btn bg-green-600 text-white hover:bg-green-700"
+              >
+                Send Request
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
