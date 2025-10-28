@@ -349,12 +349,13 @@ export default function DebatesPage() {
                         </button>
                       </>
                     )}
-                  {debate.status === 'concluded' && (
-                    <span className="badge bg-green-100 text-green-800 flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4" />
-                      Concluded
-                    </span>
-                  )}
+                    {debate.status === 'concluded' && (
+                      <span className="badge bg-green-100 text-green-800 flex items-center gap-1">
+                        <CheckCircle className="w-4 h-4" />
+                        Concluded
+                      </span>
+                    )}
+                  </div>
                 </div>
                 {debate.description && (
                   <p className="text-gray-600">{debate.description}</p>
@@ -478,7 +479,7 @@ export default function DebatesPage() {
                 Total votes: {(debate.votes_a ?? 0) + (debate.votes_b ?? 0)}
               </div>
             </div>
-          );
+            );
           })}
         </div>
 

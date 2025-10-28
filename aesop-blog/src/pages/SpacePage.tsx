@@ -51,7 +51,7 @@ export default function SpacePage() {
       }
     } catch (error) {
       console.error('Error fetching space:', error);
-      alert('Space not found or you don't have access');
+      alert('Space not found or you do not have access');
       navigate('/spaces');
     } finally {
       setLoading(false);
@@ -109,9 +109,9 @@ export default function SpacePage() {
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-4xl font-bold text-gray-900">{space.title}</h1>
                 {space.is_public ? (
-                  <Globe className="w-6 h-6 text-green-600" title="Public space" />
+                  <Globe className="w-6 h-6 text-green-600" />
                 ) : (
-                  <Lock className="w-6 h-6 text-gray-600" title="Private space" />
+                  <Lock className="w-6 h-6 text-gray-600" />
                 )}
                 {space.status === 'concluded' && (
                   <span className="badge bg-gray-500 text-white">Concluded</span>
