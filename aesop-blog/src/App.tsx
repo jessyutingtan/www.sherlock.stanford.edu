@@ -50,7 +50,7 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/www.sherlock.stanford.edu">
       <div className="min-h-screen bg-gray-50">
         {user && <Navbar />}
         <Routes>
