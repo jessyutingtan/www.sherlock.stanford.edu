@@ -2,27 +2,53 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
-import { Profile, Post } from '../types/database';
+import { Profile, Post, ThoughtBubble } from '../types/database';
 import PostCard from '../components/PostCard';
-import { Link as LinkIcon, Calendar, Users, Edit, LogOut } from 'lucide-react';
+import ThoughtBubbleCard from '../components/ThoughtBubbleCard';
+import {
+  Link as LinkIcon,
+  Calendar,
+  Users,
+  Edit,
+  LogOut,
+  FileText,
+  MessageCircle,
+  Eye,
+  TrendingUp,
+} from 'lucide-react';
 import { formatDate } from '../utils/date';
 
-export default function ProfilePage() {
+type ContentTab = 'all' | 'posts' | 'bubbles';
+
+export default function UserProfilePage() {
   const { username } = useParams();
   const { user: currentUser, signOut } = useAuthStore();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [bubbles, setBubbles] = useState<ThoughtBubble[]>([]);
   const [loading, setLoading] = useState(true);
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'posts' | 'drafts'>('posts');
+  const [activeTab, setActiveTab] = useState<ContentTab>('all');
+  const [stats, setStats] = useState({
+    totalPosts: 0,
+    totalBubbles: 0,
+    totalViews: 0,
+    totalLikes: 0,
+  });
 
   const isOwnProfile = currentUser?.username === username;
 
   useEffect(() => {
     fetchProfile();
   }, [username]);
+
+  useEffect(() => {
+    if (profile) {
+      fetchContent();
+    }
+  }, [profile, activeTab]);
 
   const fetchProfile = async () => {
     try {
@@ -61,8 +87,8 @@ export default function ProfilePage() {
         setIsFollowing(!!follow);
       }
 
-      // Fetch posts
-      await fetchPosts(profileData.id);
+      // Fetch user stats
+      await fetchStats(profileData.id);
     } catch (error) {
       console.error('Error fetching profile:', error);
     } finally {
@@ -70,69 +96,130 @@ export default function ProfilePage() {
     }
   };
 
+  const fetchStats = async (userId: string) => {
+    try {
+      // Count posts
+      const { count: postsCount } = await supabase
+        .from('posts')
+        .select('*', { count: 'exact', head: true })
+        .eq('author_id', userId)
+        .eq('is_published', true);
+
+      // Count bubbles
+      const { count: bubblesCount } = await supabase
+        .from('thought_bubbles')
+        .select('*', { count: 'exact', head: true })
+        .eq('author_id', userId);
+
+      // Sum views from posts
+      const { data: postsData } = await supabase
+        .from('posts')
+        .select('views')
+        .eq('author_id', userId)
+        .eq('is_published', true);
+
+      // Sum views from bubbles
+      const { data: bubblesData } = await supabase
+        .from('thought_bubbles')
+        .select('views')
+        .eq('author_id', userId);
+
+      const postViews = postsData?.reduce((sum, p) => sum + (p.views || 0), 0) || 0;
+      const bubbleViews = bubblesData?.reduce((sum, b) => sum + (b.views || 0), 0) || 0;
+
+      // Count total likes
+      const { count: likesCount } = await supabase
+        .from('likes')
+        .select('*', { count: 'exact', head: true })
+        .or(`post_id.in.(${postsData?.map(() => 'id').join(',')}),thought_bubble_id.in.(${bubblesData?.map(() => 'id').join(',')})`)
+        .eq('user_id', userId);
+
+      setStats({
+        totalPosts: postsCount || 0,
+        totalBubbles: bubblesCount || 0,
+        totalViews: postViews + bubbleViews,
+        totalLikes: likesCount || 0,
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  const fetchContent = async () => {
+    if (!profile) return;
+
+    try {
+      if (activeTab === 'all' || activeTab === 'posts') {
+        await fetchPosts(profile.id);
+      }
+      if (activeTab === 'all' || activeTab === 'bubbles') {
+        await fetchBubbles(profile.id);
+      }
+    } catch (error) {
+      console.error('Error fetching content:', error);
+    }
+  };
+
   const fetchPosts = async (userId: string) => {
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from('posts')
         .select(
           `
           *,
           author:profiles!posts_author_id_fkey(*),
           likes_count:likes(count),
-          comments_count:comments(count)
+          comments_count:comments(count),
+          shares_count:shares(count)
         `
         )
-        .eq('author_id', userId);
-
-      if (activeTab === 'posts') {
-        query = query.eq('is_published', true);
-      } else {
-        query = query.eq('is_published', false);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
+        .eq('author_id', userId)
+        .eq('is_published', true)
+        .order('published_at', { ascending: false });
 
       if (error) throw error;
 
-      // Add user-specific data
-      if (currentUser && data) {
-        const postsWithUserData = await Promise.all(
-          data.map(async (post) => {
-            const { data: likes } = await supabase
-              .from('likes')
-              .select('id')
-              .eq('user_id', currentUser.id)
-              .eq('post_id', post.id)
-              .single();
-
-            const { data: bookmark } = await supabase
-              .from('bookmarks')
-              .select('id')
-              .eq('user_id', currentUser.id)
-              .eq('post_id', post.id)
-              .single();
-
-            return {
-              ...post,
-              is_liked: !!likes,
-              is_bookmarked: !!bookmark,
-              likes_count: post.likes_count?.[0]?.count || 0,
-              comments_count: post.comments_count?.[0]?.count || 0,
-            };
-          })
-        );
-
-        setPosts(postsWithUserData as Post[]);
-      } else {
-        const formattedPosts = data?.map((post) => ({
+      const formattedPosts =
+        data?.map((post) => ({
           ...post,
           likes_count: post.likes_count?.[0]?.count || 0,
           comments_count: post.comments_count?.[0]?.count || 0,
-        }));
-        setPosts(formattedPosts as Post[]);
-      }
+          shares_count: post.shares_count?.[0]?.count || 0,
+        })) || [];
+
+      setPosts(formattedPosts as Post[]);
     } catch (error) {
       console.error('Error fetching posts:', error);
+    }
+  };
+
+  const fetchBubbles = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('thought_bubbles')
+        .select(
+          `
+          *,
+          author:profiles!thought_bubbles_author_id_fkey(*),
+          likes_count:likes(count),
+          shares_count:shares(count)
+        `
+        )
+        .eq('author_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const formattedBubbles =
+        data?.map((bubble) => ({
+          ...bubble,
+          likes_count: bubble.likes_count?.[0]?.count || 0,
+          shares_count: bubble.shares_count?.[0]?.count || 0,
+        })) || [];
+
+      setBubbles(formattedBubbles as ThoughtBubble[]);
+    } catch (error) {
+      console.error('Error fetching bubbles:', error);
     }
   };
 
@@ -148,9 +235,10 @@ export default function ProfilePage() {
         setIsFollowing(false);
         setFollowersCount((prev) => prev - 1);
       } else {
-        await supabase
-          .from('follows')
-          .insert({ follower_id: currentUser.id, following_id: profile.id });
+        await supabase.from('follows').insert({
+          follower_id: currentUser.id,
+          following_id: profile.id,
+        });
         setIsFollowing(true);
         setFollowersCount((prev) => prev + 1);
       }
@@ -182,8 +270,26 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Cover Image */}
+      {profile.background_image && (
+        <div className="h-64 w-full relative">
+          <img
+            src={profile.background_image}
+            alt="Profile background"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        </div>
+      )}
+
       {/* Header */}
-      <div className="gradient-bg text-white">
+      <div
+        className={`${
+          profile.background_image
+            ? '-mt-32 relative'
+            : 'gradient-bg'
+        } text-white`}
+      >
         <div className="max-w-5xl mx-auto px-4 py-12">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
             {/* Avatar */}
@@ -206,9 +312,11 @@ export default function ProfilePage() {
               </h1>
               <p className="text-white/80 text-lg mb-4">@{profile.username}</p>
 
-              {profile.bio && <p className="text-white/90 mb-4 max-w-2xl">{profile.bio}</p>}
+              {profile.bio && (
+                <p className="text-white/90 mb-4 max-w-2xl">{profile.bio}</p>
+              )}
 
-              <div className="flex flex-wrap gap-4 text-sm text-white/80">
+              <div className="flex flex-wrap gap-4 text-sm text-white/80 mb-4">
                 {profile.website && (
                   <a
                     href={profile.website}
@@ -226,7 +334,7 @@ export default function ProfilePage() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-6 mt-4">
+              <div className="flex items-center gap-6">
                 <div>
                   <span className="font-bold text-2xl">{followersCount}</span>
                   <span className="text-white/80 ml-2">Followers</span>
@@ -248,6 +356,13 @@ export default function ProfilePage() {
                   >
                     <Edit className="w-5 h-5" />
                     Edit Profile
+                  </Link>
+                  <Link
+                    to="/dashboard"
+                    className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 flex items-center gap-2"
+                  >
+                    <TrendingUp className="w-5 h-5" />
+                    Dashboard
                   </Link>
                   <button
                     onClick={signOut}
@@ -275,56 +390,118 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Tabs */}
-        {isOwnProfile && (
-          <div className="flex gap-4 mb-8 border-b border-gray-200">
-            <button
-              onClick={() => {
-                setActiveTab('posts');
-                if (profile) fetchPosts(profile.id);
-              }}
-              className={`pb-3 px-1 font-semibold transition-colors ${
-                activeTab === 'posts'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Published Posts
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab('drafts');
-                if (profile) fetchPosts(profile.id);
-              }}
-              className={`pb-3 px-1 font-semibold transition-colors ${
-                activeTab === 'drafts'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Drafts
-            </button>
+      {/* Stats Cards */}
+      <div className="max-w-5xl mx-auto px-4 -mt-8 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+            <div className="flex items-center gap-3">
+              <FileText className="w-8 h-8 text-blue-600" />
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{stats.totalPosts}</div>
+                <div className="text-sm text-gray-600">Posts</div>
+              </div>
+            </div>
           </div>
-        )}
+          <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+            <div className="flex items-center gap-3">
+              <MessageCircle className="w-8 h-8 text-purple-600" />
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{stats.totalBubbles}</div>
+                <div className="text-sm text-gray-600">Bubbles</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+            <div className="flex items-center gap-3">
+              <Eye className="w-8 h-8 text-green-600" />
+              <div>
+                <div className="text-2xl font-bold text-gray-900">
+                  {stats.totalViews.toLocaleString()}
+                </div>
+                <div className="text-sm text-gray-600">Total Views</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+            <div className="flex items-center gap-3">
+              <TrendingUp className="w-8 h-8 text-orange-600" />
+              <div>
+                <div className="text-2xl font-bold text-gray-900">
+                  {stats.totalLikes.toLocaleString()}
+                </div>
+                <div className="text-sm text-gray-600">Total Likes</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        {/* Posts */}
-        <div className="space-y-6">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} onUpdate={() => fetchPosts(profile.id)} />
-          ))}
+      {/* Content */}
+      <div className="max-w-4xl mx-auto px-4 pb-8">
+        {/* Tabs */}
+        <div className="flex gap-4 mb-8 border-b border-gray-200">
+          <button
+            onClick={() => setActiveTab('all')}
+            className={`pb-3 px-1 font-semibold transition-colors ${
+              activeTab === 'all'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            All Content
+          </button>
+          <button
+            onClick={() => setActiveTab('posts')}
+            className={`pb-3 px-1 font-semibold transition-colors ${
+              activeTab === 'posts'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Posts ({stats.totalPosts})
+          </button>
+          <button
+            onClick={() => setActiveTab('bubbles')}
+            className={`pb-3 px-1 font-semibold transition-colors ${
+              activeTab === 'bubbles'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Thought Bubbles ({stats.totalBubbles})
+          </button>
         </div>
 
-        {posts.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">
-              {activeTab === 'posts'
-                ? 'No published posts yet.'
-                : 'No drafts yet.'}
-            </p>
-          </div>
-        )}
+        {/* Content Feed */}
+        <div className="space-y-6">
+          {(activeTab === 'all' || activeTab === 'posts') &&
+            posts.map((post) => (
+              <PostCard key={post.id} post={post} onUpdate={fetchContent} />
+            ))}
+
+          {(activeTab === 'all' || activeTab === 'bubbles') &&
+            bubbles.map((bubble) => (
+              <ThoughtBubbleCard
+                key={bubble.id}
+                bubble={bubble}
+                onUpdate={fetchContent}
+              />
+            ))}
+
+          {((activeTab === 'posts' && posts.length === 0) ||
+            (activeTab === 'bubbles' && bubbles.length === 0) ||
+            (activeTab === 'all' && posts.length === 0 && bubbles.length === 0)) && (
+            <div className="text-center py-12">
+              <p className="text-gray-500">
+                {activeTab === 'posts'
+                  ? 'No posts yet.'
+                  : activeTab === 'bubbles'
+                  ? 'No thought bubbles yet.'
+                  : 'No content yet.'}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

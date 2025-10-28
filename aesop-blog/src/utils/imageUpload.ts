@@ -3,13 +3,13 @@ import { supabase } from '../lib/supabase';
 /**
  * Upload an image file to Supabase Storage
  * @param file - The file to upload
- * @param bucket - The storage bucket ('avatars' or 'covers')
+ * @param bucket - The storage bucket ('avatars', 'covers', or 'backgrounds')
  * @param userId - The user ID for organizing files
  * @returns The public URL of the uploaded file
  */
 export async function uploadImage(
   file: File,
-  bucket: 'avatars' | 'covers',
+  bucket: 'avatars' | 'covers' | 'backgrounds',
   userId: string
 ): Promise<string> {
   try {
@@ -63,7 +63,7 @@ export async function uploadImage(
  */
 export async function deleteImage(
   url: string,
-  bucket: 'avatars' | 'covers'
+  bucket: 'avatars' | 'covers' | 'backgrounds'
 ): Promise<void> {
   try {
     // Extract the path from the URL

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Compass, PenSquare, Bell, User, Bookmark, Users, Swords } from 'lucide-react';
+import { Home, Compass, PenSquare, Bell, User, Bookmark, Users, Swords, LayoutDashboard } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import Logo from './Logo';
 
@@ -13,6 +13,7 @@ export default function Navbar() {
     { path: '/feed', icon: Home, label: 'Feed' },
     { path: '/explore', icon: Compass, label: 'Explore' },
     { path: '/write', icon: PenSquare, label: 'Write' },
+    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/spaces', icon: Users, label: 'Spaces' },
     { path: '/debates', icon: Swords, label: 'Debates' },
     { path: '/bookmarks', icon: Bookmark, label: 'Bookmarks' },

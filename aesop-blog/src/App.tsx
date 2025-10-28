@@ -17,6 +17,7 @@ import NotificationsPage from './pages/NotificationsPage';
 import BookmarksPage from './pages/BookmarksPage';
 import CollaborativeSpacesPage from './pages/CollaborativeSpacesPage';
 import DebatesPage from './pages/DebatesPage';
+import DashboardPage from './pages/DashboardPage';
 
 // Components
 import Navbar from './components/Navbar';
@@ -117,6 +118,10 @@ function App() {
           <Route
             path="/debates"
             element={user ? <DebatesPage /> : <Navigate to="/auth" />}
+          />
+          <Route
+            path="/dashboard"
+            element={user ? <DashboardPage /> : <Navigate to="/auth" />}
           />
 
           {/* 404 */}

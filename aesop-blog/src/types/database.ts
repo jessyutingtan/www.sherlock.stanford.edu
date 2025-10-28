@@ -22,6 +22,7 @@ export interface Profile {
   full_name: string | null;
   username: string;
   avatar_url: string | null;
+  background_image: string | null;
   bio: string | null;
   website: string | null;
   communities: CommunityType[];
@@ -52,8 +53,10 @@ export interface Post {
   author?: Profile;
   likes_count?: number;
   comments_count?: number;
+  shares_count?: number;
   is_liked?: boolean;
   is_bookmarked?: boolean;
+  is_shared?: boolean;
 }
 
 export interface ThoughtBubble {
@@ -62,11 +65,14 @@ export interface ThoughtBubble {
   content: string;
   mood: MoodType;
   attached_post_id: string | null;
+  views: number;
   created_at: string;
   // Joined data
   author?: Profile;
   likes_count?: number;
+  shares_count?: number;
   is_liked?: boolean;
+  is_shared?: boolean;
 }
 
 export interface CollaborativeSpace {
@@ -155,6 +161,19 @@ export interface Follow {
   follower_id: string;
   following_id: string;
   created_at: string;
+}
+
+export interface Share {
+  id: string;
+  user_id: string;
+  post_id: string | null;
+  thought_bubble_id: string | null;
+  comment: string | null;
+  created_at: string;
+  // Joined data
+  user?: Profile;
+  post?: Post;
+  thought_bubble?: ThoughtBubble;
 }
 
 export interface Notification {
