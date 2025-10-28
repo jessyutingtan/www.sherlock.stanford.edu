@@ -352,24 +352,24 @@ export default function UserProfilePage() {
                 <>
                   <Link
                     to="/profile/edit"
-                    className="btn bg-white text-blue-600 hover:bg-gray-100 flex items-center gap-2"
+                    className="btn bg-gray-900 text-white hover:bg-gray-800 flex items-center gap-2 shadow-lg border-2 border-white"
                   >
                     <Edit className="w-5 h-5" />
-                    Edit Profile
+                    <span className="font-bold">Edit Profile</span>
                   </Link>
                   <Link
                     to="/dashboard"
-                    className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 flex items-center gap-2"
+                    className="btn bg-gray-900 text-white hover:bg-gray-800 flex items-center gap-2 shadow-lg border-2 border-white"
                   >
                     <TrendingUp className="w-5 h-5" />
-                    Dashboard
+                    <span className="font-bold">Dashboard</span>
                   </Link>
                   <button
                     onClick={signOut}
-                    className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 flex items-center gap-2"
+                    className="btn bg-gray-900 text-white hover:bg-gray-800 flex items-center gap-2 shadow-lg border-2 border-white"
                   >
                     <LogOut className="w-5 h-5" />
-                    Sign Out
+                    <span className="font-bold">Sign Out</span>
                   </button>
                 </>
               ) : (
@@ -377,8 +377,8 @@ export default function UserProfilePage() {
                   onClick={handleFollow}
                   className={`btn flex items-center gap-2 ${
                     isFollowing
-                      ? 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30'
-                      : 'bg-white text-blue-600 hover:bg-gray-100'
+                      ? 'bg-gray-900 text-white hover:bg-gray-800 border-2 border-white'
+                      : 'bg-gray-900 text-white hover:bg-gray-800 border-2 border-white'
                   }`}
                 >
                   <Users className="w-5 h-5" />

@@ -365,14 +365,17 @@ export default function WritePage() {
             <label className="block text-sm font-medium text-cyber-200 mb-2">
               Content
             </label>
-            <ReactQuill
-              ref={quillRef}
-              theme="snow"
-              value={content}
-              onChange={setContent}
-              modules={modules}
-              placeholder="Tell your story..."
-            />
+            <div className="quill-wrapper">
+              <ReactQuill
+                ref={quillRef}
+                theme="snow"
+                value={content}
+                onChange={setContent}
+                modules={modules}
+                placeholder="Tell your story..."
+                style={{ height: '800px' }}
+              />
+            </div>
           </div>
 
           {/* Tags */}

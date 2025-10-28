@@ -172,11 +172,16 @@
 }
 
 .ql-editor {
-  min-height: 300px;
+  min-height: 800px;
   font-size: 16px;
   line-height: 1.6;
   background: white !important;
   color: #1f2937 !important;
+}
+
+/* Wrapper for proper spacing after Quill editor */
+.quill-wrapper {
+  margin-bottom: 2rem;
 }
 
 .ql-editor h1 {

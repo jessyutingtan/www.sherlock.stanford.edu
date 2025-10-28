@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { Heart, MessageCircle, Bookmark, Share2, Eye } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Heart, MessageCircle, Bookmark, Share2, Eye, Edit } from 'lucide-react';
 import { Post } from '../types/database';
 import { formatRelativeTime } from '../utils/date';
 import { formatReadingTime } from '../utils/readingTime';
@@ -14,9 +14,12 @@ interface PostCardProps {
 
 export default function PostCard({ post, onUpdate }: PostCardProps) {
   const { user } = useAuthStore();
+  const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(post.is_liked || false);
   const [isBookmarked, setIsBookmarked] = useState(post.is_bookmarked || false);
   const [likesCount, setLikesCount] = useState(post.likes_count || 0);
+
+  const isOwnPost = user?.id === post.author_id;
 
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -57,6 +60,11 @@ export default function PostCard({ post, onUpdate }: PostCardProps) {
       await navigator.clipboard.writeText(url);
       alert('Link copied to clipboard!');
     }
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(`/write/${post.id}`);
   };
 
   return (
@@ -144,6 +152,16 @@ export default function PostCard({ post, onUpdate }: PostCardProps) {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
+            {isOwnPost && (
+              <button
+                onClick={handleEdit}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
+              >
+                <Edit className="w-5 h-5" />
+                <span className="text-sm font-medium">Edit</span>
+              </button>
+            )}
+
             <button
               onClick={handleLike}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors ${
