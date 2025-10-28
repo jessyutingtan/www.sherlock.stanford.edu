@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
-import { Post } from '../types/database';
+import { Post, CommunityType, TopicType, COMMUNITIES, TOPICS } from '../types/database';
 import { X, Search } from 'lucide-react';
+import DynamicIcon from './DynamicIcon';
 
 interface CreateDebateModalProps {
   isOpen: boolean;
@@ -22,6 +23,12 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
   const [selectedPostB, setSelectedPostB] = useState<Post | null>(null);
   const [loading, setLoading] = useState(false);
   const [recentPosts, setRecentPosts] = useState<Post[]>([]);
+
+  // New fields for communities, topics, keywords
+  const [communities, setCommunities] = useState<CommunityType[]>([]);
+  const [topics, setTopics] = useState<TopicType[]>([]);
+  const [keywords, setKeywords] = useState<string[]>([]);
+  const [keywordInput, setKeywordInput] = useState('');
 
   // Load recent posts when modal opens
   useEffect(() => {
@@ -78,12 +85,52 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
     }
   };
 
+  const toggleCommunity = (community: CommunityType) => {
+    setCommunities((prev) =>
+      prev.includes(community)
+        ? prev.filter((c) => c !== community)
+        : [...prev, community]
+    );
+  };
+
+  const toggleTopic = (topic: TopicType) => {
+    setTopics((prev) =>
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
+    );
+  };
+
+  const handleAddKeyword = () => {
+    if (keywordInput.trim() && !keywords.includes(keywordInput.trim())) {
+      setKeywords([...keywords, keywordInput.trim()]);
+      setKeywordInput('');
+    }
+  };
+
+  const handleRemoveKeyword = (keyword: string) => {
+    setKeywords(keywords.filter((k) => k !== keyword));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !selectedPostA || !selectedPostB || !title.trim() || loading) return;
 
     if (selectedPostA.id === selectedPostB.id) {
       alert('Please select two different posts');
+      return;
+    }
+
+    if (communities.length === 0) {
+      alert('Please select at least one community');
+      return;
+    }
+
+    if (topics.length === 0) {
+      alert('Please select at least one topic');
+      return;
+    }
+
+    if (keywords.length === 0) {
+      alert('Please add at least one keyword');
       return;
     }
 
@@ -95,6 +142,9 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
         post_a_id: selectedPostA.id,
         post_b_id: selectedPostB.id,
         creator_id: user.id,
+        communities,
+        topics,
+        keywords,
         status: 'active',
       });
 
@@ -105,6 +155,10 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
       setSearchA('');
       setSearchB('');
       setSelectedPostA(null);
+      setCommunities([]);
+      setTopics([]);
+      setKeywords([]);
+      setKeywordInput('');
       setSelectedPostB(null);
       onCreated();
       onClose();
@@ -288,6 +342,92 @@ export default function CreateDebateModal({ isOpen, onClose, onCreated }: Create
                 )}
               </>
             )}
+          </div>
+
+          {/* Communities */}
+          <div>
+            <label className="block text-sm font-semibold text-white mb-3">
+              Communities * (select at least 1)
+            </label>
+            <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 border border-cyber-700 rounded-lg">
+              {COMMUNITIES.map((community) => (
+                <button
+                  key={community.value}
+                  type="button"
+                  onClick={() => toggleCommunity(community.value)}
+                  className={`badge flex items-center gap-2 ${
+                    communities.includes(community.value)
+                      ? 'bg-orange-500 text-white border-2 border-yellow-400'
+                      : 'bg-cyber-800 text-gray-300 border border-cyber-700'
+                  }`}
+                >
+                  <DynamicIcon name={community.icon} size={16} />
+                  {community.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Topics */}
+          <div>
+            <label className="block text-sm font-semibold text-white mb-3">
+              Topics * (select at least 1)
+            </label>
+            <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 border border-cyber-700 rounded-lg">
+              {TOPICS.map((topic) => (
+                <button
+                  key={topic.value}
+                  type="button"
+                  onClick={() => toggleTopic(topic.value)}
+                  className={`badge flex items-center gap-2 ${
+                    topics.includes(topic.value)
+                      ? 'bg-orange-500 text-white border-2 border-yellow-400'
+                      : 'bg-cyber-800 text-gray-300 border border-cyber-700'
+                  }`}
+                >
+                  <DynamicIcon name={topic.icon} size={16} />
+                  {topic.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Keywords */}
+          <div>
+            <label className="block text-sm font-semibold text-white mb-2">
+              Keywords * (add at least 1)
+            </label>
+            <div className="flex gap-2 mb-3">
+              <input
+                type="text"
+                value={keywordInput}
+                onChange={(e) => setKeywordInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddKeyword())}
+                placeholder="Add a keyword..."
+                className="input flex-1 bg-cyber-800 border-cyber-700 text-white"
+              />
+              <button
+                type="button"
+                onClick={handleAddKeyword}
+                className="btn bg-gradient-to-r from-cyan-600 to-blue-600 text-white"
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {keywords.map((keyword) => (
+                <span key={keyword} className="badge bg-blue-500 text-white flex items-center gap-1">
+                  {keyword}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveKeyword(keyword)}
+                    className="ml-1 hover:text-red-400"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Submit */}
