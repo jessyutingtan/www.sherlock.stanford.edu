@@ -192,7 +192,11 @@ export default function DebatesPage() {
 
       if (error) throw error;
 
-      fetchDebates();
+      // Remove from local state immediately for instant feedback
+      setDebates(debates.filter((d) => d.id !== debateId));
+
+      // Then refresh from server to ensure consistency
+      await fetchDebates();
       alert('Debate concluded successfully');
     } catch (error) {
       console.error('Error concluding debate:', error);
