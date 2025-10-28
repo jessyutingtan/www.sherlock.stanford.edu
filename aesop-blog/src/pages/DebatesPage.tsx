@@ -185,18 +185,21 @@ export default function DebatesPage() {
     }
 
     try {
+      // Update the debate status in the database
       const { error } = await supabase
         .from('debates')
         .update({ status: 'concluded' })
         .eq('id', debateId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error concluding debate:', error);
+        throw error;
+      }
 
-      // Remove from local state immediately for instant feedback
-      setDebates(debates.filter((d) => d.id !== debateId));
-
-      // Then refresh from server to ensure consistency
+      // Refresh the debates list - the concluded debate will be filtered out
+      // since we're fetching debates with status matching the current tab
       await fetchDebates();
+
       alert('Debate concluded successfully');
     } catch (error) {
       console.error('Error concluding debate:', error);
