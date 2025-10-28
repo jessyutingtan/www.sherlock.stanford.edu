@@ -2,21 +2,66 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
-import { Debate } from '../types/database';
-import { Swords, Plus, TrendingUp, CheckCircle } from 'lucide-react';
+import { Debate, CommunityType, TopicType, COMMUNITIES, TOPICS } from '../types/database';
+import { Swords, Plus, TrendingUp, CheckCircle, Search, X, Trash2 } from 'lucide-react';
 import { formatRelativeTime } from '../utils/date';
 import CreateDebateModal from '../components/CreateDebateModal';
 
 export default function DebatesPage() {
   const { user } = useAuthStore();
   const [debates, setDebates] = useState<Debate[]>([]);
+  const [filteredDebates, setFilteredDebates] = useState<Debate[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'active' | 'voting' | 'concluded'>('active');
   const [showCreateModal, setShowCreateModal] = useState(false);
 
+  // Search/Filter state
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [filterCommunity, setFilterCommunity] = useState<CommunityType | 'all'>('all');
+  const [filterTopic, setFilterTopic] = useState<TopicType | 'all'>('all');
+
   useEffect(() => {
     fetchDebates();
   }, [filter]);
+
+  useEffect(() => {
+    applyFilters();
+  }, [debates, searchKeyword, filterCommunity, filterTopic]);
+
+  const applyFilters = () => {
+    let filtered = [...debates];
+
+    // Filter by keyword
+    if (searchKeyword.trim()) {
+      const keyword = searchKeyword.toLowerCase();
+      filtered = filtered.filter(
+        (debate) =>
+          debate.title.toLowerCase().includes(keyword) ||
+          debate.description?.toLowerCase().includes(keyword) ||
+          debate.keywords?.some((k) => k.toLowerCase().includes(keyword))
+      );
+    }
+
+    // Filter by community
+    if (filterCommunity !== 'all') {
+      filtered = filtered.filter((debate) =>
+        debate.communities?.includes(filterCommunity)
+      );
+    }
+
+    // Filter by topic
+    if (filterTopic !== 'all') {
+      filtered = filtered.filter((debate) => debate.topics?.includes(filterTopic));
+    }
+
+    setFilteredDebates(filtered);
+  };
+
+  const handleClearSearch = () => {
+    setSearchKeyword('');
+    setFilterCommunity('all');
+    setFilterTopic('all');
+  };
 
   const fetchDebates = async () => {
     try {
@@ -113,6 +158,48 @@ export default function DebatesPage() {
     }
   };
 
+  const handleDeleteDebate = async (debateId: string) => {
+    if (!confirm('Are you sure you want to delete this debate? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('debates')
+        .delete()
+        .eq('id', debateId);
+
+      if (error) throw error;
+
+      setDebates(debates.filter((d) => d.id !== debateId));
+      alert('Debate deleted successfully');
+    } catch (error) {
+      console.error('Error deleting debate:', error);
+      alert('Failed to delete debate');
+    }
+  };
+
+  const handleConcludeDebate = async (debateId: string) => {
+    if (!confirm('Are you sure you want to conclude this debate? Voting will end.')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('debates')
+        .update({ status: 'concluded' })
+        .eq('id', debateId);
+
+      if (error) throw error;
+
+      fetchDebates();
+      alert('Debate concluded successfully');
+    } catch (error) {
+      console.error('Error concluding debate:', error);
+      alert('Failed to conclude debate');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -142,8 +229,8 @@ export default function DebatesPage() {
           </button>
         </div>
 
-        {/* Filters */}
-        <div className="flex gap-3 mb-8">
+        {/* Status Filters */}
+        <div className="flex gap-3 mb-6">
           <button
             onClick={() => setFilter('active')}
             className={`btn ${filter === 'active' ? 'btn-primary' : 'btn-secondary'}`}
@@ -164,14 +251,104 @@ export default function DebatesPage() {
           </button>
         </div>
 
+        {/* Search and Filters */}
+        <div className="card p-6 mb-6">
+          <div className="grid md:grid-cols-3 gap-4 mb-4">
+            {/* Keyword Search */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Search className="w-4 h-4 inline mr-1" />
+                Search Keyword
+              </label>
+              <input
+                type="text"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                placeholder="Type keyword..."
+                className="input"
+              />
+            </div>
+
+            {/* Community Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Community</label>
+              <select
+                value={filterCommunity}
+                onChange={(e) => setFilterCommunity(e.target.value as CommunityType | 'all')}
+                className="input"
+              >
+                <option value="all">All Communities</option>
+                {COMMUNITIES.map((community) => (
+                  <option key={community.value} value={community.value}>
+                    {community.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Topic Filter */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Topic</label>
+              <select
+                value={filterTopic}
+                onChange={(e) => setFilterTopic(e.target.value as TopicType | 'all')}
+                className="input"
+              >
+                <option value="all">All Topics</option>
+                {TOPICS.map((topic) => (
+                  <option key={topic.value} value={topic.value}>
+                    {topic.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Clear Search Button */}
+          {(searchKeyword || filterCommunity !== 'all' || filterTopic !== 'all') && (
+            <button
+              onClick={handleClearSearch}
+              className="btn btn-secondary flex items-center gap-2"
+            >
+              <X className="w-4 h-4" />
+              Clear Search
+            </button>
+          )}
+        </div>
+
         {/* Debates list */}
         <div className="space-y-6">
-          {debates.map((debate) => (
+          {filteredDebates.map((debate) => {
+            const isCreator = user?.id === debate.creator_id;
+            return (
             <div key={debate.id} className="card p-6">
               {/* Debate header */}
               <div className="mb-6">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-2xl font-bold text-gray-900">{debate.title}</h3>
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold text-gray-900">{debate.title}</h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {isCreator && (
+                      <>
+                        {debate.status !== 'concluded' && (
+                          <button
+                            onClick={() => handleConcludeDebate(debate.id)}
+                            className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                            title="Conclude debate"
+                          >
+                            <CheckCircle className="w-5 h-5" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDeleteDebate(debate.id)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete debate"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </>
+                    )}
                   {debate.status === 'concluded' && (
                     <span className="badge bg-green-100 text-green-800 flex items-center gap-1">
                       <CheckCircle className="w-4 h-4" />
@@ -301,10 +478,11 @@ export default function DebatesPage() {
                 Total votes: {(debate.votes_a ?? 0) + (debate.votes_b ?? 0)}
               </div>
             </div>
-          ))}
+          );
+          })}
         </div>
 
-        {debates.length === 0 && (
+        {filteredDebates.length === 0 && (
           <div className="text-center py-12 card">
             <Swords className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
