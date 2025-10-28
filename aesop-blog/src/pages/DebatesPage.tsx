@@ -185,21 +185,30 @@ export default function DebatesPage() {
     }
 
     try {
+      console.log('Concluding debate:', debateId);
+      console.log('Current filter:', filter);
+      console.log('Current debates count:', debates.length);
+
       // Update the debate status in the database
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('debates')
         .update({ status: 'concluded' })
-        .eq('id', debateId);
+        .eq('id', debateId)
+        .select();
 
       if (error) {
         console.error('Error concluding debate:', error);
         throw error;
       }
 
-      // Refresh the debates list - the concluded debate will be filtered out
-      // since we're fetching debates with status matching the current tab
-      await fetchDebates();
+      console.log('Database updated successfully:', data);
 
+      // Immediately remove from local state for instant feedback
+      const updatedDebates = debates.filter((d) => d.id !== debateId);
+      console.log('Setting debates to:', updatedDebates.length);
+      setDebates(updatedDebates);
+
+      // The useEffect will automatically call applyFilters when debates changes
       alert('Debate concluded successfully');
     } catch (error) {
       console.error('Error concluding debate:', error);
