@@ -29,6 +29,9 @@ jobs:
 
       - name: Build
         working-directory: ./aesop-blog
+        env:
+          VITE_SUPABASE_URL: https://brfhmicaevihawrqwyhf.supabase.co
+          VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJyZmhtaWNhZXZpaGF3cnF3eWhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1MTE1NzYsImV4cCI6MjA3NzA4NzU3Nn0.KJrMq-AmgNLc295IiI-pV6EF93O07jFsMc0iWSkRsps
         run: npm run build
 
       - name: Deploy to GitHub Pages
