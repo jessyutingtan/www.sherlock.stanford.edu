@@ -16,6 +16,7 @@ import EditProfilePage from './pages/EditProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
 import BookmarksPage from './pages/BookmarksPage';
 import CollaborativeSpacesPage from './pages/CollaborativeSpacesPage';
+import SpacePage from './pages/SpacePage';
 import DebatesPage from './pages/DebatesPage';
 import DashboardPage from './pages/DashboardPage';
 
@@ -114,6 +115,10 @@ function App() {
           <Route
             path="/spaces"
             element={user ? <CollaborativeSpacesPage /> : <Navigate to="/auth" />}
+          />
+          <Route
+            path="/space/:id"
+            element={user ? <SpacePage /> : <Navigate to="/auth" />}
           />
           <Route
             path="/debates"
