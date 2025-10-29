@@ -10,6 +10,7 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -47,10 +48,11 @@ export default function AuthPage() {
         }
 
         // Sign up with metadata - the database trigger will create the profile automatically
-        const { error: signUpError } = await supabase.auth.signUp({
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email: formData.email,
           password: formData.password,
           options: {
+            emailRedirectTo: `${window.location.origin}/#/onboarding`,
             data: {
               username: formData.username,
               full_name: formData.fullName || null,
@@ -60,8 +62,14 @@ export default function AuthPage() {
 
         if (signUpError) throw signUpError;
 
-        // Profile is automatically created by the database trigger
-        navigate('/onboarding');
+        // Check if email confirmation is required
+        if (signUpData.user && !signUpData.session) {
+          // Email confirmation is required
+          setEmailSent(true);
+        } else {
+          // No email confirmation needed (or instant confirmation)
+          navigate('/onboarding');
+        }
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred');
@@ -88,14 +96,41 @@ export default function AuthPage() {
 
         {/* Form */}
         <div className="card p-8 backdrop-blur-md">
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-800">{error}</p>
+          {emailSent ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-8 h-8 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-4">Check Your Email</h2>
+              <p className="text-cyan-200 mb-6">
+                We've sent a confirmation email to <strong className="text-white">{formData.email}</strong>.
+                Please click the link in the email to activate your account and complete the onboarding process.
+              </p>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p className="text-sm text-blue-800">
+                  <strong>Note:</strong> Check your spam folder if you don't see the email in a few minutes.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setEmailSent(false);
+                  setIsLogin(true);
+                }}
+                className="btn btn-secondary w-full"
+              >
+                Back to Sign In
+              </button>
             </div>
-          )}
+          ) : (
+            <>
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-800">{error}</p>
+                </div>
+              )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5">
             {!isLogin && (
               <>
                 <div>
@@ -195,6 +230,8 @@ export default function AuthPage() {
                 : 'Already have an account? Sign in'}
             </button>
           </div>
+          </>
+          )}
         </div>
 
         <p className="mt-6 text-center text-cyan-200 text-sm">
