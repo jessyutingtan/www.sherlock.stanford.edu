@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { PenSquare, Users, Sparkles, Heart, MessageCircle, TrendingUp } from 'lucide-react';
 import Logo from '../components/Logo';
+import { COMMUNITIES } from '../types/database';
+import DynamicIcon from '../components/DynamicIcon';
 
 export default function LandingPage() {
   const features = [
@@ -51,20 +53,14 @@ export default function LandingPage() {
           <p className="text-2xl md:text-3xl mb-12 text-white font-medium max-w-3xl mx-auto drop-shadow-lg">
             An exceptional social blogging platform where writers, thinkers, and creators come together
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <div className="flex justify-center items-center">
             <Link
               to="/auth"
-              className="btn group relative overflow-hidden bg-gradient-to-r from-cyan-500 to-neon-500 text-white hover:from-cyan-400 hover:to-neon-400 text-2xl font-bold px-16 py-8 shadow-2xl shadow-cyan-500/50 hover:shadow-cyan-400/60 transition-all transform hover:scale-105 rounded-2xl"
+              className="btn group relative overflow-hidden bg-gradient-to-br from-cyan-400 via-cyan-500 to-cyan-600 border-4 border-yellow-400 text-orange-500 hover:text-orange-400 text-4xl font-black px-20 py-10 shadow-[0_0_40px_rgba(34,211,238,0.8),0_0_80px_rgba(34,211,238,0.4)] hover:shadow-[0_0_60px_rgba(34,211,238,1),0_0_100px_rgba(34,211,238,0.6)] transition-all transform hover:scale-110 rounded-3xl animate-pulse-glow"
             >
-              <span className="relative z-10">Get Started</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+              <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Get Started</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/0 via-yellow-300/30 to-yellow-300/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
             </Link>
-            <a
-              href="#features"
-              className="btn bg-cyber-900/50 backdrop-blur-sm text-white hover:bg-cyber-800/50 border-2 border-cyan-400/50 hover:border-cyan-300 text-xl font-semibold px-12 py-6 rounded-xl transition-all"
-            >
-              Learn More
-            </a>
           </div>
         </div>
       </section>
@@ -99,29 +95,31 @@ export default function LandingPage() {
 
       {/* Communities Section */}
       <section className="py-20 px-4 bg-gradient-to-b from-cyber-900 to-cyber-950">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-5xl font-black mb-4 text-white">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-6xl font-black mb-6 text-white">
             Find Your <span className="gradient-text">Community</span>
           </h2>
-          <p className="text-cyan-200 text-xl mb-12 max-w-2xl mx-auto">
+          <p className="text-cyan-200 text-2xl mb-16 whitespace-nowrap overflow-x-auto">
             Join communities of students, scholars, professionals, coders, writers, artists, and more
           </p>
 
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {['Students 🎓', 'Scholars 📚', 'Coders 💻', 'Writers ✍️', 'Artists 🎨',
-              'Scientists 🔬', 'Entrepreneurs 🚀', 'Creatives ✨'].map((community) => (
-              <span
-                key={community}
-                className="badge badge-primary px-5 py-3 text-lg font-semibold"
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-12">
+            {COMMUNITIES.map((community) => (
+              <div
+                key={community.value}
+                className="p-5 rounded-xl border-2 border-cyan-500/50 bg-cyber-900/50 hover:bg-orange-500/20 hover:border-yellow-400 transition-all transform hover:scale-105 shadow-lg shadow-cyan-500/20"
               >
-                {community}
-              </span>
+                <div className="mb-3 flex justify-center">
+                  <DynamicIcon name={community.icon} size={40} className="text-cyan-300" />
+                </div>
+                <div className="font-bold text-white text-base">{community.label}</div>
+              </div>
             ))}
           </div>
 
           <Link
             to="/auth"
-            className="btn btn-primary text-xl font-bold px-12 py-6 inline-block rounded-xl"
+            className="btn btn-primary text-2xl font-bold px-16 py-7 inline-block rounded-xl shadow-xl hover:scale-105 transition-transform"
           >
             Join Your Community
           </Link>
