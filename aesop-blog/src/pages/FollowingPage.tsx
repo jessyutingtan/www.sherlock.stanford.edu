@@ -180,11 +180,11 @@ export default function FollowingPage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-black text-white mb-2 flex items-center gap-3">
-            <UserCheck className="w-10 h-10 text-cyan-400" />
+          <h1 className="text-4xl font-black text-blue-600 mb-2 flex items-center gap-3">
+            <UserCheck className="w-10 h-10 text-blue-900" />
             Following
           </h1>
-          <p className="text-cyan-200 text-lg">
+          <p className="text-gray-900 text-lg font-semibold">
             Authors you follow • {following.length} total
           </p>
         </div>
