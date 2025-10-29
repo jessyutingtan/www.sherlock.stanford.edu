@@ -168,6 +168,10 @@ export interface Follow {
   follower_id: string;
   following_id: string;
   created_at: string;
+  last_checked_at?: string;
+  // Joined data
+  following?: Profile; // The user being followed
+  has_new_content?: boolean; // Whether they have new content
 }
 
 export interface Share {

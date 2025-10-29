@@ -16,6 +16,7 @@ import ProfilePage from './pages/ProfilePage';
 import EditProfilePage from './pages/EditProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
 import BookmarksPage from './pages/BookmarksPage';
+import FollowingPage from './pages/FollowingPage';
 import CollaborativeSpacesPage from './pages/CollaborativeSpacesPage';
 import SpacePage from './pages/SpacePage';
 import DebatesPage from './pages/DebatesPage';
@@ -187,6 +188,16 @@ function App() {
             element={
               user ? (
                 needsOnboarding ? <Navigate to="/onboarding" /> : <BookmarksPage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
+          />
+          <Route
+            path="/following"
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <FollowingPage />
               ) : (
                 <Navigate to="/auth" />
               )
