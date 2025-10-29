@@ -14,6 +14,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
   const sizeConfig = sizes[size];
 
   // Intertwined A+E Logo - Elegant, Fluid, Memorable
+  // A's right line is FUSED with E's vertical spine
   return (
     <div className={`flex items-center ${sizeConfig.gap} ${className}`}>
       {/* Intertwined A and E Logo */}
@@ -40,80 +41,102 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
                 <feMergeNode in="SourceGraphic"/>
               </feMerge>
             </filter>
+
+            {/* Special gradient for the SHARED line to emphasize fusion */}
+            <linearGradient id="sharedLineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#EC4899" />
+              <stop offset="50%" stopColor="#F97316" />
+              <stop offset="100%" stopColor="#EC4899" />
+            </linearGradient>
           </defs>
 
-          {/* Letter A - Left side */}
           <g filter="url(#glow)">
-            {/* Left stroke of A */}
+            {/* Letter A - Left stroke */}
             <path
-              d="M 25 75 L 40 20"
+              d="M 20 75 L 40 20"
               stroke="url(#letterGradient)"
-              strokeWidth="8"
+              strokeWidth="7"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
 
-            {/* Right stroke of A - This FUSES into E's vertical line */}
+            {/* SHARED VERTICAL LINE - This is BOTH A's right stroke AND E's left spine */}
             <path
-              d="M 40 20 L 55 75"
-              stroke="url(#letterGradient)"
-              strokeWidth="8"
+              d="M 40 20 L 40 75"
+              stroke="url(#sharedLineGradient)"
+              strokeWidth="9"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
 
-            {/* Crossbar of A */}
+            {/* A's crossbar */}
             <path
-              d="M 30 52 L 50 52"
+              d="M 25 52 L 40 52"
               stroke="url(#letterGradient)"
-              strokeWidth="6"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+
+            {/* E's top horizontal - extends from shared line */}
+            <path
+              d="M 40 20 L 65 20"
+              stroke="url(#letterGradient)"
+              strokeWidth="7"
+              strokeLinecap="round"
+            />
+
+            {/* E's middle horizontal - extends from shared line */}
+            <path
+              d="M 40 47.5 L 60 47.5"
+              stroke="url(#letterGradient)"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+
+            {/* E's bottom horizontal - extends from shared line */}
+            <path
+              d="M 40 75 L 65 75"
+              stroke="url(#letterGradient)"
+              strokeWidth="7"
+              strokeLinecap="round"
+            />
+
+            {/* Accent marks to emphasize the fusion point */}
+            <circle
+              cx="40"
+              cy="20"
+              r="3"
+              fill="url(#letterGradient)"
+              opacity="0.8"
+            />
+            <circle
+              cx="40"
+              cy="75"
+              r="3"
+              fill="url(#letterGradient)"
+              opacity="0.8"
+            />
+
+            {/* Flowing accent curve at top - emphasizes the fusion */}
+            <path
+              d="M 38 18 Q 40 15, 42 18"
+              stroke="url(#letterGradient)"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.5"
               strokeLinecap="round"
             />
           </g>
 
-          {/* Letter E - Right side, FUSED to A */}
-          <g filter="url(#glow)">
-            {/* Vertical spine of E (continues from A's right stroke) */}
-            <path
-              d="M 55 25 L 55 75"
-              stroke="url(#letterGradient)"
-              strokeWidth="8"
-              strokeLinecap="round"
-            />
-
-            {/* Top horizontal of E */}
-            <path
-              d="M 55 25 L 75 25"
-              stroke="url(#letterGradient)"
-              strokeWidth="8"
-              strokeLinecap="round"
-            />
-
-            {/* Middle horizontal of E */}
-            <path
-              d="M 55 50 L 70 50"
-              stroke="url(#letterGradient)"
-              strokeWidth="6"
-              strokeLinecap="round"
-            />
-
-            {/* Bottom horizontal of E */}
-            <path
-              d="M 55 75 L 75 75"
-              stroke="url(#letterGradient)"
-              strokeWidth="8"
-              strokeLinecap="round"
-            />
-          </g>
-
-          {/* Flowing accent curve - adds fluidity */}
-          <path
-            d="M 40 20 Q 50 15, 55 25"
-            stroke="url(#letterGradient)"
-            strokeWidth="3"
+          {/* Optional: Subtle background circle for depth */}
+          <circle
+            cx="45"
+            cy="47.5"
+            r="38"
             fill="none"
-            opacity="0.6"
-            strokeLinecap="round"
+            stroke="url(#letterGradient)"
+            strokeWidth="1"
+            opacity="0.15"
           />
         </svg>
       </div>
