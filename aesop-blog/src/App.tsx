@@ -46,6 +46,9 @@ function App() {
     };
   }, []);
 
+  // Check if user needs to complete onboarding
+  const needsOnboarding = user && (!user.communities?.length || !user.topics?.length);
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -53,80 +56,176 @@ function App() {
   return (
     <HashRouter>
       <div className="min-h-screen bg-gray-50">
-        {user && <Navbar />}
+        {user && !needsOnboarding && <Navbar />}
         <Routes>
           {/* Public routes */}
           <Route
             path="/"
-            element={user ? <Navigate to="/feed" /> : <LandingPage />}
-          />
-          <Route
-            path="/auth"
-            element={user ? <Navigate to="/feed" /> : <AuthPage />}
-          />
-          <Route
-            path="/onboarding"
             element={
-              user && (!user.communities?.length || !user.topics?.length) ? (
-                <OnboardingPage />
+              user ? (
+                needsOnboarding ? (
+                  <Navigate to="/onboarding" />
+                ) : (
+                  <Navigate to="/feed" />
+                )
               ) : (
-                <Navigate to="/feed" />
+                <LandingPage />
               )
             }
           />
+          <Route
+            path="/auth"
+            element={
+              user ? (
+                needsOnboarding ? (
+                  <Navigate to="/onboarding" />
+                ) : (
+                  <Navigate to="/feed" />
+                )
+              ) : (
+                <AuthPage />
+              )
+            }
+          />
+          <Route
+            path="/onboarding"
+            element={user ? <OnboardingPage /> : <Navigate to="/auth" />}
+          />
 
-          {/* Protected routes */}
+          {/* Protected routes - redirect to onboarding if incomplete */}
           <Route
             path="/feed"
-            element={user ? <FeedPage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? (
+                  <Navigate to="/onboarding" />
+                ) : (
+                  <FeedPage />
+                )
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/explore"
-            element={user ? <ExplorePage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <ExplorePage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/write"
-            element={user ? <WritePage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <WritePage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/write/:id"
-            element={user ? <WritePage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <WritePage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/post/:id"
-            element={user ? <PostPage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <PostPage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/profile/:username"
-            element={user ? <ProfilePage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <ProfilePage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/profile/edit"
-            element={user ? <EditProfilePage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <EditProfilePage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/notifications"
-            element={user ? <NotificationsPage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <NotificationsPage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/bookmarks"
-            element={user ? <BookmarksPage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <BookmarksPage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/spaces"
-            element={user ? <CollaborativeSpacesPage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <CollaborativeSpacesPage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/space/:id"
-            element={user ? <SpacePage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <SpacePage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/debates"
-            element={user ? <DebatesPage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <DebatesPage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
           <Route
             path="/dashboard"
-            element={user ? <DashboardPage /> : <Navigate to="/auth" />}
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <DashboardPage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
           />
 
           {/* 404 */}
