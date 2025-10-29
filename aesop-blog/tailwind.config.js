@@ -93,19 +93,19 @@ export default {
         },
         floatDramatic: {
           '0%, 100%': {
-            transform: 'translateY(0px) scale(1) rotate(0deg)',
+            transform: 'translateY(0px) scale(1)',
             filter: 'drop-shadow(0 10px 30px rgba(139, 92, 246, 0.4))',
           },
           '25%': {
-            transform: 'translateY(-20px) scale(1.05) rotate(2deg)',
+            transform: 'translateY(-20px) scale(1.05)',
             filter: 'drop-shadow(0 20px 50px rgba(236, 72, 153, 0.6))',
           },
           '50%': {
-            transform: 'translateY(-40px) scale(1.1) rotate(0deg)',
+            transform: 'translateY(-40px) scale(1.1)',
             filter: 'drop-shadow(0 30px 60px rgba(249, 115, 22, 0.7))',
           },
           '75%': {
-            transform: 'translateY(-20px) scale(1.05) rotate(-2deg)',
+            transform: 'translateY(-20px) scale(1.05)',
             filter: 'drop-shadow(0 20px 50px rgba(236, 72, 153, 0.6))',
           },
         },
