@@ -5,15 +5,15 @@ interface LogoProps {
 
 export default function Logo({ className = '', size = 'md' }: LogoProps) {
   const sizes = {
-    sm: { container: 'h-12 w-16', text: 'text-2xl', subtext: 'text-xs', gap: 'gap-2' },
-    md: { container: 'h-16 w-20', text: 'text-4xl', subtext: 'text-sm', gap: 'gap-3' },
-    lg: { container: 'h-24 w-32', text: 'text-5xl', subtext: 'text-lg', gap: 'gap-4' },
-    xl: { container: 'h-32 w-40', text: 'text-7xl', subtext: 'text-2xl', gap: 'gap-5' },
+    sm: { container: 'h-14 w-20', text: 'text-3xl', subtext: 'text-sm', gap: 'gap-2' },
+    md: { container: 'h-20 w-28', text: 'text-5xl', subtext: 'text-base', gap: 'gap-3' },
+    lg: { container: 'h-32 w-44', text: 'text-7xl', subtext: 'text-xl', gap: 'gap-4' },
+    xl: { container: 'h-44 w-56', text: 'text-9xl', subtext: 'text-4xl', gap: 'gap-6' },
   };
 
   const sizeConfig = sizes[size];
 
-  // Intertwined A+E Logo - Simple, Bold, Clear
+  // Intertwined A+E Logo - Thick, Bold, Rounded
   return (
     <div className={`flex items-center ${sizeConfig.gap} ${className}`}>
       {/* Intertwined A and E Logo */}
@@ -25,7 +25,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
           xmlns="http://www.w3.org/2000/svg"
         >
           {/* Background for contrast */}
-          <rect x="0" y="0" width="120" height="100" fill="transparent" rx="8"/>
+          <rect x="0" y="0" width="120" height="100" fill="transparent" rx="16"/>
 
           {/* Letter A - Left Side */}
           <g>
@@ -36,7 +36,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
               x2="42"
               y2="20"
               stroke="#8B5CF6"
-              strokeWidth="10"
+              strokeWidth="16"
               strokeLinecap="round"
             />
 
@@ -47,7 +47,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
               x2="42"
               y2="60"
               stroke="#EC4899"
-              strokeWidth="8"
+              strokeWidth="14"
               strokeLinecap="round"
             />
           </g>
@@ -59,7 +59,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
             x2="42"
             y2="85"
             stroke="#F97316"
-            strokeWidth="12"
+            strokeWidth="18"
             strokeLinecap="round"
           />
 
@@ -72,7 +72,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
               x2="75"
               y2="20"
               stroke="#8B5CF6"
-              strokeWidth="10"
+              strokeWidth="16"
               strokeLinecap="round"
             />
 
@@ -83,7 +83,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
               x2="70"
               y2="52.5"
               stroke="#EC4899"
-              strokeWidth="8"
+              strokeWidth="14"
               strokeLinecap="round"
             />
 
@@ -94,7 +94,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
               x2="75"
               y2="85"
               stroke="#8B5CF6"
-              strokeWidth="10"
+              strokeWidth="16"
               strokeLinecap="round"
             />
           </g>
@@ -103,13 +103,13 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
           <circle
             cx="42"
             cy="20"
-            r="6"
+            r="9"
             fill="#EC4899"
           />
           <circle
             cx="42"
             cy="85"
-            r="6"
+            r="9"
             fill="#EC4899"
           />
 
@@ -117,7 +117,7 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
           <circle
             cx="42"
             cy="52.5"
-            r="4"
+            r="7"
             fill="#F97316"
           />
         </svg>
@@ -127,13 +127,13 @@ export default function Logo({ className = '', size = 'md' }: LogoProps) {
       <div className="flex items-baseline gap-3">
         <div className={`font-black tracking-tight ${sizeConfig.text} relative`}>
           <span
-            className="relative z-10 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 bg-clip-text text-transparent drop-shadow-lg"
+            className="relative z-10 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 bg-clip-text text-transparent drop-shadow-2xl"
             style={{fontWeight: 900}}
           >
             AESOP
           </span>
         </div>
-        <span className={`tracking-widest text-purple-600 font-bold ${sizeConfig.subtext} drop-shadow-sm`}>
+        <span className={`tracking-widest text-purple-600 font-bold ${sizeConfig.subtext} drop-shadow-lg`}>
           BLOG
         </span>
       </div>

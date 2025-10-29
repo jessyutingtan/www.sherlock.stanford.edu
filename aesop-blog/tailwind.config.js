@@ -66,7 +66,9 @@ export default {
         'glow': 'glow 2s ease-in-out infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 3s ease-in-out infinite',
+        'float-dramatic': 'floatDramatic 4s ease-in-out infinite',
         'shimmer': 'shimmer 2s linear infinite',
+        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -89,9 +91,35 @@ export default {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
         },
+        floatDramatic: {
+          '0%, 100%': {
+            transform: 'translateY(0px) scale(1) rotate(0deg)',
+            filter: 'drop-shadow(0 10px 30px rgba(139, 92, 246, 0.4))',
+          },
+          '25%': {
+            transform: 'translateY(-20px) scale(1.05) rotate(2deg)',
+            filter: 'drop-shadow(0 20px 50px rgba(236, 72, 153, 0.6))',
+          },
+          '50%': {
+            transform: 'translateY(-40px) scale(1.1) rotate(0deg)',
+            filter: 'drop-shadow(0 30px 60px rgba(249, 115, 22, 0.7))',
+          },
+          '75%': {
+            transform: 'translateY(-20px) scale(1.05) rotate(-2deg)',
+            filter: 'drop-shadow(0 20px 50px rgba(236, 72, 153, 0.6))',
+          },
+        },
         shimmer: {
           '0%': { backgroundPosition: '-1000px 0' },
           '100%': { backgroundPosition: '1000px 0' },
+        },
+        pulseGlow: {
+          '0%, 100%': {
+            boxShadow: '0 0 40px rgba(34, 211, 238, 0.6), 0 0 80px rgba(34, 211, 238, 0.3)',
+          },
+          '50%': {
+            boxShadow: '0 0 60px rgba(34, 211, 238, 0.9), 0 0 120px rgba(34, 211, 238, 0.5)',
+          },
         },
       },
       backgroundImage: {

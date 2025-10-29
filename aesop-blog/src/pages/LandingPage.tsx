@@ -43,11 +43,11 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="gradient-bg py-24 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-900/30 to-transparent"></div>
-        <div className="max-w-6xl mx-auto text-center relative z-10">
-          <div className="flex justify-center mb-8 animate-float">
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <div className="flex justify-center mb-12 animate-float-dramatic scale-125 sm:scale-150">
             <Logo size="xl" />
           </div>
-          <h1 className="text-6xl md:text-8xl font-black mb-8 text-white drop-shadow-2xl">
+          <h1 className="text-6xl md:text-8xl font-black mb-8 text-white drop-shadow-2xl animate-pulse-slow">
             Welcome to <span className="bg-gradient-to-r from-cyan-300 via-white to-neon-300 bg-clip-text text-transparent">Aesop Blog</span>
           </h1>
           <p className="text-2xl md:text-3xl mb-12 text-white font-medium max-w-3xl mx-auto drop-shadow-lg">
