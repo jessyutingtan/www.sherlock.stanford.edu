@@ -8,12 +8,13 @@ import { MessageCircle, Send } from 'lucide-react';
 
 interface CommentThreadProps {
   comment: Comment;
-  postId: string;
+  postId?: string;
+  thoughtBubbleId?: string;
   onUpdate: () => void;
   depth?: number;
 }
 
-export default function CommentThread({ comment, postId, onUpdate, depth = 0 }: CommentThreadProps) {
+export default function CommentThread({ comment, postId, thoughtBubbleId, onUpdate, depth = 0 }: CommentThreadProps) {
   const { user } = useAuthStore();
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyText, setReplyText] = useState('');
@@ -51,7 +52,8 @@ export default function CommentThread({ comment, postId, onUpdate, depth = 0 }: 
     setSubmitting(true);
     try {
       const { error } = await supabase.from('comments').insert({
-        post_id: postId,
+        post_id: postId || null,
+        thought_bubble_id: thoughtBubbleId || null,
         author_id: user.id,
         parent_id: comment.id,
         content: replyText.trim(),
@@ -111,7 +113,7 @@ export default function CommentThread({ comment, postId, onUpdate, depth = 0 }: 
             {depth < maxDepth && (
               <button
                 onClick={() => setShowReplyForm(!showReplyForm)}
-                className="mt-2 text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                className="mt-2 text-sm text-yellow-600 hover:text-yellow-700 font-medium flex items-center gap-1"
               >
                 <MessageCircle className="w-4 h-4" />
                 Reply
@@ -163,6 +165,7 @@ export default function CommentThread({ comment, postId, onUpdate, depth = 0 }: 
               key={reply.id}
               comment={reply}
               postId={postId}
+              thoughtBubbleId={thoughtBubbleId}
               onUpdate={onUpdate}
               depth={depth + 1}
             />

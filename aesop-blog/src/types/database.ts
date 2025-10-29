@@ -70,6 +70,7 @@ export interface ThoughtBubble {
   // Joined data
   author?: Profile;
   likes_count?: number;
+  comments_count?: number;
   shares_count?: number;
   is_liked?: boolean;
   is_shared?: boolean;
@@ -135,7 +136,8 @@ export interface DebateVote {
 
 export interface Comment {
   id: string;
-  post_id: string;
+  post_id: string | null;
+  thought_bubble_id: string | null;
   author_id: string;
   parent_id: string | null;
   content: string;

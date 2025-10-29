@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
-import { Profile, Post, ThoughtBubble } from '../types/database';
+import { Profile, Post, ThoughtBubble, Share } from '../types/database';
 import PostCard from '../components/PostCard';
 import ThoughtBubbleCard from '../components/ThoughtBubbleCard';
+import SharedPostCard from '../components/SharedPostCard';
 import {
   Link as LinkIcon,
   Calendar,
@@ -15,10 +16,11 @@ import {
   MessageCircle,
   Eye,
   TrendingUp,
+  Share2,
 } from 'lucide-react';
 import { formatDate } from '../utils/date';
 
-type ContentTab = 'all' | 'posts' | 'bubbles';
+type ContentTab = 'all' | 'posts' | 'bubbles' | 'shares';
 
 export default function UserProfilePage() {
   const { username } = useParams();
@@ -26,6 +28,7 @@ export default function UserProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [bubbles, setBubbles] = useState<ThoughtBubble[]>([]);
+  const [shares, setShares] = useState<Share[]>([]);
   const [loading, setLoading] = useState(true);
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
@@ -34,6 +37,7 @@ export default function UserProfilePage() {
   const [stats, setStats] = useState({
     totalPosts: 0,
     totalBubbles: 0,
+    totalShares: 0,
     totalViews: 0,
     totalLikes: 0,
   });
@@ -111,6 +115,12 @@ export default function UserProfilePage() {
         .select('*', { count: 'exact', head: true })
         .eq('author_id', userId);
 
+      // Count shares
+      const { count: sharesCount } = await supabase
+        .from('shares')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+
       // Sum views from posts
       const { data: postsData } = await supabase
         .from('posts')
@@ -137,6 +147,7 @@ export default function UserProfilePage() {
       setStats({
         totalPosts: postsCount || 0,
         totalBubbles: bubblesCount || 0,
+        totalShares: sharesCount || 0,
         totalViews: postViews + bubbleViews,
         totalLikes: likesCount || 0,
       });
@@ -154,6 +165,9 @@ export default function UserProfilePage() {
       }
       if (activeTab === 'all' || activeTab === 'bubbles') {
         await fetchBubbles(profile.id);
+      }
+      if (activeTab === 'shares') {
+        await fetchShares(profile.id);
       }
     } catch (error) {
       console.error('Error fetching content:', error);
@@ -220,6 +234,58 @@ export default function UserProfilePage() {
       setBubbles(formattedBubbles as ThoughtBubble[]);
     } catch (error) {
       console.error('Error fetching bubbles:', error);
+    }
+  };
+
+  const fetchShares = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('shares')
+        .select(
+          `
+          *,
+          user:profiles!shares_user_id_fkey(*),
+          post:posts(*,
+            author:profiles!posts_author_id_fkey(*),
+            likes_count:likes(count),
+            comments_count:comments(count),
+            shares_count:shares(count)
+          ),
+          thought_bubble:thought_bubbles(*,
+            author:profiles!thought_bubbles_author_id_fkey(*),
+            likes_count:likes(count),
+            shares_count:shares(count)
+          )
+        `
+        )
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const formattedShares =
+        data?.map((share) => ({
+          ...share,
+          post: share.post
+            ? {
+                ...share.post,
+                likes_count: share.post.likes_count?.[0]?.count || 0,
+                comments_count: share.post.comments_count?.[0]?.count || 0,
+                shares_count: share.post.shares_count?.[0]?.count || 0,
+              }
+            : null,
+          thought_bubble: share.thought_bubble
+            ? {
+                ...share.thought_bubble,
+                likes_count: share.thought_bubble.likes_count?.[0]?.count || 0,
+                shares_count: share.thought_bubble.shares_count?.[0]?.count || 0,
+              }
+            : null,
+        })) || [];
+
+      setShares(formattedShares as Share[]);
+    } catch (error) {
+      console.error('Error fetching shares:', error);
     }
   };
 
@@ -392,7 +458,7 @@ export default function UserProfilePage() {
 
       {/* Stats Cards */}
       <div className="max-w-5xl mx-auto px-4 -mt-8 mb-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
             <div className="flex items-center gap-3">
               <FileText className="w-8 h-8 text-blue-600" />
@@ -408,6 +474,15 @@ export default function UserProfilePage() {
               <div>
                 <div className="text-2xl font-bold text-gray-900">{stats.totalBubbles}</div>
                 <div className="text-sm text-gray-600">Bubbles</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+            <div className="flex items-center gap-3">
+              <Share2 className="w-8 h-8 text-cyan-600" />
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{stats.totalShares}</div>
+                <div className="text-sm text-gray-600">Shared</div>
               </div>
             </div>
           </div>
@@ -470,6 +545,16 @@ export default function UserProfilePage() {
           >
             Thought Bubbles ({stats.totalBubbles})
           </button>
+          <button
+            onClick={() => setActiveTab('shares')}
+            className={`pb-3 px-1 font-semibold transition-colors ${
+              activeTab === 'shares'
+                ? 'border-b-2 border-blue-600 text-blue-600'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Shared ({stats.totalShares})
+          </button>
         </div>
 
         {/* Content Feed */}
@@ -488,8 +573,14 @@ export default function UserProfilePage() {
               />
             ))}
 
+          {activeTab === 'shares' &&
+            shares.map((share) => (
+              <SharedPostCard key={share.id} share={share} onUpdate={fetchContent} />
+            ))}
+
           {((activeTab === 'posts' && posts.length === 0) ||
             (activeTab === 'bubbles' && bubbles.length === 0) ||
+            (activeTab === 'shares' && shares.length === 0) ||
             (activeTab === 'all' && posts.length === 0 && bubbles.length === 0)) && (
             <div className="text-center py-12">
               <p className="text-gray-500">
@@ -497,6 +588,8 @@ export default function UserProfilePage() {
                   ? 'No posts yet.'
                   : activeTab === 'bubbles'
                   ? 'No thought bubbles yet.'
+                  : activeTab === 'shares'
+                  ? 'No shared content yet.'
                   : 'No content yet.'}
               </p>
             </div>

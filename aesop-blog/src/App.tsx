@@ -12,6 +12,7 @@ import FeedPage from './pages/FeedPage';
 import ExplorePage from './pages/ExplorePage';
 import WritePage from './pages/WritePage';
 import PostPage from './pages/PostPage';
+import ThoughtBubblePage from './pages/ThoughtBubblePage';
 import ProfilePage from './pages/ProfilePage';
 import EditProfilePage from './pages/EditProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
@@ -148,6 +149,16 @@ function App() {
             element={
               user ? (
                 needsOnboarding ? <Navigate to="/onboarding" /> : <PostPage />
+              ) : (
+                <Navigate to="/auth" />
+              )
+            }
+          />
+          <Route
+            path="/bubble/:id"
+            element={
+              user ? (
+                needsOnboarding ? <Navigate to="/onboarding" /> : <ThoughtBubblePage />
               ) : (
                 <Navigate to="/auth" />
               )

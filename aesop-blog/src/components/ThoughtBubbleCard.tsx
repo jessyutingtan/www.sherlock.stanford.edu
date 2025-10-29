@@ -45,42 +45,44 @@ export default function ThoughtBubbleCard({ bubble, onUpdate }: ThoughtBubbleCar
 
   return (
     <>
-    <div className={`relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br ${mood?.gradient} text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]`}>
-      {/* Mood indicator */}
-      <div className="absolute top-4 right-4 opacity-20">
-        {mood && <DynamicIcon name={mood.icon} size={48} />}
-      </div>
-
-      {/* Author */}
-      <Link
-        to={`/profile/${bubble.author?.username}`}
-        className="flex items-center gap-3 mb-4 hover:opacity-90 transition-opacity"
-      >
-        {bubble.author?.avatar_url ? (
-          <img
-            src={bubble.author.avatar_url}
-            alt={bubble.author.username}
-            className="w-10 h-10 rounded-full object-cover border-2 border-white/30"
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-semibold border-2 border-white/30">
-            {bubble.author?.username[0].toUpperCase()}
-          </div>
-        )}
-        <div className="flex-1">
-          <p className="font-semibold">
-            {bubble.author?.full_name || bubble.author?.username}
-          </p>
-          <p className="text-sm text-white/80">
-            {formatRelativeTime(bubble.created_at)}
-          </p>
+    <Link to={`/bubble/${bubble.id}`} className="block">
+      <div className={`relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br ${mood?.gradient} text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]`}>
+        {/* Mood indicator */}
+        <div className="absolute top-4 right-4 opacity-20">
+          {mood && <DynamicIcon name={mood.icon} size={48} />}
         </div>
-      </Link>
 
-      {/* Content */}
-      <p className="text-lg leading-relaxed mb-4 relative z-10">
-        {bubble.content}
-      </p>
+        {/* Author */}
+        <Link
+          to={`/profile/${bubble.author?.username}`}
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center gap-3 mb-4 hover:opacity-90 transition-opacity"
+        >
+          {bubble.author?.avatar_url ? (
+            <img
+              src={bubble.author.avatar_url}
+              alt={bubble.author.username}
+              className="w-10 h-10 rounded-full object-cover border-2 border-white/30"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-semibold border-2 border-white/30">
+              {bubble.author?.username[0].toUpperCase()}
+            </div>
+          )}
+          <div className="flex-1">
+            <p className="font-semibold">
+              {bubble.author?.full_name || bubble.author?.username}
+            </p>
+            <p className="text-sm text-white/80">
+              {formatRelativeTime(bubble.created_at)}
+            </p>
+          </div>
+        </Link>
+
+        {/* Content */}
+        <p className="text-lg leading-relaxed mb-4 relative z-10">
+          {bubble.content}
+        </p>
 
       {/* Footer */}
       <div className="flex items-center justify-between">
@@ -90,7 +92,10 @@ export default function ThoughtBubbleCard({ bubble, onUpdate }: ThoughtBubbleCar
 
         <div className="flex items-center gap-2">
           <button
-            onClick={handleLike}
+            onClick={(e) => {
+              e.preventDefault();
+              handleLike(e);
+            }}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all ${
               isLiked
                 ? 'bg-white text-red-600'
@@ -102,7 +107,10 @@ export default function ThoughtBubbleCard({ bubble, onUpdate }: ThoughtBubbleCar
           </button>
 
           <button
-            onClick={handleShare}
+            onClick={(e) => {
+              e.preventDefault();
+              handleShare(e);
+            }}
             className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all"
           >
             <Share2 className="w-5 h-5" />
@@ -110,6 +118,7 @@ export default function ThoughtBubbleCard({ bubble, onUpdate }: ThoughtBubbleCar
         </div>
       </div>
     </div>
+    </Link>
 
     {/* Share Modal */}
     <ShareModal
