@@ -47,7 +47,7 @@ export default function AuthPage() {
           throw new Error('Username already taken');
         }
 
-        // Sign up with metadata - the database trigger will create the profile automatically
+        // Sign up with metadata
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email: formData.email,
           password: formData.password,
@@ -62,13 +62,35 @@ export default function AuthPage() {
 
         if (signUpError) throw signUpError;
 
+        // Manually create profile (backup in case trigger doesn't exist)
+        if (signUpData.user) {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert({
+              id: signUpData.user.id,
+              username: formData.username,
+              full_name: formData.fullName || null,
+              email: formData.email,
+              communities: [],
+              topics: [],
+            });
+
+          // Ignore error if profile already exists (trigger created it)
+          if (profileError && !profileError.message.includes('duplicate')) {
+            console.error('Error creating profile:', profileError);
+          }
+        }
+
         // Check if email confirmation is required
         if (signUpData.user && !signUpData.session) {
           // Email confirmation is required
           setEmailSent(true);
         } else {
           // No email confirmation needed (or instant confirmation)
-          navigate('/onboarding');
+          // Wait a moment for profile creation, then navigate
+          setTimeout(() => {
+            navigate('/onboarding');
+          }, 500);
         }
       }
     } catch (err: any) {

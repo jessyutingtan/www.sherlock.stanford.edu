@@ -312,13 +312,15 @@ export default function FeedPage() {
               <UsersIcon className="w-5 h-5" />
               Following
             </button>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 ml-auto px-4 py-2 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 transition-all"
-            >
-              <Filter className="w-5 h-5" />
-              Filters
-            </button>
+            {contentType === 'articles' && (
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2 ml-auto px-4 py-2 rounded-lg bg-cyan-500 text-white font-semibold hover:bg-cyan-600 transition-all"
+              >
+                <Filter className="w-5 h-5" />
+                Filters
+              </button>
+            )}
           </div>
 
           {/* Community and Topic Filters */}

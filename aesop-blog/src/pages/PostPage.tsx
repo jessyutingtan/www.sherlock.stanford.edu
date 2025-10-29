@@ -111,15 +111,26 @@ export default function PostPage() {
   };
 
   const incrementViews = async () => {
+    if (!id) return;
+
     try {
-      await supabase.rpc('increment', {
-        row_id: id,
-        x: 1,
-        table_name: 'posts',
-        column_name: 'views',
-      });
+      // First get current views count
+      const { data: currentPost } = await supabase
+        .from('posts')
+        .select('views')
+        .eq('id', id)
+        .single();
+
+      if (currentPost) {
+        // Increment views by 1
+        await supabase
+          .from('posts')
+          .update({ views: (currentPost.views || 0) + 1 })
+          .eq('id', id);
+      }
     } catch (error) {
-      // Ignore errors
+      // Ignore errors (views are not critical)
+      console.error('Error incrementing views:', error);
     }
   };
 
