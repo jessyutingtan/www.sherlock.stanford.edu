@@ -52,7 +52,7 @@ export default function AuthPage() {
           email: formData.email,
           password: formData.password,
           options: {
-            emailRedirectTo: `${window.location.origin}/#/onboarding`,
+            emailRedirectTo: `${window.location.origin}/#/email-confirmed`,
             data: {
               username: formData.username,
               full_name: formData.fullName || null,

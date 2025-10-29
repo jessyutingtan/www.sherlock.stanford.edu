@@ -6,6 +6,7 @@ import { supabase } from './lib/supabase';
 // Pages
 import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
+import EmailConfirmedPage from './pages/EmailConfirmedPage';
 import OnboardingPage from './pages/OnboardingPage';
 import FeedPage from './pages/FeedPage';
 import ExplorePage from './pages/ExplorePage';
@@ -86,6 +87,10 @@ function App() {
                 <AuthPage />
               )
             }
+          />
+          <Route
+            path="/email-confirmed"
+            element={<EmailConfirmedPage />}
           />
           <Route
             path="/onboarding"
