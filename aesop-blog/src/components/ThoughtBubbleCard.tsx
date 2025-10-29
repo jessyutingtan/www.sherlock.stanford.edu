@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Heart } from 'lucide-react';
+import { Heart, Share2 } from 'lucide-react';
 import { ThoughtBubble } from '../types/database';
 import { MOODS } from '../types/database';
 import { formatRelativeTime } from '../utils/date';
@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
 import DynamicIcon from './DynamicIcon';
+import ShareModal from './ShareModal';
 
 interface ThoughtBubbleCardProps {
   bubble: ThoughtBubble;
@@ -17,6 +18,7 @@ export default function ThoughtBubbleCard({ bubble, onUpdate }: ThoughtBubbleCar
   const { user } = useAuthStore();
   const [isLiked, setIsLiked] = useState(bubble.is_liked || false);
   const [likesCount, setLikesCount] = useState(bubble.likes_count || 0);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const mood = MOODS.find(m => m.value === bubble.mood);
 
@@ -36,7 +38,13 @@ export default function ThoughtBubbleCard({ bubble, onUpdate }: ThoughtBubbleCar
     onUpdate?.();
   };
 
+  const handleShare = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowShareModal(true);
+  };
+
   return (
+    <>
     <div className={`relative overflow-hidden rounded-2xl p-6 bg-gradient-to-br ${mood?.gradient} text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]`}>
       {/* Mood indicator */}
       <div className="absolute top-4 right-4 opacity-20">
@@ -80,18 +88,38 @@ export default function ThoughtBubbleCard({ bubble, onUpdate }: ThoughtBubbleCar
           {mood && <DynamicIcon name={mood.icon} size={32} />}
         </div>
 
-        <button
-          onClick={handleLike}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all ${
-            isLiked
-              ? 'bg-white text-red-600'
-              : 'bg-white/20 hover:bg-white/30 backdrop-blur-sm'
-          }`}
-        >
-          <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
-          <span className="text-sm font-medium">{likesCount}</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleLike}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all ${
+              isLiked
+                ? 'bg-white text-red-600'
+                : 'bg-white/20 hover:bg-white/30 backdrop-blur-sm'
+            }`}
+          >
+            <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+            <span className="text-sm font-medium">{likesCount}</span>
+          </button>
+
+          <button
+            onClick={handleShare}
+            className="p-1.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
+
+    {/* Share Modal */}
+    <ShareModal
+      isOpen={showShareModal}
+      onClose={() => setShowShareModal(false)}
+      thoughtBubbleId={bubble.id}
+      title={`Thought Bubble by ${bubble.author?.username}`}
+      url={`${window.location.origin}/#/feed`}
+      onShareSuccess={onUpdate}
+    />
+  </>
   );
 }

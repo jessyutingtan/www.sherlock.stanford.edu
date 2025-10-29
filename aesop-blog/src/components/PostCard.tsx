@@ -6,6 +6,7 @@ import { formatReadingTime } from '../utils/readingTime';
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
+import ShareModal from './ShareModal';
 
 interface PostCardProps {
   post: Post;
@@ -18,6 +19,7 @@ export default function PostCard({ post, onUpdate }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(post.is_liked || false);
   const [isBookmarked, setIsBookmarked] = useState(post.is_bookmarked || false);
   const [likesCount, setLikesCount] = useState(post.likes_count || 0);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const isOwnPost = user?.id === post.author_id;
 
@@ -53,13 +55,7 @@ export default function PostCard({ post, onUpdate }: PostCardProps) {
 
   const handleShare = async (e: React.MouseEvent) => {
     e.preventDefault();
-    const url = `${window.location.origin}/post/${post.id}`;
-    if (navigator.share) {
-      await navigator.share({ title: post.title, url });
-    } else {
-      await navigator.clipboard.writeText(url);
-      alert('Link copied to clipboard!');
-    }
+    setShowShareModal(true);
   };
 
   const handleEdit = (e: React.MouseEvent) => {
@@ -68,6 +64,7 @@ export default function PostCard({ post, onUpdate }: PostCardProps) {
   };
 
   return (
+    <>
     <Link to={`/post/${post.id}`}>
       <article className="card p-6 hover:scale-[1.01] transition-transform">
         {/* Author info */}
@@ -200,5 +197,16 @@ export default function PostCard({ post, onUpdate }: PostCardProps) {
         </div>
       </article>
     </Link>
+
+    {/* Share Modal */}
+    <ShareModal
+      isOpen={showShareModal}
+      onClose={() => setShowShareModal(false)}
+      postId={post.id}
+      title={post.title}
+      url={`${window.location.origin}/#/post/${post.id}`}
+      onShareSuccess={onUpdate}
+    />
+  </>
   );
 }

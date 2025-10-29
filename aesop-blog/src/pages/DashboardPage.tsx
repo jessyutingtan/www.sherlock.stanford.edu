@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../stores/authStore';
-import { Post, ThoughtBubble } from '../types/database';
+import { Post, ThoughtBubble, Share } from '../types/database';
 import { Edit2, Trash2, Eye, Heart, MessageSquare, Tag, Calendar, Share2, FileText, MessageCircle } from 'lucide-react';
 import { formatDate } from '../utils/date';
+import SharedPostCard from '../components/SharedPostCard';
 
-type ContentType = 'posts' | 'bubbles';
+type ContentType = 'posts' | 'bubbles' | 'shares';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
@@ -14,9 +15,11 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<ContentType>('posts');
   const [posts, setPosts] = useState<Post[]>([]);
   const [bubbles, setBubbles] = useState<ThoughtBubble[]>([]);
+  const [shares, setShares] = useState<Share[]>([]);
   const [loading, setLoading] = useState(true);
   const [publishedPostsCount, setPublishedPostsCount] = useState(0);
   const [publishedBubblesCount, setPublishedBubblesCount] = useState(0);
+  const [sharesCount, setSharesCount] = useState(0);
 
   useEffect(() => {
     if (!user) {
@@ -51,6 +54,16 @@ export default function DashboardPage() {
       if (!bubblesError) {
         setPublishedBubblesCount(bubblesCount || 0);
       }
+
+      // Count shares
+      const { count: sharesCount, error: sharesError } = await supabase
+        .from('shares')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+
+      if (!sharesError) {
+        setSharesCount(sharesCount || 0);
+      }
     } catch (error) {
       console.error('Error fetching counts:', error);
     }
@@ -63,8 +76,10 @@ export default function DashboardPage() {
     try {
       if (activeTab === 'posts') {
         await fetchPosts();
-      } else {
+      } else if (activeTab === 'bubbles') {
         await fetchBubbles();
+      } else {
+        await fetchShares();
       }
     } catch (error) {
       console.error('Error fetching content:', error);
@@ -129,6 +144,48 @@ export default function DashboardPage() {
     })) || [];
 
     setBubbles(formattedBubbles as ThoughtBubble[]);
+  };
+
+  const fetchShares = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('shares')
+      .select(`
+        *,
+        user:profiles!shares_user_id_fkey(*),
+        post:posts(*,
+          author:profiles!posts_author_id_fkey(*),
+          likes_count:likes(count),
+          comments_count:comments(count)
+        ),
+        thought_bubble:thought_bubbles(*,
+          author:profiles!thought_bubbles_author_id_fkey(*),
+          likes_count:likes(count)
+        )
+      `)
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching shares:', error);
+      return;
+    }
+
+    const formattedShares = data?.map((share) => ({
+      ...share,
+      post: share.post ? {
+        ...share.post,
+        likes_count: share.post.likes_count?.[0]?.count || 0,
+        comments_count: share.post.comments_count?.[0]?.count || 0,
+      } : null,
+      thought_bubble: share.thought_bubble ? {
+        ...share.thought_bubble,
+        likes_count: share.thought_bubble.likes_count?.[0]?.count || 0,
+      } : null,
+    })) || [];
+
+    setShares(formattedShares as Share[]);
   };
 
   const handleDeletePost = async (postId: string) => {
@@ -227,11 +284,22 @@ export default function DashboardPage() {
               <MessageCircle className="w-5 h-5" />
               Thought Bubbles ({publishedBubblesCount})
             </button>
+            <button
+              onClick={() => setActiveTab('shares')}
+              className={`flex-1 px-6 py-4 text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${
+                activeTab === 'shares'
+                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50/50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Share2 className="w-5 h-5" />
+              Shared ({sharesCount})
+            </button>
           </div>
         </div>
 
         {/* Content */}
-        {activeTab === 'posts' ? (
+        {activeTab === 'posts' && (
           <div className="space-y-4">
             {posts.length === 0 ? (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
@@ -334,7 +402,9 @@ export default function DashboardPage() {
               ))
             )}
           </div>
-        ) : (
+        )}
+
+        {activeTab === 'bubbles' && (
           <div className="space-y-4">
             {bubbles.length === 0 ? (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
@@ -400,6 +470,33 @@ export default function DashboardPage() {
                     </div>
                   </div>
                 </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {activeTab === 'shares' && (
+          <div className="space-y-6">
+            {shares.length === 0 ? (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+                <Share2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No shares yet</h3>
+                <p className="text-gray-600 mb-6">Share blog posts and thought bubbles to your profile</p>
+                <Link
+                  to="/feed"
+                  className="btn bg-blue-600 text-white hover:bg-blue-700 inline-flex items-center gap-2"
+                >
+                  <FileText className="w-5 h-5" />
+                  Explore Content
+                </Link>
+              </div>
+            ) : (
+              shares.map((share) => (
+                <SharedPostCard
+                  key={share.id}
+                  share={share}
+                  onUpdate={fetchContent}
+                />
               ))
             )}
           </div>
