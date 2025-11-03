@@ -366,7 +366,7 @@
 
             <div class="nav-bar">
                 <div class="nav-bar-title">Market Movers</div>
-                <div class="nav-bar-subtitle">Top 100 Stock Gainers</div>
+                <div class="nav-bar-subtitle">Top 100 Gainers (Screened from 400+ stocks)</div>
             </div>
 
             <div class="time-filters">
@@ -393,18 +393,68 @@
         let currentPeriod = '1M';
         let stocksCache = {};
 
-        // Popular US stocks to track (100 symbols)
+        // Expanded stock universe - includes small/mid/large caps for real top movers
+        // This includes tech, biotech, crypto-related, EV, AI stocks where big moves happen
         const STOCK_SYMBOLS = [
+            // Mega caps
             'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK-B', 'UNH', 'XOM',
             'JNJ', 'JPM', 'V', 'PG', 'MA', 'HD', 'CVX', 'MRK', 'ABBV', 'KO',
-            'AVGO', 'PEP', 'COST', 'TMO', 'MCD', 'CSCO', 'ACN', 'ABT', 'ADBE', 'NKE',
-            'LIN', 'DHR', 'VZ', 'TXN', 'NEE', 'PM', 'CRM', 'WMT', 'DIS', 'CMCSA',
-            'ORCL', 'INTC', 'AMD', 'NFLX', 'PFE', 'COP', 'BMY', 'UNP', 'RTX', 'LOW',
-            'HON', 'QCOM', 'UPS', 'AMGN', 'ELV', 'BA', 'SBUX', 'SPGI', 'DE', 'INTU',
-            'T', 'BLK', 'CAT', 'GS', 'BKNG', 'AXP', 'GILD', 'ADI', 'MDT', 'MDLZ',
-            'MMC', 'ISRG', 'NOW', 'SYK', 'TJX', 'ADP', 'VRTX', 'LRCX', 'AMT', 'PLD',
-            'CI', 'REGN', 'ZTS', 'TMUS', 'MO', 'CVS', 'MMM', 'CB', 'SO', 'DUK',
-            'BDX', 'SLB', 'APD', 'AON', 'ITW', 'CME', 'EQIX', 'CL', 'EOG', 'FCX'
+
+            // High growth tech
+            'AVGO', 'CRM', 'ADBE', 'ORCL', 'CSCO', 'INTC', 'AMD', 'QCOM', 'NOW', 'PANW',
+            'SNOW', 'DDOG', 'CRWD', 'ZS', 'OKTA', 'NET', 'ESTC', 'MDB', 'PLTR', 'U',
+
+            // AI & Semiconductors
+            'ARM', 'SMCI', 'AVGO', 'MRVL', 'AMAT', 'LRCX', 'KLAC', 'ASML', 'TSM', 'MU',
+            'QRVO', 'SWKS', 'MPWR', 'WOLF', 'INDI', 'SLAB', 'CRUS', 'SITM', 'RMBS', 'LSCC',
+
+            // EVs & Clean Energy
+            'RIVN', 'LCID', 'NIO', 'XPEV', 'LI', 'CHPT', 'BLNK', 'ENPH', 'SEDG', 'RUN',
+            'PLUG', 'FCEL', 'BE', 'QS', 'GPRE', 'CLNE', 'EVGO', 'STEM', 'OUST', 'LAZR',
+
+            // Biotech & Healthcare
+            'MRNA', 'BNTX', 'NVAX', 'VRTX', 'REGN', 'GILD', 'BIIB', 'AMGN', 'ILMN', 'BMRN',
+            'CRSP', 'EDIT', 'NTLA', 'BEAM', 'VERV', 'BLUE', 'FATE', 'PACB', 'RXRX', 'SDGR',
+
+            // Crypto & Fintech
+            'COIN', 'MSTR', 'RIOT', 'MARA', 'CLSK', 'BITF', 'HUT', 'SQ', 'PYPL', 'SOFI',
+            'AFRM', 'UPST', 'LC', 'NU', 'HOOD', 'OPEN', 'RVNC', 'BILL', 'FOUR', 'PAYO',
+
+            // Cloud & SaaS
+            'SHOP', 'WDAY', 'TEAM', 'ZM', 'DOCU', 'TWLO', 'ROKU', 'PINS', 'SNAP', 'UBER',
+            'LYFT', 'DASH', 'ABNB', 'CPNG', 'SE', 'MELI', 'SPOT', 'RBLX', 'GTLB', 'PCOR',
+
+            // Emerging tech
+            'IONQ', 'RGTI', 'QUBT', 'SOUN', 'BBAI', 'AI', 'SANA', 'ASTS', 'RKLB', 'SPCE',
+            'JOBY', 'ACHR', 'LILM', 'BIRD', 'GROM', 'WKEY', 'ABVC', 'MTEK', 'KULR', 'LUNR',
+
+            // Volatile small caps (where 1000% moves happen)
+            'HOLO', 'APLD', 'CORZ', 'WULF', 'BTBT', 'CAN', 'CIFR', 'IREN', 'SDIG', 'DGHI',
+            'FRZA', 'LTRY', 'GPCR', 'CMPO', 'MNTS', 'DAVE', 'NRIX', 'GFAI', 'EZFL', 'SOBR',
+
+            // Meme stocks & retail favorites
+            'GME', 'AMC', 'BBBY', 'SPCE', 'WISH', 'CLOV', 'SDC', 'SKLZ', 'FUBO', 'GOEV',
+            'NKLA', 'RIDE', 'HYLN', 'WKHS', 'VLDR', 'LAZR', 'CCIV', 'PSTH', 'BABA', 'JD',
+
+            // Penny stocks with momentum
+            'SNDL', 'GSAT', 'EXPR', 'KOSS', 'NAKD', 'SAVA', 'BYND', 'SPCE', 'CLOV', 'WKHS',
+            'OCGN', 'BNGO', 'ZOM', 'SENS', 'GNUS', 'JAGX', 'TOPS', 'SHIP', 'DARE', 'NAOV',
+
+            // Recent IPOs & SPACs
+            'RDDT', 'ARM', 'BIRK', 'KVUE', 'FTAI', 'RKLB', 'GRAB', 'RIVN', 'LCID', 'BROS',
+            'DASH', 'COIN', 'RBLX', 'HOOD', 'DNA', 'OPEN', 'SOFI', 'UPST', 'AFRM', 'NU',
+
+            // Commodities & Materials
+            'FCX', 'NEM', 'GOLD', 'AA', 'VALE', 'RIO', 'BHP', 'SCCO', 'MT', 'CLF',
+            'X', 'STLD', 'NUE', 'MP', 'LAC', 'ALB', 'SQM', 'LTHM', 'PLL', 'NOVP',
+
+            // Energy & Oil
+            'XOM', 'CVX', 'COP', 'SLB', 'EOG', 'PXD', 'MPC', 'VLO', 'PSX', 'OXY',
+            'DVN', 'FANG', 'HAL', 'BKR', 'APA', 'MRO', 'HES', 'OVV', 'CTRA', 'EQT',
+
+            // REITs & Real Estate
+            'AMT', 'PLD', 'EQIX', 'CCI', 'PSA', 'DLR', 'WELL', 'O', 'VICI', 'SPG',
+            'AVB', 'EQR', 'VTR', 'ARE', 'INVH', 'MAA', 'UDR', 'CPT', 'ESS', 'HST'
         ];
 
         // Update time
@@ -442,7 +492,7 @@
             return rangeMap[period] || '1mo';
         }
 
-        // Fetch stock data from Yahoo Finance
+        // Fetch stock data from Yahoo Finance - screens ALL stocks for true top movers
         async function fetchStockData(period) {
             try {
                 // Check cache first
@@ -452,9 +502,10 @@
 
                 const range = getPeriodRange(period);
                 const stocksData = [];
+                let processedCount = 0;
 
-                // Fetch stocks in batches to avoid overwhelming the browser
-                const batchSize = 5;
+                // Fetch ALL stocks in batches
+                const batchSize = 10;
                 for (let i = 0; i < STOCK_SYMBOLS.length; i += batchSize) {
                     const batch = STOCK_SYMBOLS.slice(i, i + batchSize);
                     const batchPromises = batch.map(symbol => fetchSingleStock(symbol, range));
@@ -466,17 +517,37 @@
                         }
                     });
 
+                    processedCount += batch.length;
+
+                    // Update progress
+                    const progress = Math.round((processedCount / STOCK_SYMBOLS.length) * 100);
+                    const contentEl = document.getElementById('content');
+                    if (contentEl && contentEl.querySelector('.loading')) {
+                        contentEl.innerHTML = `
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <div style="color: var(--ios-text-tertiary); font-size: 14px;">
+                                    Screening ${STOCK_SYMBOLS.length} stocks...<br>
+                                    <strong>${progress}%</strong> complete
+                                </div>
+                            </div>
+                        `;
+                    }
+
                     // Small delay between batches
                     if (i + batchSize < STOCK_SYMBOLS.length) {
-                        await new Promise(resolve => setTimeout(resolve, 100));
+                        await new Promise(resolve => setTimeout(resolve, 50));
                     }
                 }
 
-                // Sort by change percentage (highest gainers first)
+                // Sort by change percentage (highest gainers first) - THIS IS THE KEY!
                 stocksData.sort((a, b) => b.changesPercentage - a.changesPercentage);
 
+                // Return TOP 100 only
+                const top100 = stocksData.slice(0, 100);
+
                 // Add rankings
-                const rankedStocks = stocksData.map((stock, index) => ({
+                const rankedStocks = top100.map((stock, index) => ({
                     ...stock,
                     rank: index + 1
                 }));
@@ -544,6 +615,18 @@
                 // Get latest volume
                 const volume = quote.volume[quote.volume.length - 1] || 0;
 
+                // Get company description
+                let description = 'Public company';
+                if (meta.longName) {
+                    description = `${meta.longName}`;
+                    if (meta.sector && meta.sector !== 'N/A') {
+                        description += ` - ${meta.sector} sector`;
+                    }
+                    if (meta.exchangeName) {
+                        description += ` (${meta.exchangeName})`;
+                    }
+                }
+
                 return {
                     symbol: symbol,
                     name: meta.longName || meta.shortName || symbol,
@@ -551,11 +634,11 @@
                     change: change,
                     changesPercentage: changesPercentage,
                     marketCap: meta.marketCap || 0,
-                    description: `${meta.longName || symbol} - ${meta.exchangeName || 'Stock Exchange'}`,
+                    description: description,
                     sector: meta.sector || 'N/A',
                     industry: meta.industry || 'N/A',
                     volume: volume,
-                    pe: meta.trailingPE || 'N/A'
+                    pe: typeof meta.trailingPE === 'number' ? meta.trailingPE : 'N/A'
                 };
 
             } catch (error) {
