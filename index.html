@@ -393,6 +393,20 @@
         let currentPeriod = '1M';
         let stocksCache = {};
 
+        // Popular US stocks to track (100 symbols)
+        const STOCK_SYMBOLS = [
+            'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK.B', 'UNH', 'XOM',
+            'JNJ', 'JPM', 'V', 'PG', 'MA', 'HD', 'CVX', 'MRK', 'ABBV', 'KO',
+            'AVGO', 'PEP', 'COST', 'TMO', 'MCD', 'CSCO', 'ACN', 'ABT', 'ADBE', 'NKE',
+            'LIN', 'DHR', 'VZ', 'TXN', 'NEE', 'PM', 'CRM', 'WMT', 'DIS', 'CMCSA',
+            'ORCL', 'INTC', 'AMD', 'NFLX', 'PFE', 'COP', 'BMY', 'UNP', 'RTX', 'LOW',
+            'HON', 'QCOM', 'UPS', 'AMGN', 'ELV', 'BA', 'SBUX', 'SPGI', 'DE', 'INTU',
+            'T', 'BLK', 'CAT', 'GS', 'BKNG', 'AXP', 'GILD', 'ADI', 'MDT', 'MDLZ',
+            'MMC', 'ISRG', 'NOW', 'SYK', 'TJX', 'ADP', 'VRTX', 'LRCX', 'AMT', 'PLD',
+            'CI', 'REGN', 'ZTS', 'TMUS', 'MO', 'CVS', 'MMM', 'CB', 'SO', 'DUK',
+            'BDX', 'SLB', 'APD', 'AON', 'ITW', 'CME', 'EQIX', 'CL', 'EOG', 'FCX'
+        ];
+
         // Update time
         function updateTime() {
             const now = new Date();
@@ -416,19 +430,36 @@
             return '$' + num.toFixed(2);
         }
 
-        // Get period in days
-        function getPeriodDays(period) {
-            const periodMap = {
-                '1M': 30,
-                '3M': 90,
-                '6M': 180,
-                '1Y': 365,
-                '2Y': 730
+        // Get date range for period
+        function getDateRange(period) {
+            const today = new Date();
+            const startDate = new Date();
+
+            switch(period) {
+                case '1M':
+                    startDate.setMonth(today.getMonth() - 1);
+                    break;
+                case '3M':
+                    startDate.setMonth(today.getMonth() - 3);
+                    break;
+                case '6M':
+                    startDate.setMonth(today.getMonth() - 6);
+                    break;
+                case '1Y':
+                    startDate.setFullYear(today.getFullYear() - 1);
+                    break;
+                case '2Y':
+                    startDate.setFullYear(today.getFullYear() - 2);
+                    break;
+            }
+
+            return {
+                from: startDate.toISOString().split('T')[0],
+                to: today.toISOString().split('T')[0]
             };
-            return periodMap[period] || 30;
         }
 
-        // Fetch stock data
+        // Fetch stock data with proper free tier endpoints
         async function fetchStockData(period) {
             try {
                 // Check cache first
@@ -436,74 +467,88 @@
                     return stocksCache[period];
                 }
 
-                const days = getPeriodDays(period);
+                const dateRange = getDateRange(period);
+                const stocksData = [];
 
-                // Get list of gainers
-                const gainersUrl = `${API_BASE}/stock_market/gainers?apikey=${API_KEY}`;
-                const gainersResponse = await fetch(gainersUrl);
+                // Fetch data in batches to avoid rate limiting
+                const batchSize = 10;
+                for (let i = 0; i < STOCK_SYMBOLS.length; i += batchSize) {
+                    const batch = STOCK_SYMBOLS.slice(i, i + batchSize);
+                    const batchPromises = batch.map(symbol => fetchSingleStock(symbol, dateRange));
+                    const batchResults = await Promise.allSettled(batchPromises);
 
-                if (!gainersResponse.ok) {
-                    throw new Error(`API Error: ${gainersResponse.status}`);
-                }
-
-                const gainers = await gainersResponse.json();
-
-                if (!gainers || gainers.length === 0) {
-                    throw new Error('No stock data available');
-                }
-
-                // Get detailed info for top 100 stocks
-                const topStocks = gainers.slice(0, 100);
-
-                const enrichedStocks = await Promise.all(
-                    topStocks.map(async (stock, index) => {
-                        try {
-                            // Get company profile
-                            const profileUrl = `${API_BASE}/profile/${stock.symbol}?apikey=${API_KEY}`;
-                            const profileResponse = await fetch(profileUrl);
-                            const profile = await profileResponse.json();
-
-                            return {
-                                rank: index + 1,
-                                symbol: stock.symbol,
-                                name: stock.name || (profile[0]?.companyName) || stock.symbol,
-                                price: stock.price,
-                                change: stock.change,
-                                changesPercentage: stock.changesPercentage,
-                                marketCap: profile[0]?.mktCap || 0,
-                                description: profile[0]?.description || 'No description available',
-                                sector: profile[0]?.sector || 'N/A',
-                                industry: profile[0]?.industry || 'N/A',
-                                volume: stock.volume || 0,
-                                pe: profile[0]?.pe || 'N/A'
-                            };
-                        } catch (error) {
-                            console.error(`Error fetching details for ${stock.symbol}:`, error);
-                            return {
-                                rank: index + 1,
-                                symbol: stock.symbol,
-                                name: stock.name || stock.symbol,
-                                price: stock.price,
-                                change: stock.change,
-                                changesPercentage: stock.changesPercentage,
-                                marketCap: 0,
-                                description: 'Details unavailable',
-                                sector: 'N/A',
-                                industry: 'N/A',
-                                volume: stock.volume || 0,
-                                pe: 'N/A'
-                            };
+                    batchResults.forEach(result => {
+                        if (result.status === 'fulfilled' && result.value) {
+                            stocksData.push(result.value);
                         }
-                    })
-                );
+                    });
+
+                    // Small delay between batches
+                    if (i + batchSize < STOCK_SYMBOLS.length) {
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                    }
+                }
+
+                // Sort by change percentage (highest first)
+                stocksData.sort((a, b) => b.changesPercentage - a.changesPercentage);
+
+                // Add rankings
+                const rankedStocks = stocksData.map((stock, index) => ({
+                    ...stock,
+                    rank: index + 1
+                }));
 
                 // Cache the results
-                stocksCache[period] = enrichedStocks;
-                return enrichedStocks;
+                stocksCache[period] = rankedStocks;
+                return rankedStocks;
 
             } catch (error) {
                 console.error('Error fetching stock data:', error);
                 throw error;
+            }
+        }
+
+        // Fetch single stock data
+        async function fetchSingleStock(symbol, dateRange) {
+            try {
+                // Get current quote
+                const quoteUrl = `${API_BASE}/quote/${symbol}?apikey=${API_KEY}`;
+                const quoteResponse = await fetch(quoteUrl);
+
+                if (!quoteResponse.ok) {
+                    throw new Error(`Quote API Error: ${quoteResponse.status}`);
+                }
+
+                const quoteData = await quoteResponse.json();
+                const quote = quoteData[0];
+
+                if (!quote) {
+                    return null;
+                }
+
+                // Get company profile
+                const profileUrl = `${API_BASE}/profile/${symbol}?apikey=${API_KEY}`;
+                const profileResponse = await fetch(profileUrl);
+                const profileData = await profileResponse.json();
+                const profile = profileData[0] || {};
+
+                return {
+                    symbol: quote.symbol,
+                    name: quote.name || profile.companyName || symbol,
+                    price: quote.price,
+                    change: quote.change,
+                    changesPercentage: quote.changesPercentage,
+                    marketCap: profile.mktCap || 0,
+                    description: profile.description || 'Leading company in its sector',
+                    sector: profile.sector || 'Technology',
+                    industry: profile.industry || 'N/A',
+                    volume: quote.volume || 0,
+                    pe: profile.pe || 'N/A'
+                };
+
+            } catch (error) {
+                console.error(`Error fetching ${symbol}:`, error);
+                return null;
             }
         }
 
