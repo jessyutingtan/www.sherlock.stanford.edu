@@ -387,15 +387,15 @@
     </div>
 
     <script>
-        const API_KEY = 'fz0mwBPtS2jReMJk8dNxkL8ENvfdF5Bl';
-        const API_BASE = 'https://financialmodelingprep.com/api/v3';
+        // Yahoo Finance API (No key needed!)
+        const YAHOO_BASE = 'https://query1.finance.yahoo.com';
 
         let currentPeriod = '1M';
         let stocksCache = {};
 
         // Popular US stocks to track (100 symbols)
         const STOCK_SYMBOLS = [
-            'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK.B', 'UNH', 'XOM',
+            'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK-B', 'UNH', 'XOM',
             'JNJ', 'JPM', 'V', 'PG', 'MA', 'HD', 'CVX', 'MRK', 'ABBV', 'KO',
             'AVGO', 'PEP', 'COST', 'TMO', 'MCD', 'CSCO', 'ACN', 'ABT', 'ADBE', 'NKE',
             'LIN', 'DHR', 'VZ', 'TXN', 'NEE', 'PM', 'CRM', 'WMT', 'DIS', 'CMCSA',
@@ -430,116 +430,19 @@
             return '$' + num.toFixed(2);
         }
 
-        // Get date range for period
-        function getDateRange(period) {
-            const today = new Date();
-            const startDate = new Date();
-
-            switch(period) {
-                case '1M':
-                    startDate.setMonth(today.getMonth() - 1);
-                    break;
-                case '3M':
-                    startDate.setMonth(today.getMonth() - 3);
-                    break;
-                case '6M':
-                    startDate.setMonth(today.getMonth() - 6);
-                    break;
-                case '1Y':
-                    startDate.setFullYear(today.getFullYear() - 1);
-                    break;
-                case '2Y':
-                    startDate.setFullYear(today.getFullYear() - 2);
-                    break;
-            }
-
-            return {
-                from: startDate.toISOString().split('T')[0],
-                to: today.toISOString().split('T')[0]
+        // Convert period to Yahoo Finance range format
+        function getPeriodRange(period) {
+            const rangeMap = {
+                '1M': '1mo',
+                '3M': '3mo',
+                '6M': '6mo',
+                '1Y': '1y',
+                '2Y': '2y'
             };
+            return rangeMap[period] || '1mo';
         }
 
-        // Company data with real descriptions
-        const COMPANY_DATA = {
-            'NVDA': { name: 'NVIDIA Corporation', sector: 'Technology', industry: 'Semiconductors', description: 'Designs graphics processing units for gaming and professional markets, as well as system on chip units for mobile computing and automotive market.' },
-            'META': { name: 'Meta Platforms Inc', sector: 'Technology', industry: 'Internet Content & Information', description: 'Engages in the development of social media applications. It builds technology that helps people connect, find communities and grow businesses.' },
-            'TSLA': { name: 'Tesla Inc', sector: 'Consumer Cyclical', industry: 'Auto Manufacturers', description: 'Designs, develops, manufactures, and sells electric vehicles, energy generation and storage systems.' },
-            'AAPL': { name: 'Apple Inc', sector: 'Technology', industry: 'Consumer Electronics', description: 'Designs, manufactures, and markets smartphones, personal computers, tablets, wearables and accessories worldwide.' },
-            'MSFT': { name: 'Microsoft Corporation', sector: 'Technology', industry: 'Software—Infrastructure', description: 'Develops and supports software, services, devices and solutions worldwide including productivity software and cloud services.' },
-            'GOOGL': { name: 'Alphabet Inc Class A', sector: 'Technology', industry: 'Internet Content & Information', description: 'Provides online advertising services, search engine, cloud computing, software, and hardware products.' },
-            'AMZN': { name: 'Amazon.com Inc', sector: 'Consumer Cyclical', industry: 'Internet Retail', description: 'Engages in retail sale of consumer products and subscriptions through online stores and AWS cloud computing services.' },
-            'AMD': { name: 'Advanced Micro Devices', sector: 'Technology', industry: 'Semiconductors', description: 'Operates as a semiconductor company, providing microprocessors and graphics processors for computing and graphics applications.' },
-            'NFLX': { name: 'Netflix Inc', sector: 'Communication Services', industry: 'Entertainment', description: 'Provides entertainment services with TV series, documentaries, and feature films across a wide variety of genres and languages.' },
-            'CRM': { name: 'Salesforce Inc', sector: 'Technology', industry: 'Software—Application', description: 'Provides customer relationship management technology that brings companies and customers together worldwide.' }
-        };
-
-        // Generate realistic stock data
-        function generateStockData(period) {
-            const stocks = [];
-            const multipliers = {
-                '1M': { min: -8, max: 25 },
-                '3M': { min: -15, max: 45 },
-                '6M': { min: -20, max: 65 },
-                '1Y': { min: -30, max: 120 },
-                '2Y': { min: -40, max: 250 }
-            };
-
-            const range = multipliers[period] || multipliers['1M'];
-
-            STOCK_SYMBOLS.forEach((symbol, index) => {
-                // Generate realistic growth percentage
-                const changePercent = (Math.random() * (range.max - range.min) + range.min);
-
-                // Base prices (realistic values)
-                const basePrices = {
-                    'NVDA': 875.28, 'TSLA': 242.84, 'AAPL': 178.72, 'MSFT': 378.91,
-                    'GOOGL': 139.69, 'AMZN': 175.43, 'META': 484.03, 'AMD': 164.25,
-                    'NFLX': 632.57, 'CRM': 285.61, 'BRK.B': 415.32, 'UNH': 524.67
-                };
-
-                const basePrice = basePrices[symbol] || (Math.random() * 400 + 50);
-                const currentPrice = basePrice * (1 + changePercent / 100);
-                const change = currentPrice - basePrice;
-
-                const companyInfo = COMPANY_DATA[symbol] || {
-                    name: symbol + ' Corporation',
-                    sector: 'Technology',
-                    industry: 'Software',
-                    description: 'A leading company in its sector providing innovative solutions and services.'
-                };
-
-                // Realistic market caps
-                const marketCaps = {
-                    'AAPL': 2800e9, 'MSFT': 2750e9, 'GOOGL': 1700e9, 'AMZN': 1650e9,
-                    'NVDA': 2150e9, 'META': 1200e9, 'TSLA': 750e9, 'BRK.B': 850e9
-                };
-
-                stocks.push({
-                    symbol: symbol,
-                    name: companyInfo.name,
-                    price: currentPrice,
-                    change: change,
-                    changesPercentage: changePercent,
-                    marketCap: marketCaps[symbol] || (Math.random() * 500e9 + 10e9),
-                    description: companyInfo.description,
-                    sector: companyInfo.sector,
-                    industry: companyInfo.industry,
-                    volume: Math.floor(Math.random() * 50000000 + 5000000),
-                    pe: (Math.random() * 80 + 10).toFixed(2)
-                });
-            });
-
-            // Sort by change percentage (highest gainers first)
-            stocks.sort((a, b) => b.changesPercentage - a.changesPercentage);
-
-            // Add rankings
-            return stocks.map((stock, index) => ({
-                ...stock,
-                rank: index + 1
-            }));
-        }
-
-        // Fetch stock data (using generated data for now)
+        // Fetch stock data from Yahoo Finance
         async function fetchStockData(period) {
             try {
                 // Check cache first
@@ -547,19 +450,117 @@
                     return stocksCache[period];
                 }
 
-                // Simulate API delay for realism
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                const range = getPeriodRange(period);
+                const stocksData = [];
 
-                // Generate realistic stock data
-                const stocksData = generateStockData(period);
+                // Fetch stocks in batches to avoid overwhelming the browser
+                const batchSize = 5;
+                for (let i = 0; i < STOCK_SYMBOLS.length; i += batchSize) {
+                    const batch = STOCK_SYMBOLS.slice(i, i + batchSize);
+                    const batchPromises = batch.map(symbol => fetchSingleStock(symbol, range));
+                    const batchResults = await Promise.allSettled(batchPromises);
+
+                    batchResults.forEach(result => {
+                        if (result.status === 'fulfilled' && result.value) {
+                            stocksData.push(result.value);
+                        }
+                    });
+
+                    // Small delay between batches
+                    if (i + batchSize < STOCK_SYMBOLS.length) {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    }
+                }
+
+                // Sort by change percentage (highest gainers first)
+                stocksData.sort((a, b) => b.changesPercentage - a.changesPercentage);
+
+                // Add rankings
+                const rankedStocks = stocksData.map((stock, index) => ({
+                    ...stock,
+                    rank: index + 1
+                }));
 
                 // Cache the results
-                stocksCache[period] = stocksData;
-                return stocksData;
+                stocksCache[period] = rankedStocks;
+                return rankedStocks;
 
             } catch (error) {
                 console.error('Error fetching stock data:', error);
                 throw error;
+            }
+        }
+
+        // Fetch single stock from Yahoo Finance
+        async function fetchSingleStock(symbol, range) {
+            try {
+                // Fetch chart data with historical prices
+                const chartUrl = `${YAHOO_BASE}/v8/finance/chart/${symbol}?interval=1d&range=${range}`;
+                const chartResponse = await fetch(chartUrl);
+
+                if (!chartResponse.ok) {
+                    console.error(`Chart API error for ${symbol}: ${chartResponse.status}`);
+                    return null;
+                }
+
+                const chartData = await chartResponse.json();
+                const result = chartData?.chart?.result?.[0];
+
+                if (!result) {
+                    console.error(`No chart data for ${symbol}`);
+                    return null;
+                }
+
+                const meta = result.meta;
+                const quote = result.indicators?.quote?.[0];
+                const timestamps = result.timestamp;
+
+                if (!quote || !timestamps || timestamps.length === 0) {
+                    console.error(`Invalid data structure for ${symbol}`);
+                    return null;
+                }
+
+                // Get current price
+                const currentPrice = meta.regularMarketPrice || quote.close[quote.close.length - 1];
+
+                // Get historical price (first available price in range)
+                let historicalPrice = null;
+                for (let i = 0; i < quote.close.length; i++) {
+                    if (quote.close[i] != null) {
+                        historicalPrice = quote.close[i];
+                        break;
+                    }
+                }
+
+                if (!historicalPrice || !currentPrice) {
+                    console.error(`Missing price data for ${symbol}`);
+                    return null;
+                }
+
+                // Calculate change
+                const change = currentPrice - historicalPrice;
+                const changesPercentage = (change / historicalPrice) * 100;
+
+                // Get latest volume
+                const volume = quote.volume[quote.volume.length - 1] || 0;
+
+                return {
+                    symbol: symbol,
+                    name: meta.longName || meta.shortName || symbol,
+                    price: currentPrice,
+                    change: change,
+                    changesPercentage: changesPercentage,
+                    marketCap: meta.marketCap || 0,
+                    description: `${meta.longName || symbol} - ${meta.exchangeName || 'Stock Exchange'}`,
+                    sector: meta.sector || 'N/A',
+                    industry: meta.industry || 'N/A',
+                    volume: volume,
+                    pe: meta.trailingPE || 'N/A'
+                };
+
+            } catch (error) {
+                console.error(`Error fetching ${symbol}:`, error);
+                return null;
             }
         }
 
