@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Fatigue Assessment Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px 5px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .test-area {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .question {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .question label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 10px 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: #667eea;
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .radio-option label:hover {
+            background: #e0e0e0;
+        }
+
+        .stimulus {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            animation: pulse 0.3s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .instruction {
+            font-size: 1.2em;
+            color: #666;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .result-card h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .result-card .score {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .metric-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .gauge {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 15px;
+        }
+
+        .gauge-low {
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .gauge-medium {
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .gauge-high {
+            background: linear-gradient(90deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .countdown {
+            font-size: 6em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .history-date {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .history-scores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .history-score {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                font-size: 1em;
+            }
+
+            .radio-group {
+                flex-direction: column;
+            }
+
+            .radio-option {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <h1>🧠 Brain Fatigue Assessment</h1>
+            <p class="subtitle">Monitor your cognitive performance and fatigue levels</p>
+
+            <div class="instruction">
+                <p>This assessment includes:</p>
+                <ul style="margin: 20px 0 20px 40px; line-height: 2;">
+                    <li><strong>Reaction Time Test</strong> - Measure your response speed</li>
+                    <li><strong>Memory Test</strong> - Test your working memory</li>
+                    <li><strong>Attention Test</strong> - Assess your sustained attention</li>
+                    <li><strong>Fatigue Questionnaire</strong> - Self-reported fatigue levels</li>
+                </ul>
+                <p>Total time: approximately 5-7 minutes</p>
+            </div>
+
+            <div class="button-group">
+                <button class="btn" onclick="startAssessment()">Start Assessment</button>
+                <button class="btn btn-secondary" onclick="showHistory()">View History</button>
+            </div>
+        </div>
+
+        <!-- Reaction Time Test Screen -->
+        <div id="reaction-screen" class="screen">
+            <h1>Reaction Time Test</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 25%"></div>
+            </div>
+
+            <div class="test-area" id="reaction-test-area">
+                <p class="instruction">Click the button as quickly as possible when the circle appears!</p>
+                <p class="instruction" style="font-size: 0.9em; color: #999;">Test 1 of 5</p>
+            </div>
+
+            <div class="button-group">
+                <button class="btn" id="reaction-start-btn" onclick="startReactionTest()">Start Test</button>
+            </div>
+        </div>
+
+        <!-- Memory Test Screen -->
+        <div id="memory-screen" class="screen">
+            <h1>Memory Test</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%"></div>
+            </div>
+
+            <div class="test-area" id="memory-test-area">
+                <p class="instruction">Memorize the sequence of numbers that will appear.</p>
+                <p class="instruction" style="font-size: 0.9em; color: #999;">Round 1 of 5</p>
+            </div>
+
+            <div class="button-group">
+                <button class="btn" id="memory-start-btn" onclick="startMemoryTest()">Start Test</button>
+            </div>
+        </div>
+
+        <!-- Attention Test Screen -->
+        <div id="attention-screen" class="screen">
+            <h1>Attention Test</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%"></div>
+            </div>
+
+            <div class="test-area" id="attention-test-area">
+                <p class="instruction">Press the button ONLY when you see the letter 'X'</p>
+                <p class="instruction" style="font-size: 0.9em; color: #999;">30 seconds</p>
+            </div>
+
+            <div class="button-group">
+                <button class="btn" id="attention-start-btn" onclick="startAttentionTest()">Start Test</button>
+            </div>
+        </div>
+
+        <!-- Questionnaire Screen -->
+        <div id="questionnaire-screen" class="screen">
+            <h1>Fatigue Questionnaire</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 90%"></div>
+            </div>
+
+            <div id="questionnaire-area">
+                <p class="instruction">Please rate how you've been feeling lately:</p>
+
+                <div class="question">
+                    <label>1. How tired do you feel right now?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="q1" value="0" id="q1-0">
+                            <label for="q1-0">Not at all</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q1" value="1" id="q1-1">
+                            <label for="q1-1">A little</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q1" value="2" id="q1-2">
+                            <label for="q1-2">Moderately</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q1" value="3" id="q1-3">
+                            <label for="q1-3">Very much</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label>2. Do you have problems with concentration?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="q2" value="0" id="q2-0">
+                            <label for="q2-0">Not at all</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q2" value="1" id="q2-1">
+                            <label for="q2-1">A little</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q2" value="2" id="q2-2">
+                            <label for="q2-2">Moderately</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q2" value="3" id="q2-3">
+                            <label for="q2-3">Very much</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label>3. Do you feel sleepy or drowsy?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="q3" value="0" id="q3-0">
+                            <label for="q3-0">Not at all</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q3" value="1" id="q3-1">
+                            <label for="q3-1">A little</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q3" value="2" id="q3-2">
+                            <label for="q3-2">Moderately</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q3" value="3" id="q3-3">
+                            <label for="q3-3">Very much</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label>4. Do you have trouble starting activities?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="q4" value="0" id="q4-0">
+                            <label for="q4-0">Not at all</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q4" value="1" id="q4-1">
+                            <label for="q4-1">A little</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q4" value="2" id="q4-2">
+                            <label for="q4-2">Moderately</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q4" value="3" id="q4-3">
+                            <label for="q4-3">Very much</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <label>5. Do you lack energy?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="q5" value="0" id="q5-0">
+                            <label for="q5-0">Not at all</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q5" value="1" id="q5-1">
+                            <label for="q5-1">A little</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q5" value="2" id="q5-2">
+                            <label for="q5-2">Moderately</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="q5" value="3" id="q5-3">
+                            <label for="q5-3">Very much</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn" onclick="submitQuestionnaire()">Complete Assessment</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="screen">
+            <h1>Assessment Results</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+            </div>
+
+            <div id="results-area"></div>
+
+            <div class="button-group">
+                <button class="btn" onclick="restartAssessment()">Take Another Assessment</button>
+                <button class="btn btn-secondary" onclick="showHistory()">View History</button>
+            </div>
+        </div>
+
+        <!-- History Screen -->
+        <div id="history-screen" class="screen">
+            <h1>Assessment History</h1>
+
+            <div id="history-area">
+                <p class="instruction">Your previous assessment results will appear here.</p>
+            </div>
+
+            <div class="button-group">
+                <button class="btn" onclick="showWelcome()">Back to Home</button>
+                <button class="btn btn-secondary" onclick="clearHistory()">Clear History</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let assessmentData = {
+            reactionTimes: [],
+            memoryScore: 0,
+            attentionScore: 0,
+            questionnaireScore: 0,
+            timestamp: null
+        };
+
+        // Utility functions
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showWelcome() {
+            showScreen('welcome-screen');
+        }
+
+        function startAssessment() {
+            assessmentData = {
+                reactionTimes: [],
+                memoryScore: 0,
+                attentionScore: 0,
+                questionnaireScore: 0,
+                timestamp: new Date().toISOString()
+            };
+            showScreen('reaction-screen');
+        }
+
+        function restartAssessment() {
+            startAssessment();
+        }
+
+        // Reaction Time Test
+        let reactionTestCount = 0;
+        let reactionStartTime = 0;
+        let reactionTimeout = null;
+
+        function startReactionTest() {
+            reactionTestCount = 0;
+            assessmentData.reactionTimes = [];
+            runReactionTrial();
+        }
+
+        function runReactionTrial() {
+            if (reactionTestCount >= 5) {
+                showScreen('memory-screen');
+                return;
+            }
+
+            const testArea = document.getElementById('reaction-test-area');
+            testArea.innerHTML = `
+                <p class="instruction">Get ready...</p>
+                <p class="instruction" style="font-size: 0.9em; color: #999;">Trial ${reactionTestCount + 1} of 5</p>
+            `;
+
+            const delay = 1000 + Math.random() * 3000;
+
+            reactionTimeout = setTimeout(() => {
+                testArea.innerHTML = `
+                    <div class="stimulus" style="width: 100px; height: 100px; background: #667eea; border-radius: 50%; cursor: pointer;" onclick="recordReaction()"></div>
+                    <p class="instruction" style="font-size: 0.9em; color: #999; margin-top: 20px;">Trial ${reactionTestCount + 1} of 5</p>
+                `;
+                reactionStartTime = Date.now();
+            }, delay);
+        }
+
+        function recordReaction() {
+            const reactionTime = Date.now() - reactionStartTime;
+            assessmentData.reactionTimes.push(reactionTime);
+            reactionTestCount++;
+
+            const testArea = document.getElementById('reaction-test-area');
+            testArea.innerHTML = `
+                <p class="instruction" style="color: #4facfe; font-weight: bold;">${reactionTime} ms</p>
+                <p class="instruction">Great! Get ready for the next trial...</p>
+            `;
+
+            setTimeout(runReactionTrial, 1000);
+        }
+
+        // Memory Test
+        let memoryRound = 0;
+        let memorySequence = [];
+        let memoryUserInput = [];
+
+        function startMemoryTest() {
+            memoryRound = 0;
+            assessmentData.memoryScore = 0;
+            runMemoryRound();
+        }
+
+        function runMemoryRound() {
+            if (memoryRound >= 5) {
+                showScreen('attention-screen');
+                return;
+            }
+
+            memorySequence = [];
+            memoryUserInput = [];
+            const sequenceLength = 3 + memoryRound;
+
+            for (let i = 0; i < sequenceLength; i++) {
+                memorySequence.push(Math.floor(Math.random() * 9) + 1);
+            }
+
+            showMemorySequence();
+        }
+
+        function showMemorySequence() {
+            const testArea = document.getElementById('memory-test-area');
+            let currentIndex = 0;
+
+            testArea.innerHTML = `
+                <p class="instruction">Watch carefully...</p>
+                <div class="stimulus" id="memory-digit"></div>
+                <p class="instruction" style="font-size: 0.9em; color: #999;">Round ${memoryRound + 1} of 5 (${memorySequence.length} digits)</p>
+            `;
+
+            const digitElement = document.getElementById('memory-digit');
+
+            function showNextDigit() {
+                if (currentIndex < memorySequence.length) {
+                    digitElement.textContent = memorySequence[currentIndex];
+                    digitElement.style.animation = 'none';
+                    setTimeout(() => {
+                        digitElement.style.animation = 'pulse 0.3s ease-in-out';
+                    }, 10);
+                    currentIndex++;
+                    setTimeout(showNextDigit, 1000);
+                } else {
+                    setTimeout(showMemoryInput, 500);
+                }
+            }
+
+            showNextDigit();
+        }
+
+        function showMemoryInput() {
+            const testArea = document.getElementById('memory-test-area');
+            testArea.innerHTML = `
+                <p class="instruction">Enter the sequence:</p>
+                <div id="memory-buttons" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 300px; margin: 20px auto;">
+                    ${[1,2,3,4,5,6,7,8,9].map(n => `
+                        <button class="btn" style="padding: 20px;" onclick="memoryInput(${n})">${n}</button>
+                    `).join('')}
+                </div>
+                <div style="margin-top: 20px;">
+                    <p class="instruction">Your input: <span id="memory-display"></span></p>
+                    <button class="btn btn-secondary" onclick="clearMemoryInput()">Clear</button>
+                    <button class="btn btn-success" onclick="submitMemoryInput()">Submit</button>
+                </div>
+                <p class="instruction" style="font-size: 0.9em; color: #999;">Round ${memoryRound + 1} of 5</p>
+            `;
+        }
+
+        function memoryInput(digit) {
+            memoryUserInput.push(digit);
+            document.getElementById('memory-display').textContent = memoryUserInput.join(' ');
+        }
+
+        function clearMemoryInput() {
+            memoryUserInput = [];
+            document.getElementById('memory-display').textContent = '';
+        }
+
+        function submitMemoryInput() {
+            const correct = JSON.stringify(memorySequence) === JSON.stringify(memoryUserInput);
+            if (correct) {
+                assessmentData.memoryScore++;
+            }
+
+            const testArea = document.getElementById('memory-test-area');
+            testArea.innerHTML = `
+                <p class="instruction" style="color: ${correct ? '#4facfe' : '#f5576c'}; font-weight: bold; font-size: 1.5em;">
+                    ${correct ? '✓ Correct!' : '✗ Incorrect'}
+                </p>
+                <p class="instruction">Expected: ${memorySequence.join(' ')}</p>
+                <p class="instruction">You entered: ${memoryUserInput.join(' ')}</p>
+            `;
+
+            memoryRound++;
+            setTimeout(runMemoryRound, 2000);
+        }
+
+        // Attention Test
+        let attentionCorrect = 0;
+        let attentionIncorrect = 0;
+        let attentionTimeout = null;
+        let attentionInterval = null;
+
+        function startAttentionTest() {
+            attentionCorrect = 0;
+            attentionIncorrect = 0;
+
+            const testArea = document.getElementById('attention-test-area');
+            let timeLeft = 30;
+
+            testArea.innerHTML = `
+                <p class="instruction">Starting in...</p>
+                <div class="countdown">3</div>
+            `;
+
+            let countdown = 3;
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    testArea.querySelector('.countdown').textContent = countdown;
+                } else {
+                    clearInterval(countdownInterval);
+                    runAttentionTest(timeLeft);
+                }
+            }, 1000);
+        }
+
+        function runAttentionTest(timeLeft) {
+            const testArea = document.getElementById('attention-test-area');
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            let currentLetter = '';
+
+            testArea.innerHTML = `
+                <div class="timer">${timeLeft}s</div>
+                <div class="stimulus" id="attention-letter"></div>
+                <button class="btn" id="attention-response-btn" style="margin-top: 30px; font-size: 1.5em; padding: 20px 60px;">PRESS WHEN X</button>
+                <p class="instruction" style="margin-top: 20px; font-size: 0.9em; color: #999;">
+                    Correct: <span id="attention-correct">0</span> |
+                    Incorrect: <span id="attention-incorrect">0</span>
+                </p>
+            `;
+
+            const letterElement = document.getElementById('attention-letter');
+            const responseBtn = document.getElementById('attention-response-btn');
+
+            responseBtn.onclick = () => {
+                if (currentLetter === 'X') {
+                    attentionCorrect++;
+                    document.getElementById('attention-correct').textContent = attentionCorrect;
+                } else {
+                    attentionIncorrect++;
+                    document.getElementById('attention-incorrect').textContent = attentionIncorrect;
+                }
+            };
+
+            function showLetter() {
+                // 20% chance of showing X
+                currentLetter = Math.random() < 0.2 ? 'X' : letters[Math.floor(Math.random() * letters.length)];
+                letterElement.textContent = currentLetter;
+                letterElement.style.animation = 'none';
+                setTimeout(() => {
+                    letterElement.style.animation = 'pulse 0.3s ease-in-out';
+                }, 10);
+            }
+
+            showLetter();
+            attentionInterval = setInterval(showLetter, 2000);
+
+            const timer = setInterval(() => {
+                timeLeft--;
+                testArea.querySelector('.timer').textContent = `${timeLeft}s`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    clearInterval(attentionInterval);
+                    finishAttentionTest();
+                }
+            }, 1000);
+        }
+
+        function finishAttentionTest() {
+            assessmentData.attentionScore = attentionCorrect - attentionIncorrect;
+            showScreen('questionnaire-screen');
+        }
+
+        // Questionnaire
+        function submitQuestionnaire() {
+            let score = 0;
+            let allAnswered = true;
+
+            for (let i = 1; i <= 5; i++) {
+                const answer = document.querySelector(`input[name="q${i}"]:checked`);
+                if (answer) {
+                    score += parseInt(answer.value);
+                } else {
+                    allAnswered = false;
+                }
+            }
+
+            if (!allAnswered) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
+
+            assessmentData.questionnaireScore = score;
+            showResults();
+        }
+
+        // Results
+        function showResults() {
+            const avgReactionTime = assessmentData.reactionTimes.reduce((a, b) => a + b, 0) / assessmentData.reactionTimes.length;
+            const memoryScore = (assessmentData.memoryScore / 5) * 100;
+            const attentionScore = Math.max(0, Math.min(100, (assessmentData.attentionScore / 10) * 100));
+            const fatigueScore = (assessmentData.questionnaireScore / 15) * 100;
+
+            // Overall fatigue level (higher is more fatigued)
+            const overallFatigue = (
+                ((avgReactionTime - 200) / 600 * 100) * 0.25 +  // Slower reactions = more fatigue
+                ((100 - memoryScore) * 0.25) +                    // Worse memory = more fatigue
+                ((100 - attentionScore) * 0.25) +                 // Worse attention = more fatigue
+                (fatigueScore * 0.25)                             // Self-reported fatigue
+            );
+
+            const clampedFatigue = Math.max(0, Math.min(100, overallFatigue));
+
+            let fatigueLevel = '';
+            let gaugeClass = '';
+            if (clampedFatigue < 30) {
+                fatigueLevel = 'Low - You\'re doing great!';
+                gaugeClass = 'gauge-low';
+            } else if (clampedFatigue < 60) {
+                fatigueLevel = 'Moderate - Consider taking a break';
+                gaugeClass = 'gauge-medium';
+            } else {
+                fatigueLevel = 'High - Rest is recommended';
+                gaugeClass = 'gauge-high';
+            }
+
+            const resultsArea = document.getElementById('results-area');
+            resultsArea.innerHTML = `
+                <div class="result-card">
+                    <h2>Overall Fatigue Level</h2>
+                    <div class="score">${Math.round(clampedFatigue)}%</div>
+                    <p style="font-size: 1.2em;">${fatigueLevel}</p>
+                </div>
+
+                <div class="metric">
+                    <span class="metric-label">Reaction Time (avg)</span>
+                    <span class="metric-value">${Math.round(avgReactionTime)} ms</span>
+                </div>
+                <div class="gauge">
+                    <div class="gauge-fill ${avgReactionTime < 300 ? 'gauge-low' : avgReactionTime < 500 ? 'gauge-medium' : 'gauge-high'}"
+                         style="width: ${Math.min(100, (avgReactionTime / 800) * 100)}%"></div>
+                </div>
+
+                <div class="metric">
+                    <span class="metric-label">Memory Score</span>
+                    <span class="metric-value">${Math.round(memoryScore)}%</span>
+                </div>
+                <div class="gauge">
+                    <div class="gauge-fill ${memoryScore > 70 ? 'gauge-low' : memoryScore > 40 ? 'gauge-medium' : 'gauge-high'}"
+                         style="width: ${memoryScore}%"></div>
+                </div>
+
+                <div class="metric">
+                    <span class="metric-label">Attention Score</span>
+                    <span class="metric-value">${Math.round(attentionScore)}%</span>
+                </div>
+                <div class="gauge">
+                    <div class="gauge-fill ${attentionScore > 70 ? 'gauge-low' : attentionScore > 40 ? 'gauge-medium' : 'gauge-high'}"
+                         style="width: ${attentionScore}%"></div>
+                </div>
+
+                <div class="metric">
+                    <span class="metric-label">Self-Reported Fatigue</span>
+                    <span class="metric-value">${Math.round(fatigueScore)}%</span>
+                </div>
+                <div class="gauge">
+                    <div class="gauge-fill ${fatigueScore < 40 ? 'gauge-low' : fatigueScore < 70 ? 'gauge-medium' : 'gauge-high'}"
+                         style="width: ${fatigueScore}%"></div>
+                </div>
+            `;
+
+            // Save to history
+            saveToHistory(assessmentData, clampedFatigue);
+            showScreen('results-screen');
+        }
+
+        // History Management
+        function saveToHistory(data, overallFatigue) {
+            let history = JSON.parse(localStorage.getItem('fatigueHistory') || '[]');
+            history.push({
+                ...data,
+                overallFatigue: Math.round(overallFatigue)
+            });
+            // Keep only last 10 assessments
+            if (history.length > 10) {
+                history = history.slice(-10);
+            }
+            localStorage.setItem('fatigueHistory', JSON.stringify(history));
+        }
+
+        function showHistory() {
+            const history = JSON.parse(localStorage.getItem('fatigueHistory') || '[]');
+            const historyArea = document.getElementById('history-area');
+
+            if (history.length === 0) {
+                historyArea.innerHTML = '<p class="instruction">No assessment history yet. Complete an assessment to see results here.</p>';
+            } else {
+                historyArea.innerHTML = history.reverse().map((item, index) => {
+                    const date = new Date(item.timestamp);
+                    const avgReactionTime = item.reactionTimes.reduce((a, b) => a + b, 0) / item.reactionTimes.length;
+                    const memoryScore = (item.memoryScore / 5) * 100;
+
+                    return `
+                        <div class="history-item">
+                            <div class="history-date">${date.toLocaleDateString()} ${date.toLocaleTimeString()}</div>
+                            <div class="history-scores">
+                                <div class="history-score">Overall Fatigue: <strong>${item.overallFatigue}%</strong></div>
+                                <div class="history-score">Reaction: <strong>${Math.round(avgReactionTime)}ms</strong></div>
+                                <div class="history-score">Memory: <strong>${Math.round(memoryScore)}%</strong></div>
+                                <div class="history-score">Attention: <strong>${item.attentionScore}</strong></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            showScreen('history-screen');
+        }
+
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear all assessment history?')) {
+                localStorage.removeItem('fatigueHistory');
+                showHistory();
+            }
+        }
+    </script>
+</body>
+</html>
